@@ -1,14 +1,15 @@
 # TechNewsInfoPro — backend & admin
 
 The site is no longer hard-coded. Every headline, section, ticker item and piece of homepage
-copy is stored in a small JSON database and edited from an admin panel at **`/admin`**.
+copy is stored in Postgres and edited from an admin panel at **`/admin`**.
 
-No new dependencies were added — the whole backend runs on Next.js route handlers, Node's
-`fs` and `crypto`.
+The backend is Next.js route handlers plus Node's `crypto`; the only added dependency is the
+Neon Postgres driver.
 
 ## Getting started
 
 ```bash
+vercel env pull .env.local --yes   # gets DATABASE_URL from the Neon integration
 npm run dev
 ```
 
@@ -40,22 +41,31 @@ Drafts are invisible to the public site and to the search API until published.
 
 ## Storage
 
-Collections live in `data/*.json`, created on first access and written atomically through a
-single serialised queue so concurrent edits can't clobber each other.
+Collections live as JSONB rows in a single Postgres table on **Neon**, provisioned
+through the Vercel Marketplace so `DATABASE_URL` is injected automatically:
 
+```sql
+CREATE TABLE collections (
+  name       text PRIMARY KEY,   -- articles, sections, ticker, settings,
+  data       jsonb NOT NULL,     -- subscribers, messages, users, secret
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
 ```
-data/articles.json      data/sections.json     data/ticker.json
-data/settings.json      data/subscribers.json  data/messages.json
-data/users.json         data/secret.json
+
+The table is created on first use, and each collection seeds itself from `lib/seed/`
+the first time it is read. Serverless instances share no memory, so `update()` holds
+a `SELECT … FOR UPDATE` row lock for the whole read-modify-write.
+
+`lib/store.ts` is the only file that talks to the database — every repository and
+route handler goes through `read` / `update` / `write`, so swapping providers means
+changing that one file.
+
+For local development:
+
+```bash
+vercel env pull .env.local --yes
+npm run dev
 ```
-
-`data/` is gitignored — it's runtime state, not source. Delete the folder to reset the site
-back to the seeded content in `lib/seed/`.
-
-This is a single-node store: it's ideal for one server or a VM, but on a platform with an
-ephemeral or per-instance filesystem the repositories in `lib/` are the only files that need
-to change to move to a real database. Every route handler and page already talks to them
-rather than to the filesystem.
 
 ## API
 
@@ -105,7 +115,7 @@ Every response is `{ ok: true, data }` or `{ ok: false, error }`.
 ## Code map
 
 ```
-lib/store.ts          atomic JSON storage + write queue
+lib/store.ts          Neon Postgres collection store (the only file touching the DB)
 lib/types.ts          shared types and helpers (client-safe)
 lib/auth.ts           passwords, sessions, accounts
 lib/api.ts            route-handler helpers (ok/fail, requireUser, error wrapping)

@@ -7,13 +7,15 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 
-# runtime database — seeded automatically on first run, never commit real content
-data/
+# environment — .env.example is the documented template and stays tracked
+.env*
+!.env.example
 
-# environment
-.env
-.env.local
-.env*.local
+# vercel
+.vercel
+
+# legacy local JSON store, replaced by Neon Postgres
+data/
 
 # os
 .DS_Store
