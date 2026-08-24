@@ -98,7 +98,7 @@ export async function createArticle(input: ArticleInput & { title: string }): Pr
     body,
     status: input.status === "published" ? "published" : "draft",
     featured: Boolean(input.featured),
-    author: input.author?.trim() || "TechNewsInfoPro Staff",
+    author: input.author?.trim() || "SalesInfoPro Editorial",
     views: 0,
     createdAt: stamp,
     updatedAt: stamp

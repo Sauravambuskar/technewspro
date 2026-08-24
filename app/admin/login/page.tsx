@@ -16,15 +16,15 @@ export default async function LoginPage() {
     <div className="adm-login">
       <div className="adm-login-card">
         <div className="adm-logo">
-          <i>T.</i>
+          <i>S.</i>
           <span>
-            TechNewsInfoPro
-            <small>NEWSROOM</small>
+            SalesInfoPro
+            <small>CONTROL PANEL</small>
           </span>
         </div>
 
         <h1>Sign in</h1>
-        <p>Manage stories, sections, the ticker and everything else the site reads from.</p>
+        <p>Manage insights, resources, leads and everything else the site reads from.</p>
 
         <LoginForm defaultEmail={showHint ? DEFAULT_ADMIN_EMAIL : ""} />
 

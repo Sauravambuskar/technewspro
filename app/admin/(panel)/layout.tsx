@@ -2,7 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, usingDefaultPassword } from "@/lib/auth";
 import { allArticles } from "@/lib/articles";
+import { listLeads } from "@/lib/leads";
 import { listMessages } from "@/lib/messages";
+import { allResources } from "@/lib/resources";
 import { listSubscribers } from "@/lib/subscribers";
 import AdminNav from "../components/AdminNav";
 import SignOutButton from "../components/SignOutButton";
@@ -13,9 +15,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const user = await getCurrentUser();
   if (!user) redirect("/admin/login");
 
-  const [articles, messages, subscribers, insecure] = await Promise.all([
+  const [articles, resources, messages, leads, subscribers, insecure] = await Promise.all([
     allArticles(),
+    allResources(),
     listMessages(),
+    listLeads(),
     listSubscribers(),
     usingDefaultPassword()
   ]);
@@ -24,17 +28,19 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     <div className="adm-shell">
       <aside className="adm-sidebar">
         <div className="adm-logo">
-          <i>T.</i>
+          <i>S.</i>
           <span>
-            TechNewsInfoPro
-            <small>NEWSROOM</small>
+            SalesInfoPro
+            <small>CONTROL PANEL</small>
           </span>
         </div>
 
         <AdminNav
           badges={{
             articles: articles.filter((a) => a.status === "draft").length,
+            resources: resources.filter((r) => r.status === "draft").length,
             messages: messages.filter((m) => !m.read).length,
+            leads: leads.length,
             subscribers: subscribers.filter((s) => s.status === "subscribed").length
           }}
         />

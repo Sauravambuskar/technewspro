@@ -9,6 +9,8 @@ import { sectionLabels } from "@/lib/sections";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
 import { formatDate } from "@/lib/types";
+import { siteUrl } from "@/lib/seo";
+import JsonLd from "../../components/JsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +20,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${article.title} | ${settings.siteName}`,
     description: article.dek,
+    alternates: { canonical: siteUrl(`/articles/${article.slug}`) },
     openGraph: {
       title: article.title,
       description: article.dek,
@@ -43,13 +46,29 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
   return (
     <main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          headline: article.title,
+          description: article.dek,
+          datePublished: article.date,
+          dateModified: article.updatedAt,
+          author: { "@type": "Organization", name: article.author },
+          publisher: { "@type": "Organization", name: settings.siteName },
+          image: article.image || undefined,
+          articleSection: label,
+          url: siteUrl(`/articles/${article.slug}`)
+        }}
+      />
+
       <div className="topline" />
       <SiteHeader menu={menu} siteName={settings.siteName} />
       <ViewBeacon slug={article.slug} />
 
       <article className="article-page">
         <div className="article-head">
-          <p className="eyebrow"><Link href={`/#${article.section}`}>{label}</Link> / {article.tag}</p>
+          <p className="eyebrow"><Link href={`/insights/${article.section}`}>{label}</Link> / {article.tag}</p>
           <h1>{article.title}</h1>
           <p className="article-dek">{article.dek}</p>
           <div className="article-meta">
@@ -66,7 +85,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </div>
 
         <div className="article-back">
-          <Link href="/articles">&larr; Back to all stories</Link>
+          <Link href="/insights">&larr; Back to all insights</Link>
         </div>
       </article>
 
@@ -75,7 +94,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           <div className="section-heading">
             <p>KEEP READING</p>
             <h2>More {label}.</h2>
-            <Link href="/articles">View all stories <span>&rarr;</span></Link>
+            <Link href={`/insights/${article.section}`}>View all <span>&rarr;</span></Link>
           </div>
           <div className="review-grid">
             {related.map((r) => (

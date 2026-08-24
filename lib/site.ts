@@ -1,35 +1,54 @@
 import { listArticles } from "./articles";
+import { listResources } from "./resources";
 import { navSections } from "./sections";
 import { getSettings } from "./settings";
+import { RESOURCE_TYPES, RESOURCE_TYPE_LABELS } from "./types";
 
 export type NavItem = { label: string; href: string };
 
-/** A top-level nav entry plus the stories that fill its dropdown. */
-export type NavSection = NavItem & {
+/** A top-level nav entry; `links` fills its dropdown when non-empty. */
+export type NavEntry = NavItem & {
   id: string;
-  articles: { slug: string; title: string }[];
+  links: NavItem[];
 };
 
 const DROPDOWN_LIMIT = 5;
 
 /** Everything the header and footer need, resolved once per request. */
 export async function getSiteChrome() {
-  const [settings, sections, published] = await Promise.all([
+  const [settings, sections, articles, resources] = await Promise.all([
     getSettings(),
     navSections(),
-    listArticles({ status: "published" })
+    listArticles({ status: "published" }),
+    listResources({ status: "published" })
   ]);
 
-  const menu: NavSection[] = sections.map((section) => ({
+  const categories: NavEntry[] = sections.map((section) => ({
     id: section.id,
     label: section.label,
-    href: `/#${section.id}`,
-    articles: published
+    href: `/insights/${section.id}`,
+    links: articles
       .filter((article) => article.section === section.id)
       .slice(0, DROPDOWN_LIMIT)
-      .map(({ slug, title }) => ({ slug, title }))
+      .map((article) => ({ label: article.title, href: `/articles/${article.slug}` }))
   }));
 
-  const nav: NavItem[] = menu.map(({ label, href }) => ({ label, href }));
-  return { settings, nav, menu };
+  const resourceLinks: NavItem[] = RESOURCE_TYPES.filter((type) =>
+    resources.some((resource) => resource.type === type)
+  ).map((type) => ({
+    label: RESOURCE_TYPE_LABELS[type].plural,
+    href: `/resources/${type}`
+  }));
+
+  const menu: NavEntry[] = [
+    ...categories,
+    { id: "resources", label: "Resources", href: "/resources", links: resourceLinks },
+    { id: "about", label: "About Us", href: "/about", links: [] },
+    { id: "contact", label: "Contact Us", href: "/contact", links: [] }
+  ];
+
+  // Footer columns
+  const nav: NavItem[] = categories.map(({ label, href }) => ({ label, href }));
+
+  return { settings, nav, menu, resourceLinks };
 }

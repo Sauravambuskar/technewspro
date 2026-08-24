@@ -57,7 +57,62 @@ export type Message = {
   createdAt: string;
 };
 
+export const RESOURCE_TYPES = ["whitepaper", "ebook", "case-study", "press-release"] as const;
+
+export type ResourceType = (typeof RESOURCE_TYPES)[number];
+
+export const RESOURCE_TYPE_LABELS: Record<ResourceType, { singular: string; plural: string }> = {
+  whitepaper: { singular: "Whitepaper", plural: "Whitepapers" },
+  ebook: { singular: "Ebook", plural: "Ebooks" },
+  "case-study": { singular: "Case Study", plural: "Case Studies" },
+  "press-release": { singular: "Press Release", plural: "Press Releases" }
+};
+
+export function isResourceType(value: unknown): value is ResourceType {
+  return typeof value === "string" && (RESOURCE_TYPES as readonly string[]).includes(value);
+}
+
+export type Resource = {
+  id: string;
+  slug: string;
+  type: ResourceType;
+  category: string;
+  title: string;
+  summary: string;
+  image: string;
+  body: string[];
+  highlights: string[];
+  pages: number;
+  fileUrl: string;
+  /** Gated resources require the lead form before the download is revealed. */
+  gated: boolean;
+  status: ArticleStatus;
+  featured: boolean;
+  author: string;
+  date: string;
+  views: number;
+  downloads: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Lead = {
+  id: string;
+  name: string;
+  email: string;
+  company: string;
+  jobTitle: string;
+  phone: string;
+  intent: "download" | "syndication" | "partnership" | "general";
+  resourceId: string | null;
+  resourceTitle: string;
+  message: string;
+  createdAt: string;
+};
+
 export type SocialLink = { id: string; label: string; href: string; glyph: string };
+
+export type ValueProp = { id: string; title: string; body: string };
 
 export type Settings = {
   siteName: string;
@@ -68,6 +123,9 @@ export type Settings = {
   heroTitleAccent: string;
   heroDescription: string;
   heroCta: string;
+  heroCtaHref: string;
+  heroCtaSecondary: string;
+  heroCtaSecondaryHref: string;
   heroFootnote: string;
   featuredSlug: string;
   manifestoEyebrow: string;
@@ -81,6 +139,32 @@ export type Settings = {
   footerCopyright: string;
   socials: SocialLink[];
   tickerEnabled: boolean;
+
+  // Resource centre
+  resourcesEyebrow: string;
+  resourcesTitle: string;
+  resourcesBlurb: string;
+
+  // "Why SalesInfoPro"
+  whyEyebrow: string;
+  whyTitle: string;
+  whyBlurb: string;
+  whyPoints: ValueProp[];
+
+  // About Us
+  aboutOverview: string;
+  aboutMission: string;
+  aboutVision: string;
+  aboutEditorialFocus: string;
+  aboutIndustries: string[];
+
+  // Contact / lead generation
+  contactEyebrow: string;
+  contactTitle: string;
+  contactBlurb: string;
+  contactEmail: string;
+  contactPhone: string;
+  contactAddress: string;
 };
 
 export type AdminUser = {

@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import type { NavSection } from "@/lib/site";
+import type { NavEntry } from "@/lib/site";
 
-type SearchHit = { slug: string; title: string; tag: string };
+type SearchHit = { href: string; title: string; tag: string };
 
-export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; siteName: string }) {
+export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteName: string }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -63,8 +63,8 @@ export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; sit
 
   const brand = (
     <>
-      <span className="brand-mark">T.</span>
-      <span>tech<span>news</span><b>info</b>pro</span>
+      <span className="brand-mark">S.</span>
+      <span>sales<b>info</b>pro</span>
     </>
   );
 
@@ -112,7 +112,7 @@ export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; sit
       <nav className="main-nav" aria-label="Sections">
         <ul>
           {menu.map((section) => {
-            const hasDropdown = section.articles.length > 0;
+            const hasDropdown = section.links.length > 0;
             const open = openMenu === section.id;
 
             return (
@@ -137,9 +137,9 @@ export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; sit
 
                 {hasDropdown && open && (
                   <div className="nav-dropdown">
-                    {section.articles.map((article) => (
-                      <Link href={`/articles/${article.slug}`} key={article.slug} onClick={closeAll}>
-                        {article.title}
+                    {section.links.map((link) => (
+                      <Link href={link.href} key={link.href} onClick={closeAll}>
+                        {link.label}
                       </Link>
                     ))}
                     <Link className="nav-dropdown-all" href={section.href} onClick={closeAll}>
@@ -151,8 +151,6 @@ export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; sit
             );
           })}
 
-          <li className="nav-item"><Link href="/articles">All Stories</Link></li>
-          <li className="nav-item"><Link href="/contact">Contact Us</Link></li>
         </ul>
       </nav>
 
@@ -164,24 +162,24 @@ export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; sit
                 <h4>
                   <Link href={section.href} onClick={closeAll}>{section.label}</Link>
                 </h4>
-                {section.articles.length > 0 ? (
-                  section.articles.map((article) => (
-                    <Link href={`/articles/${article.slug}`} key={article.slug} onClick={closeAll}>
-                      {article.title}
+                {section.links.length > 0 ? (
+                  section.links.map((link) => (
+                    <Link href={link.href} key={link.href} onClick={closeAll}>
+                      {link.label}
                     </Link>
                   ))
                 ) : (
-                  <p className="drawer-empty">Nothing published yet.</p>
+                  <p className="drawer-empty">Visit the section →</p>
                 )}
               </div>
             ))}
           </div>
 
           <div className="drawer-links">
-            <Link href="/articles" onClick={closeAll}>All stories</Link>
+            <Link href="/insights" onClick={closeAll}>All insights</Link>
+            <Link href="/resources" onClick={closeAll}>Resource center</Link>
+            <Link href="/about" onClick={closeAll}>About us</Link>
             <Link href="/contact" onClick={closeAll}>Contact us</Link>
-            <Link href="/#newsletter" onClick={closeAll}>Newsletter</Link>
-            <Link href="/#about" onClick={closeAll}>About</Link>
           </div>
         </div>
       )}
@@ -192,23 +190,23 @@ export default function SiteHeader({ menu, siteName }: { menu: NavSection[]; sit
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search articles, topics, reviews…"
+              placeholder="Search insights, research and resources…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search articles"
+              aria-label="Search the site"
             />
             {query.trim() && (
               <div className="search-results">
                 {results.length > 0 ? (
                   results.map((hit) => (
-                    <Link href={`/articles/${hit.slug}`} key={hit.slug} onClick={closeAll}>
+                    <Link href={hit.href} key={hit.href} onClick={closeAll}>
                       <span>{hit.tag}</span>
                       {hit.title}
                     </Link>
                   ))
                 ) : (
                   <p className="search-empty">
-                    {searching ? "Searching…" : `No stories match “${query}”.`}
+                    {searching ? "Searching…" : `Nothing matches “${query}”.`}
                   </p>
                 )}
               </div>

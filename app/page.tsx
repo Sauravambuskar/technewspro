@@ -2,59 +2,53 @@ import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import NewsletterForm from "./components/NewsletterForm";
+import LeadCaptureForm from "./components/LeadCaptureForm";
+import ArticleCard from "./components/ArticleCard";
+import ResourceCard from "./components/ResourceCard";
+import JsonLd from "./components/JsonLd";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
+import { listResources } from "@/lib/resources";
 import { listSections } from "@/lib/sections";
 import { getSiteChrome } from "@/lib/site";
 import { listTicker } from "@/lib/ticker";
-import type { Article, Section } from "@/lib/types";
+import { RESOURCE_TYPES, RESOURCE_TYPE_LABELS, formatDate } from "@/lib/types";
+import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-function SectionBlock({ section, items }: { section: Section; items: Article[] }) {
-  return (
-    <section className="reviews" id={section.id}>
-      <div className="section-heading">
-        <p>{section.eyebrow}</p>
-        <h2>{section.heading}</h2>
-        <Link href="/articles">{section.cta} <span>→</span></Link>
-      </div>
-      <div className="review-grid">
-        {items.map((article) => (
-          <article className="review-card" key={article.slug}>
-            <div className="review-image"><img src={article.image} alt="" /><span>{article.tag}</span></div>
-            <h3>{article.title}</h3>
-            <p>{article.dek}</p>
-            <Link href={`/articles/${article.slug}`}>Read story <b>↗</b></Link>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export default async function Home() {
-  const [{ settings, nav, menu }, sections, published, ticker] = await Promise.all([
+  const [{ settings, nav, menu }, sections, published, resources, ticker] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listArticles({ status: "published" }),
+    listResources({ status: "published" }),
     listTicker(true)
   ]);
 
-  const bySection = (id: string) => published.filter((article) => article.section === id);
-  const latest = bySection("latest").slice(0, 4);
   const featureStory = await getFeaturedArticle(settings.featuredSlug);
-
-  const mostRead = [...published]
+  const latest = published.slice(0, 6);
+  const trending = [...published]
     .filter((article) => article.slug !== featureStory?.slug)
     .sort((a, b) => b.views - a.views)
     .slice(0, 4);
-
-  const homeSections = sections.filter((section) => section.showOnHome && section.id !== "latest");
-  const latestSection = sections.find((section) => section.id === "latest");
-  const headlines = published.slice(0, 3);
+  const featuredResources = resources.slice(0, 3);
 
   return (
     <main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: settings.siteName,
+          url: siteUrl(),
+          description: settings.metaDescription,
+          email: settings.contactEmail,
+          telephone: settings.contactPhone,
+          address: { "@type": "PostalAddress", streetAddress: settings.contactAddress },
+          sameAs: settings.socials.map((social) => social.href).filter((href) => href.startsWith("http"))
+        }}
+      />
+
       <div className="topline" />
       <SiteHeader menu={menu} siteName={settings.siteName} />
 
@@ -70,86 +64,151 @@ export default async function Home() {
         </section>
       )}
 
+      {/* 1 — Hero */}
       <section className="hero" id="top">
         <div className="hero-copy">
           <p className="eyebrow">{settings.heroEyebrow}</p>
           <h1>{settings.heroTitle}<br /><em>{settings.heroTitleAccent}</em></h1>
           <p className="hero-description">{settings.heroDescription}</p>
-          <a href="#latest" className="read-link">{settings.heroCta} <span>→</span></a>
-          <div className="hero-meta"><span>{settings.heroFootnote}</span><b>01 / 04</b></div>
+          <div className="hero-actions">
+            <Link href={settings.heroCtaHref || "/resources"} className="btn-primary">
+              {settings.heroCta} <span>&rarr;</span>
+            </Link>
+            <Link href={settings.heroCtaSecondaryHref || "/contact"} className="btn-secondary">
+              {settings.heroCtaSecondary}
+            </Link>
+          </div>
+          <div className="hero-meta"><span>{settings.heroFootnote}</span><b>EST. 2026</b></div>
         </div>
-        <div className="hero-art" role="img" aria-label="Editorial illustration representing technology and connectivity">
+        <div className="hero-art" role="img" aria-label="Abstract editorial illustration">
           <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="dot-grid" />
           <div className="hero-image" />
-          <p className="art-label">Tomorrow<br />has a pulse.</p>
-          <span className="orbital-type">SYSTEMS<br />THINKING</span>
+          <p className="art-label">Evidence<br />over noise.</p>
+          <span className="orbital-type">RESEARCH<br />DRIVEN</span>
         </div>
       </section>
 
-      {latestSection && latest.length > 0 && (
-        <section className="quick-reads" id="latest">
-          <div className="section-heading">
-            <p>{latestSection.eyebrow}</p>
-            <h2>{latestSection.heading}</h2>
-            <Link href="/articles">{latestSection.cta} <span>→</span></Link>
-          </div>
-          <div className="brief-grid">
-            {latest.map((article, i) => (
-              <article className="brief-card" key={article.slug}>
-                <div className="brief-image"><img src={article.image} alt="" /></div>
-                <span>0{i + 1}</span>
-                <p>{article.tag}</p>
-                <h3>{article.title}</h3>
-                <Link href={`/articles/${article.slug}`}>Read story <b>↗</b></Link>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* 2 — Featured categories */}
+      <section className="categories" id="categories">
+        <div className="section-heading">
+          <p>COVERAGE</p>
+          <h2>Featured categories.</h2>
+          <Link href="/insights">All insights <span>&rarr;</span></Link>
+        </div>
+        <div className="category-grid">
+          {sections.map((section, i) => {
+            const count = published.filter((a) => a.section === section.id).length;
+            return (
+              <Link className="category-card" href={`/insights/${section.id}`} key={section.id}>
+                <span className="category-index">0{i + 1}</span>
+                <h3>{section.label}</h3>
+                <p>{section.eyebrow}</p>
+                <b>{count} article{count === 1 ? "" : "s"} <i>&#8599;</i></b>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
+      {/* 3 — Latest insights */}
+      <section className="reviews" id="latest">
+        <div className="section-heading">
+          <p>LATEST INSIGHTS</p>
+          <h2>Recent analysis.</h2>
+          <Link href="/insights">View all <span>&rarr;</span></Link>
+        </div>
+        <div className="review-grid">
+          {latest.map((article) => <ArticleCard key={article.id} article={article} showDate />)}
+        </div>
+      </section>
+
+      {/* 4 — Resource center */}
+      <section className="resource-strip" id="resources">
+        <div className="section-heading">
+          <p>{settings.resourcesEyebrow}</p>
+          <h2>{settings.resourcesTitle}</h2>
+          <Link href="/resources">Resource center <span>&rarr;</span></Link>
+        </div>
+        <p className="strip-blurb">{settings.resourcesBlurb}</p>
+
+        <div className="resource-type-row">
+          {RESOURCE_TYPES.map((type) => {
+            const count = resources.filter((r) => r.type === type).length;
+            return (
+              <Link className="resource-type-pill" href={`/resources/${type}`} key={type}>
+                {RESOURCE_TYPE_LABELS[type].plural}
+                <b>{count}</b>
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="resource-grid">
+          {featuredResources.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
+        </div>
+      </section>
+
+      {/* 5 — Trending topics / editor's picks */}
       {featureStory && (
-        <section className="feature-layout" id="ai-and-data">
+        <section className="feature-layout" id="trending">
           <article className="feature-story">
-            <div className="feature-visual"><div className="feature-word">IDEAS<br />AT WORK</div></div>
+            <div className="feature-visual"><div className="feature-word">EDITOR&rsquo;S<br />PICK</div></div>
             <p className="eyebrow">{featureStory.tag} / {featureStory.minutes} MIN READ</p>
             <h2>{featureStory.title}</h2>
             <p className="dek">{featureStory.dek}</p>
-            <Link href={`/articles/${featureStory.slug}`} className="read-link dark-link">Read the field guide <span>→</span></Link>
+            <Link href={`/articles/${featureStory.slug}`} className="read-link dark-link">
+              Read the analysis <span>&rarr;</span>
+            </Link>
           </article>
           <aside className="side-stories">
-            <div className="section-label">MOST READ</div>
-            {mostRead.map((article, i) => (
-              <Link className="side-story" key={article.slug} href={`/articles/${article.slug}`}>
-                <img src={article.image} alt="" />
-                <div><span>0{i + 1} / {article.tag}</span><h3>{article.title}</h3><p>{article.dek}</p></div>
+            <div className="section-label">TRENDING TOPICS</div>
+            {trending.map((article, i) => (
+              <Link className="side-story" key={article.id} href={`/articles/${article.slug}`}>
+                {article.image && <img src={article.image} alt="" loading="lazy" />}
+                <div>
+                  <span>0{i + 1} / {article.tag}</span>
+                  <h3>{article.title}</h3>
+                  <p>{formatDate(article.date)}</p>
+                </div>
               </Link>
             ))}
           </aside>
         </section>
       )}
 
-      <section className="manifesto">
-        <p className="eyebrow">{settings.manifestoEyebrow}</p>
-        <h2>{settings.manifestoTitle}<br /><em>{settings.manifestoTitleAccent}</em></h2>
-        <p>{settings.manifestoBody}</p>
-        <a href="#about">Why we exist <span>→</span></a>
-        <div className="manifesto-news">
-          <p className="manifesto-news-label">LATEST HEADLINES</p>
-          {headlines.map((article) => (
-            <Link className="manifesto-news-item" href={`/articles/${article.slug}`} key={article.slug}>
-              <span>{article.tag}</span>
-              <h4>{article.title}</h4>
-            </Link>
+      {/* 6 — Why SalesInfoPro */}
+      <section className="why" id="why">
+        <div className="why-intro">
+          <p className="eyebrow">{settings.whyEyebrow}</p>
+          <h2>{settings.whyTitle.split("\n").map((line, i) => <span key={i}>{i > 0 && <br />}{line}</span>)}</h2>
+          <p>{settings.whyBlurb}</p>
+          <Link href="/about" className="read-link">More about us <span>&rarr;</span></Link>
+        </div>
+        <div className="why-grid">
+          {settings.whyPoints.map((point, i) => (
+            <div className="why-card" key={point.id}>
+              <span>0{i + 1}</span>
+              <h3>{point.title}</h3>
+              <p>{point.body}</p>
+            </div>
           ))}
         </div>
-        <div className="manifesto-number">02</div>
       </section>
 
-      {homeSections.map((section) => {
-        const items = bySection(section.id);
-        if (items.length === 0) return null;
-        return <SectionBlock key={section.id} section={section} items={items} />;
-      })}
+      {/* 7 — Contact / lead generation */}
+      <section className="lead-section" id="contact">
+        <div className="lead-copy">
+          <p className="eyebrow">{settings.contactEyebrow}</p>
+          <h2>{settings.contactTitle}</h2>
+          <p>{settings.contactBlurb}</p>
+          <dl className="lead-details">
+            <div><dt>Email</dt><dd><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></dd></div>
+            <div><dt>Phone</dt><dd><a href={`tel:${settings.contactPhone.replace(/[^+\d]/g, "")}`}>{settings.contactPhone}</a></dd></div>
+            <div><dt>Office</dt><dd>{settings.contactAddress}</dd></div>
+          </dl>
+        </div>
+        <LeadCaptureForm intent="syndication" submitLabel="Send enquiry" showMessage />
+      </section>
 
       <section className="newsletter" id="newsletter">
         <div>

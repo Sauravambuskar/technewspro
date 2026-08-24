@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./admin.css";
 
 export const metadata: Metadata = {
-  title: "Newsroom | TechNewsInfoPro",
+  title: "Control panel | SalesInfoPro",
   robots: { index: false, follow: false }
 };
 

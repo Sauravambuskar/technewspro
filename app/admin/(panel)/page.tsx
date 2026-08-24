@@ -3,6 +3,8 @@ import { allArticles } from "@/lib/articles";
 import { listMessages } from "@/lib/messages";
 import { listSections } from "@/lib/sections";
 import { listSubscribers } from "@/lib/subscribers";
+import { allResources } from "@/lib/resources";
+import { listLeads } from "@/lib/leads";
 import { listTicker } from "@/lib/ticker";
 import { formatDate } from "@/lib/types";
 import PageHead from "../components/PageHead";
@@ -10,8 +12,10 @@ import PageHead from "../components/PageHead";
 export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
-  const [articles, subscribers, messages, sections, ticker] = await Promise.all([
+  const [articles, resources, leads, subscribers, messages, sections, ticker] = await Promise.all([
     allArticles(),
+    allResources(),
+    listLeads(),
     listSubscribers(),
     listMessages(),
     listSections(),
@@ -29,7 +33,8 @@ export default async function Dashboard() {
   return (
     <>
       <PageHead eyebrow="NEWSROOM OVERVIEW" title="Dashboard">
-        <Link className="adm-btn adm-btn-accent" href="/admin/articles/new">+ New story</Link>
+        <Link className="adm-btn adm-btn-ghost" href="/admin/resources/new">+ New resource</Link>
+        <Link className="adm-btn adm-btn-accent" href="/admin/articles/new">+ New insight</Link>
       </PageHead>
 
       <div className="adm-stats">
@@ -42,6 +47,16 @@ export default async function Dashboard() {
           <p>TOTAL READS</p>
           <strong>{views.toLocaleString()}</strong>
           <small>across every story</small>
+        </div>
+        <div className="adm-stat">
+          <p>RESOURCES</p>
+          <strong>{resources.filter((r) => r.status === "published").length}</strong>
+          <small>{resources.reduce((sum, r) => sum + r.downloads, 0)} downloads</small>
+        </div>
+        <div className="adm-stat">
+          <p>LEADS</p>
+          <strong>{leads.length}</strong>
+          <small>captured from gated content</small>
         </div>
         <div className="adm-stat">
           <p>SUBSCRIBERS</p>

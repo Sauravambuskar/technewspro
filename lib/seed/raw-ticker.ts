@@ -1,10 +1,10 @@
 export const rawTicker = [
-  "Nvidia in talks to invest in AI data-labeling startup Mercor at a $20B valuation",
-  "Valar Atomics closes $1B Series B led by Sequoia Capital",
-  "Castelion raises $800M Series C to build hypersonic defense systems",
-  "Whatnot raises $545M Series G, now valued at $20B",
-  "Fintech startup Base raises $1B as investors chase profitable models",
-  "HappyRobot lands $150M to automate logistics operations with AI",
-  "Queen One raises $25M for its AI-governed Commerce CRM",
-  "Network Bio launches with $50M to build biotech infrastructure"
+  "Enterprise AI budgets shift from pilots to staged funding as CFOs demand baselines",
+  "B2B buying committees grow to an average of 11 stakeholders, up from 8 in 2023",
+  "Inference costs overtake storage in enterprise cloud bills for the first time",
+  "Working capital discipline returns as cheap credit exits the mid-market",
+  "Content syndication repriced on pipeline created rather than cost per lead",
+  "Identity lifecycle gaps named in 62% of disclosed enterprise breaches",
+  "Forecast accuracy improves where stage exits require evidence of buyer activity",
+  "Brand investment climbs as B2B acquisition costs outpace conversion gains"
 ];

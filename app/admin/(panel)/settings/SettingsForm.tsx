@@ -3,7 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { send } from "../../apiClient";
-import type { Article, Settings, SocialLink } from "@/lib/types";
+import type { Article, Settings, SocialLink, ValueProp } from "@/lib/types";
+
+const LINE_BREAK = "\n";
 
 export default function SettingsForm({
   settings,
@@ -28,6 +30,18 @@ export default function SettingsForm({
       "socials",
       form.socials.map((social) => (social.id === id ? { ...social, ...patch } : social))
     );
+  }
+
+  function setPoint(id: string, patch: Partial<ValueProp>) {
+    set("whyPoints", form.whyPoints.map((point) => (point.id === id ? { ...point, ...patch } : point)));
+  }
+
+  function addPoint() {
+    set("whyPoints", [...form.whyPoints, { id: `point-${Date.now()}`, title: "New reason", body: "" }]);
+  }
+
+  function removePoint(id: string) {
+    set("whyPoints", form.whyPoints.filter((point) => point.id !== id));
   }
 
   function addSocial() {
@@ -189,6 +203,86 @@ export default function SettingsForm({
             + Add social link
           </button>
         </div>
+      </div>
+
+      <div className="adm-card">
+        <h2>Resource center</h2>
+        <p className="adm-card-note">Headings for the homepage resource block and the /resources page.</p>
+        {text("resourcesEyebrow", "EYEBROW")}
+        {text("resourcesTitle", "HEADLINE")}
+        {area("resourcesBlurb", "SUPPORTING COPY", 2)}
+      </div>
+
+      <div className="adm-card">
+        <h2>Why {form.siteName}</h2>
+        <p className="adm-card-note">Shown on the homepage and again on the About page.</p>
+        {text("whyEyebrow", "EYEBROW")}
+        {area("whyTitle", "HEADLINE", 2, "Line breaks are preserved.")}
+        {area("whyBlurb", "SUPPORTING COPY", 2)}
+
+        {form.whyPoints.map((point) => (
+          <div key={point.id} style={{ borderTop: "1px solid #eeeee8", paddingTop: 16, marginTop: 8 }}>
+            <label className="adm-field">
+              <span>TITLE</span>
+              <input type="text" value={point.title} onChange={(e) => setPoint(point.id, { title: e.target.value })} />
+            </label>
+            <label className="adm-field">
+              <span>BODY</span>
+              <textarea
+                rows={3}
+                style={{ minHeight: 76 }}
+                value={point.body}
+                onChange={(e) => setPoint(point.id, { body: e.target.value })}
+              />
+            </label>
+            <button type="button" className="adm-btn adm-btn-danger adm-btn-sm" onClick={() => removePoint(point.id)}>
+              Remove
+            </button>
+          </div>
+        ))}
+
+        <div className="adm-form-actions">
+          <button type="button" className="adm-btn adm-btn-ghost" onClick={addPoint}>+ Add reason</button>
+        </div>
+      </div>
+
+      <div className="adm-card">
+        <h2>About us</h2>
+        <p className="adm-card-note">Everything on the /about page.</p>
+        {area("aboutOverview", "COMPANY OVERVIEW", 4)}
+        {area("aboutMission", "MISSION", 3)}
+        {area("aboutVision", "VISION", 3)}
+        {area("aboutEditorialFocus", "EDITORIAL FOCUS", 4)}
+
+        <label className="adm-field">
+          <span>INDUSTRIES COVERED — ONE PER LINE</span>
+          <textarea
+            rows={8}
+            value={form.aboutIndustries.join(LINE_BREAK)}
+            onChange={(e) =>
+              set(
+                "aboutIndustries",
+                e.target.value.split(LINE_BREAK).map((line) => line.trim()).filter(Boolean)
+              )
+            }
+          />
+          <small>{form.aboutIndustries.length} listed</small>
+        </label>
+      </div>
+
+      <div className="adm-card">
+        <h2>Contact &amp; lead generation</h2>
+        <p className="adm-card-note">
+          Used on the homepage lead section, the /contact page and the organisation schema.
+        </p>
+        {text("contactEyebrow", "EYEBROW")}
+        {text("contactTitle", "HEADLINE")}
+        {area("contactBlurb", "SUPPORTING COPY", 3)}
+        <div className="adm-grid-2">
+          {text("contactEmail", "BUSINESS EMAIL")}
+          {text("contactPhone", "PHONE NUMBER")}
+        </div>
+        {text("contactAddress", "OFFICE ADDRESS")}
       </div>
 
       <div className="adm-card">
