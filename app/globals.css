@@ -188,6 +188,61 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
   .resource-count { margin-left:0; }
 }
 
+/* ------------------------------------------------ homepage category blocks */
+.cat-block { padding:clamp(56px,7vw,100px) clamp(20px,8vw,150px); border-top:1px solid #cfd0ca; }
+.cat-light { background:var(--paper); }
+.cat-tint { background:#f2f1ec; }
+.cat-layout { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr); gap:clamp(28px,4vw,58px); padding-top:30px; }
+
+.cat-lead { display:flex; flex-direction:column; min-width:0; }
+.cat-lead-image { position:relative; display:block; height:clamp(250px,30vw,392px); overflow:hidden; background:#e3e2db; }
+.cat-lead-image img { width:100%; height:100%; object-fit:cover; transition:transform .45s; }
+.cat-lead-image:hover img { transform:scale(1.04); }
+.cat-lead-image span { position:absolute; top:14px; left:14px; background:var(--acid); color:var(--ink); font:500 10px "DM Mono",monospace; padding:5px 8px; }
+.cat-lead-meta { margin:18px 0 10px; font:500 10px "DM Mono",monospace; color:#85868c; letter-spacing:.05em; }
+.cat-lead h3 { margin:0; font-size:clamp(24px,2.6vw,36px); line-height:1.04; letter-spacing:-.05em; }
+.cat-lead h3 a:hover { color:var(--electric); }
+.cat-lead-dek { margin:14px 0 20px; max-width:560px; font-size:14.5px; line-height:1.55; color:#54565c; }
+.cat-lead .read-link { align-self:flex-start; margin-top:auto; }
+
+.cat-rest { display:flex; flex-direction:column; min-width:0; }
+.cat-item { display:grid; grid-template-columns:104px minmax(0,1fr); gap:16px; padding:16px 0; border-bottom:1px solid #d5d6cf; }
+.cat-item:first-child { padding-top:0; }
+.cat-item:last-child { border-bottom:0; }
+.cat-item-image { height:82px; overflow:hidden; background:#e3e2db; }
+.cat-item-image img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+.cat-item:hover .cat-item-image img { transform:scale(1.06); }
+.cat-item-body { min-width:0; }
+.cat-item-body span { display:block; margin-bottom:7px; font:500 10px "DM Mono",monospace; color:var(--electric); letter-spacing:.05em; }
+.cat-item-body h4 { margin:0; font-size:16px; line-height:1.18; letter-spacing:-.03em; font-weight:600; }
+.cat-item:hover .cat-item-body h4 { color:var(--electric); }
+.cat-item-body p { margin:7px 0 0; font:500 10px "DM Mono",monospace; color:#8a8b91; }
+
+.cat-research { margin-top:34px; padding-top:24px; border-top:1px solid #d5d6cf; }
+.cat-research-label { margin:0 0 16px; font:500 10px "DM Mono",monospace; letter-spacing:.09em; color:var(--muted); }
+.cat-research-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px; }
+.cat-research-card { display:grid; grid-template-columns:88px minmax(0,1fr); gap:16px; align-items:center; background:#fff; border:1px solid #dedfd8; padding:14px; }
+.cat-tint .cat-research-card { background:var(--paper); }
+.cat-research-card:hover { border-color:var(--ink); }
+.cat-research-card img { width:88px; height:78px; object-fit:cover; }
+.cat-research-card span { display:block; margin-bottom:6px; font:500 10px "DM Mono",monospace; color:var(--electric); }
+.cat-research-card h4 { margin:0; font-size:14.5px; line-height:1.25; letter-spacing:-.025em; font-weight:600; }
+.cat-research-card p { margin:6px 0 0; font:500 10px "DM Mono",monospace; color:#8a8b91; }
+
+@media (max-width: 900px) {
+  .cat-layout { grid-template-columns:1fr; }
+  .cat-lead .read-link { margin-top:0; }
+  .cat-rest { border-top:1px solid #d5d6cf; padding-top:8px; }
+}
+@media (max-width: 620px) {
+  .cat-block { padding-left:20px; padding-right:20px; }
+  .cat-item { grid-template-columns:82px minmax(0,1fr); gap:13px; }
+  .cat-item-image { height:66px; }
+  .cat-item-body h4 { font-size:14.5px; }
+  .cat-research-card { grid-template-columns:70px minmax(0,1fr); }
+  .cat-research-card img { width:70px; height:64px; }
+}
+
 .notfound { padding:clamp(70px,10vw,150px) clamp(20px,8vw,150px) clamp(80px,10vw,140px); max-width:900px; }
 .notfound h1 { margin:0; font-size:clamp(44px,6vw,88px); line-height:.94; letter-spacing:-.07em; font-weight:600; }
 .notfound h1 em { color:var(--electric); font-family:"Playfair Display",serif; font-weight:500; }

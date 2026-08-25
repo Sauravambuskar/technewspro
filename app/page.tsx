@@ -5,6 +5,7 @@ import NewsletterForm from "./components/NewsletterForm";
 import LeadCaptureForm from "./components/LeadCaptureForm";
 import ArticleCard from "./components/ArticleCard";
 import ResourceCard from "./components/ResourceCard";
+import CategoryBlock from "./components/CategoryBlock";
 import JsonLd from "./components/JsonLd";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
@@ -27,6 +28,7 @@ export default async function Home() {
 
   const featureStory = await getFeaturedArticle(settings.featuredSlug);
   const latest = published.slice(0, 6);
+  const homeSections = sections.filter((section) => section.showOnHome);
   const trending = [...published]
     .filter((article) => article.slug !== featureStory?.slug)
     .sort((a, b) => b.views - a.views)
@@ -121,6 +123,17 @@ export default async function Home() {
           {latest.map((article) => <ArticleCard key={article.id} article={article} showDate />)}
         </div>
       </section>
+
+      {/* 3b — Every category, in full */}
+      {homeSections.map((section, i) => (
+        <CategoryBlock
+          key={section.id}
+          section={section}
+          tone={i % 2 === 0 ? "light" : "tint"}
+          articles={published.filter((article) => article.section === section.id).slice(0, 5)}
+          resources={resources.filter((resource) => resource.category === section.id)}
+        />
+      ))}
 
       {/* 4 — Resource center */}
       <section className="resource-strip" id="resources">

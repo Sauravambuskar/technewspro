@@ -1,6 +1,7 @@
 import { newId } from "../store";
 import type { Article, Resource, ResourceType, Section, Settings, TickerItem } from "../types";
 import { rawArticles } from "./raw-articles";
+import { rawArticlesMore } from "./raw-articles-more";
 import { rawResources } from "./raw-resources";
 import { rawTicker } from "./raw-ticker";
 
@@ -16,7 +17,7 @@ export function seedSections(): Section[] {
 
 export function seedArticles(): Article[] {
   const stamp = new Date().toISOString();
-  return rawArticles.map((article) => ({
+  return [...rawArticles, ...rawArticlesMore].map((article) => ({
     id: newId(),
     slug: article.slug,
     section: article.section,
