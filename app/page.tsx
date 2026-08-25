@@ -6,6 +6,7 @@ import LeadCaptureForm from "./components/LeadCaptureForm";
 import ArticleCard from "./components/ArticleCard";
 import ResourceCard from "./components/ResourceCard";
 import CategoryBlock from "./components/CategoryBlock";
+import HeroLatest from "./components/HeroLatest";
 import JsonLd from "./components/JsonLd";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
@@ -82,12 +83,7 @@ export default async function Home() {
           </div>
           <div className="hero-meta"><span>{settings.heroFootnote}</span><b>EST. 2026</b></div>
         </div>
-        <div className="hero-art" role="img" aria-label="Abstract editorial illustration">
-          <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="dot-grid" />
-          <div className="hero-image" />
-          <p className="art-label">Evidence<br />over noise.</p>
-          <span className="orbital-type">RESEARCH<br />DRIVEN</span>
-        </div>
+        <HeroLatest articles={published.slice(0, 5)} sections={sections} />
       </section>
 
       {/* 2 — Featured categories */}
@@ -99,10 +95,15 @@ export default async function Home() {
         </div>
         <div className="category-grid">
           {sections.map((section, i) => {
-            const count = published.filter((a) => a.section === section.id).length;
+            const inSection = published.filter((a) => a.section === section.id);
+            const count = inSection.length;
+            const cover = inSection[0];
             return (
               <Link className="category-card" href={`/insights/${section.id}`} key={section.id}>
-                <span className="category-index">0{i + 1}</span>
+                <div className="category-card-image">
+                  {cover?.image && <img src={cover.image} alt="" loading="lazy" />}
+                  <span className="category-index">0{i + 1}</span>
+                </div>
                 <h3>{section.label}</h3>
                 <p>{section.eyebrow}</p>
                 <b>{count} article{count === 1 ? "" : "s"} <i>&#8599;</i></b>
