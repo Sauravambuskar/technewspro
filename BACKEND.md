@@ -28,7 +28,7 @@ different credentials instead, copy `.env.example` to `.env.local` and set `ADMI
 
 | Screen | What it controls |
 | --- | --- |
-| **Dashboard** | Read counts, draft queue, unread mail, stories per section |
+| **Dashboard** | Reads, downloads, leads, draft queue, unread mail, content per category |
 | **Articles** | Full write/edit/publish/delete, search and filters, draft vs published |
 | **Resources** | Whitepapers, ebooks, case studies and press releases; gating, file URL, page count, highlights |
 | **Sections** | Add/rename/reorder categories, toggle them in the nav and on the homepage |
@@ -58,7 +58,9 @@ Drafts are invisible to the public site and to the search API until published.
 
 `/articles` redirects to `/insights`. SEO: per-page canonicals, Organization / NewsArticle / Report /
 AboutPage / ContactPage JSON-LD, a generated `sitemap.xml` covering every published URL, and
-`robots.txt` disallowing `/admin` and `/api/`.
+`robots.txt` disallowing `/admin` and `/api/`. A branded 404 lives at `app/not-found.tsx` and is
+deliberately static — the global not-found is prerendered before `DATABASE_URL` exists, so it must
+not read from the database.
 
 ## Storage
 
@@ -123,7 +125,7 @@ Admin — requires the session cookie:
 | `GET` `PATCH` `DELETE` | `/api/messages`, `/api/messages/:id` | Inbox |
 | `PUT` | `/api/settings` | Save settings |
 | `GET` `POST` `PATCH` `DELETE` | `/api/users`, `/api/users/:id` | Team (create/delete is admin-only) |
-| `GET` | `/api/stats` | Dashboard counters |
+| `GET` | `/api/stats` | Counters for articles, resources, leads, subscribers, inbox and per-category totals |
 
 Every response is `{ ok: true, data }` or `{ ok: false, error }`.
 

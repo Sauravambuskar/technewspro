@@ -85,12 +85,6 @@ export function seedSettings(): Settings {
     heroFootnote: "INDEPENDENT B2B RESEARCH",
     featuredSlug: "pipeline-coverage-is-lying-to-you",
 
-    manifestoEyebrow: "THE SALESINFOPRO POINT OF VIEW",
-    manifestoTitle: "Less noise.",
-    manifestoTitleAccent: "More evidence.",
-    manifestoBody:
-      "We publish for operators who have to defend a decision after they make it — with the research, benchmarks and case detail that argument needs.",
-
     newsletterEyebrow: "THE WEEKLY BRIEF",
     newsletterTitle: "One useful email.\nEvery Tuesday.",
     newsletterBlurb:

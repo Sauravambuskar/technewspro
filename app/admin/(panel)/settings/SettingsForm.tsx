@@ -124,7 +124,7 @@ export default function SettingsForm({
               <option key={article.slug} value={article.slug}>{article.title}</option>
             ))}
           </select>
-          <small>Fills the large feature panel between the brief and the manifesto.</small>
+          <small>Fills the editor&rsquo;s pick panel in the Trending Topics section.</small>
         </label>
 
         <label className="adm-check">
@@ -135,17 +135,6 @@ export default function SettingsForm({
           />
           Show the scrolling news ticker
         </label>
-      </div>
-
-      <div className="adm-card">
-        <h2>Manifesto panel</h2>
-        <p className="adm-card-note">The acid-green statement block halfway down the homepage.</p>
-        <div className="adm-grid-2">
-          {text("manifestoEyebrow", "EYEBROW")}
-          {text("manifestoTitle", "HEADLINE — LINE 1")}
-          {text("manifestoTitleAccent", "HEADLINE — LINE 2 (ACCENT)")}
-        </div>
-        {area("manifestoBody", "BODY", 3)}
       </div>
 
       <div className="adm-card">

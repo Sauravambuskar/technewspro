@@ -128,10 +128,6 @@ export type Settings = {
   heroCtaSecondaryHref: string;
   heroFootnote: string;
   featuredSlug: string;
-  manifestoEyebrow: string;
-  manifestoTitle: string;
-  manifestoTitleAccent: string;
-  manifestoBody: string;
   newsletterEyebrow: string;
   newsletterTitle: string;
   newsletterBlurb: string;

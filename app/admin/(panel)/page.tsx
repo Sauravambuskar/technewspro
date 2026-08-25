@@ -32,7 +32,7 @@ export default async function Dashboard() {
 
   return (
     <>
-      <PageHead eyebrow="NEWSROOM OVERVIEW" title="Dashboard">
+      <PageHead eyebrow="OVERVIEW" title="Dashboard">
         <Link className="adm-btn adm-btn-ghost" href="/admin/resources/new">+ New resource</Link>
         <Link className="adm-btn adm-btn-accent" href="/admin/articles/new">+ New insight</Link>
       </PageHead>
@@ -46,7 +46,7 @@ export default async function Dashboard() {
         <div className="adm-stat">
           <p>TOTAL READS</p>
           <strong>{views.toLocaleString()}</strong>
-          <small>across every story</small>
+          <small>across every insight</small>
         </div>
         <div className="adm-stat">
           <p>RESOURCES</p>
@@ -110,9 +110,9 @@ export default async function Dashboard() {
       </div>
 
       <div className="adm-card">
-        <h2>Stories by section</h2>
+        <h2>Insights by category</h2>
         <p className="adm-card-note">
-          Sections drive the homepage blocks, the navigation and the all-stories index.
+          Categories drive the homepage blocks, the navigation and the /insights index.
         </p>
         <div className="adm-table-wrap">
           <table className="adm-table">
