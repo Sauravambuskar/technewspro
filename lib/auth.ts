@@ -8,7 +8,7 @@ const SECRET = "secret";
 export const SESSION_COOKIE = "tnip_admin";
 const SESSION_MAX_AGE = 60 * 60 * 12; // 12 hours
 
-export const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL?.toLowerCase() || "admin@salesinfopro.com";
+export const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL?.toLowerCase() || "admin@technewspro.com";
 export const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "changeme123";
 
 /* ------------------------------------------------------------------ passwords */

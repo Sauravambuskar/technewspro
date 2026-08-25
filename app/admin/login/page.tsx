@@ -16,9 +16,8 @@ export default async function LoginPage() {
     <div className="adm-login">
       <div className="adm-login-card">
         <div className="adm-logo">
-          <i>S.</i>
+          <img src="/logo.png" alt="Tech News Pro" />
           <span>
-            SalesInfoPro
             <small>CONTROL PANEL</small>
           </span>
         </div>

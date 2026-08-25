@@ -6,8 +6,7 @@ export default function SiteFooter({ nav, settings }: { nav: NavItem[]; settings
   return (
     <footer id="about">
       <Link className="brand footer-brand" href="/">
-        <span className="brand-mark">S.</span>
-        <span>sales<b>info</b>pro</span>
+        <img className="brand-logo" src="/logo.png" alt={settings.siteName} />
       </Link>
       <p>{settings.footerTagline}</p>
       <div className="footer-links">

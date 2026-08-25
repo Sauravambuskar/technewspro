@@ -32,7 +32,7 @@ export function seedArticles(): Article[] {
     body: [...article.body],
     status: "published" as const,
     featured: article.slug === "pipeline-coverage-is-lying-to-you",
-    author: "SalesInfoPro Editorial",
+    author: "Tech News Pro Editorial",
     views: 0,
     createdAt: stamp,
     updatedAt: stamp
@@ -56,7 +56,7 @@ export function seedResources(): Resource[] {
     gated: resource.gated,
     status: "published" as const,
     featured: resource.slug === "the-2026-ai-automation-readiness-benchmark",
-    author: "SalesInfoPro Research",
+    author: "Tech News Pro Research",
     date: resource.date,
     views: 0,
     downloads: 0,
@@ -71,8 +71,8 @@ export function seedTicker(): TickerItem[] {
 
 export function seedSettings(): Settings {
   return {
-    siteName: "SalesInfoPro",
-    metaTitle: "SalesInfoPro | Business intelligence for growth leaders",
+    siteName: "Tech News Pro",
+    metaTitle: "Tech News Pro | Business intelligence for growth leaders",
     metaDescription:
       "Research-driven insight on AI, corporate finance, technology, sales and marketing for a global business audience.",
 
@@ -94,7 +94,7 @@ export function seedSettings(): Settings {
       "The week's most consequential shifts across AI, finance, technology and revenue — condensed, with the sources.",
 
     footerTagline: "Research-driven intelligence for a global business audience.",
-    footerCopyright: "© 2026 SalesInfoPro. All rights reserved.",
+    footerCopyright: "© 2026 Tech News Pro. All rights reserved.",
     socials: [
       { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com", glyph: "in" },
       { id: "x", label: "X (Twitter)", href: "https://x.com", glyph: "𝕏" },
@@ -105,9 +105,9 @@ export function seedSettings(): Settings {
     resourcesEyebrow: "RESOURCE CENTER",
     resourcesTitle: "Research you can act on.",
     resourcesBlurb:
-      "Whitepapers, ebooks, case studies and announcements from the SalesInfoPro research desk.",
+      "Whitepapers, ebooks, case studies and announcements from the Tech News Pro research desk.",
 
-    whyEyebrow: "WHY SALESINFOPRO",
+    whyEyebrow: "WHY TECH NEWS PRO",
     whyTitle: "Built for operators,\nnot for headlines.",
     whyBlurb:
       "We are read by the people who have to sign off on the decision — and we write for that standard.",
@@ -135,7 +135,7 @@ export function seedSettings(): Settings {
     ],
 
     aboutOverview:
-      "SalesInfoPro is an independent business intelligence publisher covering the AI economy, corporate finance, digital infrastructure, revenue strategy and brand. We serve senior operators at enterprises and high-growth companies who need evidence rather than commentary.",
+      "Tech News Pro is an independent business intelligence publisher covering the AI economy, corporate finance, digital infrastructure, revenue strategy and brand. We serve senior operators at enterprises and high-growth companies who need evidence rather than commentary.",
     aboutMission:
       "To give business leaders the clearest possible picture of the forces reshaping their function — early enough to act on, and rigorous enough to defend.",
     aboutVision:
@@ -157,7 +157,7 @@ export function seedSettings(): Settings {
     contactTitle: "Start a conversation.",
     contactBlurb:
       "Editorial enquiries, content syndication, research partnerships and speaking requests all reach the same desk — and a person reads every one.",
-    contactEmail: "hello@salesinfopro.com",
+    contactEmail: "hello@technewspro.com",
     contactPhone: "+1 (415) 555-0142",
     contactAddress: "One Market Street, Suite 3600, San Francisco, CA 94105"
   };

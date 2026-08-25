@@ -36,7 +36,7 @@ export default async function InsightsIndex() {
         <p className="eyebrow">LATEST INSIGHTS</p>
         <h1>All insights.</h1>
         <p className="page-hero-lede">
-          Every piece of analysis across the {sections.length} SalesInfoPro desks, newest first.
+          Every piece of analysis across the {sections.length} Tech News Pro desks, newest first.
         </p>
         <div className="chip-row">
           {sections.map((section) => (

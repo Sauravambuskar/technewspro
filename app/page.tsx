@@ -190,7 +190,7 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 6 — Why SalesInfoPro */}
+      {/* 6 — Why Tech News Pro */}
       <section className="why" id="why">
         <div className="why-intro">
           <p className="eyebrow">{settings.whyEyebrow}</p>

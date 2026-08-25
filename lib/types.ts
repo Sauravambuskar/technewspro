@@ -150,7 +150,7 @@ export type Settings = {
   resourcesTitle: string;
   resourcesBlurb: string;
 
-  // "Why SalesInfoPro"
+  // "Why Tech News Pro"
   whyEyebrow: string;
   whyTitle: string;
   whyBlurb: string;

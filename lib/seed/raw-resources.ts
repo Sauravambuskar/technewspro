@@ -148,10 +148,10 @@ export const rawResources = [
 
   /* ---------------------------------------------------------- Press releases */
   {
-    slug: "salesinfopro-launches-2026-benchmark-programme",
+    slug: "technewspro-launches-2026-benchmark-programme",
     type: "press-release",
     category: "ai-and-automation",
-    title: "SalesInfoPro launches its 2026 enterprise benchmark programme",
+    title: "Tech News Pro launches its 2026 enterprise benchmark programme",
     summary:
       "The annual research programme expands to nine industries and adds a governance track covering autonomous workflows.",
     image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=85",
@@ -164,16 +164,16 @@ export const rawResources = [
       "Findings published quarterly from October 2026"
     ],
     body: [
-      "SalesInfoPro today announced the 2026 edition of its enterprise benchmark programme, expanding coverage from five industries to nine and adding a dedicated governance track for autonomous workflows.",
+      "Tech News Pro today announced the 2026 edition of its enterprise benchmark programme, expanding coverage from five industries to nine and adding a dedicated governance track for autonomous workflows.",
       "The programme surveys senior operators across finance, technology, sales and marketing functions, with findings published quarterly from October 2026.",
       "Participating organisations receive an anonymised comparison against their industry cohort ahead of general publication."
     ]
   },
   {
-    slug: "salesinfopro-expands-editorial-coverage-to-corporate-finance",
+    slug: "technewspro-expands-editorial-coverage-to-corporate-finance",
     type: "press-release",
     category: "financial-intelligence",
-    title: "SalesInfoPro expands editorial coverage to corporate finance",
+    title: "Tech News Pro expands editorial coverage to corporate finance",
     summary:
       "A dedicated Financial Intelligence desk joins the existing technology, sales and marketing coverage.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85",
@@ -186,7 +186,7 @@ export const rawResources = [
       "Weekly briefing available to existing subscribers"
     ],
     body: [
-      "SalesInfoPro has established a dedicated Financial Intelligence desk, extending its coverage into corporate finance, treasury and planning.",
+      "Tech News Pro has established a dedicated Financial Intelligence desk, extending its coverage into corporate finance, treasury and planning.",
       "The desk begins publishing with the 2026 budget cycle, focusing on how finance functions are evaluating and funding technology investment.",
       "Coverage is included for existing subscribers at no additional cost."
     ]

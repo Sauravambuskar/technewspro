@@ -1,4 +1,4 @@
-# SalesInfoPro — backend & admin
+# Tech News Pro — backend & admin
 
 The site is no longer hard-coded. Every headline, section, ticker item and piece of homepage
 copy is stored in Postgres and edited from an admin panel at **`/admin`**.
@@ -18,7 +18,7 @@ original site content and creates one admin account:
 
 | Email | Password |
 | --- | --- |
-| `admin@salesinfopro.com` | `changeme123` |
+| `admin@technewspro.com` | `changeme123` |
 
 Change it under **Team** immediately — the panel shows a warning banner until you do. To seed
 different credentials instead, copy `.env.example` to `.env.local` and set `ADMIN_EMAIL` /

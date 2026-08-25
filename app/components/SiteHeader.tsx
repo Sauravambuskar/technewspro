@@ -61,12 +61,7 @@ export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteN
     };
   }, [query]);
 
-  const brand = (
-    <>
-      <span className="brand-mark">S.</span>
-      <span>sales<b>info</b>pro</span>
-    </>
-  );
+  const brand = <img className="brand-logo" src="/logo.png" alt={siteName} />;
 
   return (
     <header className="site-header">

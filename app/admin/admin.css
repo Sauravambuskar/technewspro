@@ -6,7 +6,7 @@
 /* ---------------------------------------------------------------- sidebar */
 .adm-sidebar { background:var(--adm-ink); color:#fff; padding:26px 20px; display:flex; flex-direction:column; gap:26px; position:sticky; top:0; height:100vh; }
 .adm-logo { display:flex; align-items:center; gap:8px; font-size:17px; font-weight:700; letter-spacing:-1.1px; }
-.adm-logo i { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--adm-acid); color:var(--adm-ink); font-style:normal; font-size:15px; letter-spacing:-2px; }
+.adm-logo img { height:26px; width:auto; display:block; }
 .adm-logo small { display:block; font:500 9px/1 "DM Mono",monospace; color:var(--adm-acid); letter-spacing:.14em; margin-top:4px; }
 .adm-nav { display:flex; flex-direction:column; gap:2px; }
 .adm-nav a { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; font-size:13px; font-weight:600; color:#b9bac2; border-radius:4px; }

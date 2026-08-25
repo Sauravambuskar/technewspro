@@ -32,7 +32,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
       tag: "",
       dek: "",
       image: "",
-      author: "SalesInfoPro Editorial",
+      author: "Tech News Pro Editorial",
       date: new Date().toISOString().slice(0, 10),
       minutes: "",
       body: "",

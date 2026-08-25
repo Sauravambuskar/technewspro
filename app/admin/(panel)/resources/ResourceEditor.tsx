@@ -40,7 +40,7 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
       category: sections[0]?.id ?? "",
       summary: "",
       image: "",
-      author: "SalesInfoPro Research",
+      author: "Tech News Pro Research",
       date: new Date().toISOString().slice(0, 10),
       pages: "",
       fileUrl: "",
