@@ -36,6 +36,7 @@ export const POST = handler(async (request: Request) => {
     title,
     slug: typeof payload.slug === "string" ? payload.slug : undefined,
     section: typeof payload.section === "string" ? payload.section : undefined,
+    subcategory: typeof payload.subcategory === "string" ? payload.subcategory : undefined,
     tag: typeof payload.tag === "string" ? payload.tag : undefined,
     dek: typeof payload.dek === "string" ? payload.dek : undefined,
     image: typeof payload.image === "string" ? payload.image : undefined,

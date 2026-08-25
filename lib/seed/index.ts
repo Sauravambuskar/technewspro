@@ -4,14 +4,15 @@ import { rawArticles } from "./raw-articles";
 import { rawArticlesMore } from "./raw-articles-more";
 import { rawResources } from "./raw-resources";
 import { rawTicker } from "./raw-ticker";
+import { subcategoriesFor, subcategoryIdFor } from "./subcategories";
 
 export function seedSections(): Section[] {
   return [
-    { id: "ai-and-automation", label: "AI & Automation", eyebrow: "THE AI ECONOMY", heading: "AI & Automation.", cta: "See all coverage", order: 1, showInNav: true, showOnHome: true },
-    { id: "financial-intelligence", label: "Financial Intelligence", eyebrow: "CORPORATE FINANCE", heading: "Financial Intelligence.", cta: "See all coverage", order: 2, showInNav: true, showOnHome: true },
-    { id: "information-technology", label: "Information Technology", eyebrow: "DIGITAL INFRASTRUCTURE", heading: "Information Technology.", cta: "See all coverage", order: 3, showInNav: true, showOnHome: true },
-    { id: "sales-and-revenue", label: "Sales & Revenue", eyebrow: "SALES STRATEGY", heading: "Sales & Revenue.", cta: "See all coverage", order: 4, showInNav: true, showOnHome: true },
-    { id: "marketing-and-brand", label: "Marketing & Brand", eyebrow: "BRAND & PERFORMANCE", heading: "Marketing & Brand.", cta: "See all coverage", order: 5, showInNav: true, showOnHome: true }
+    { id: "ai-and-automation", subcategories: subcategoriesFor("ai-and-automation"), label: "AI & Automation", eyebrow: "THE AI ECONOMY", heading: "AI & Automation.", cta: "See all coverage", order: 1, showInNav: true, showOnHome: true },
+    { id: "financial-intelligence", subcategories: subcategoriesFor("financial-intelligence"), label: "Financial Intelligence", eyebrow: "CORPORATE FINANCE", heading: "Financial Intelligence.", cta: "See all coverage", order: 2, showInNav: true, showOnHome: true },
+    { id: "information-technology", subcategories: subcategoriesFor("information-technology"), label: "Information Technology", eyebrow: "DIGITAL INFRASTRUCTURE", heading: "Information Technology.", cta: "See all coverage", order: 3, showInNav: true, showOnHome: true },
+    { id: "sales-and-revenue", subcategories: subcategoriesFor("sales-and-revenue"), label: "Sales & Revenue", eyebrow: "SALES STRATEGY", heading: "Sales & Revenue.", cta: "See all coverage", order: 4, showInNav: true, showOnHome: true },
+    { id: "marketing-and-brand", subcategories: subcategoriesFor("marketing-and-brand"), label: "Marketing & Brand", eyebrow: "BRAND & PERFORMANCE", heading: "Marketing & Brand.", cta: "See all coverage", order: 5, showInNav: true, showOnHome: true }
   ];
 }
 
@@ -21,6 +22,7 @@ export function seedArticles(): Article[] {
     id: newId(),
     slug: article.slug,
     section: article.section,
+    subcategory: subcategoryIdFor(article.slug),
     tag: article.tag,
     title: article.title,
     dek: article.dek,

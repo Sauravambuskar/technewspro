@@ -19,6 +19,7 @@ export const POST = handler(async (request: Request) => {
       eyebrow: typeof payload.eyebrow === "string" ? payload.eyebrow : undefined,
       heading: typeof payload.heading === "string" ? payload.heading : undefined,
       cta: typeof payload.cta === "string" ? payload.cta : undefined,
+      subcategories: Array.isArray(payload.subcategories) ? (payload.subcategories as Section["subcategories"]) : undefined,
       showInNav: typeof payload.showInNav === "boolean" ? payload.showInNav : undefined,
       showOnHome: typeof payload.showOnHome === "boolean" ? payload.showOnHome : undefined
     });

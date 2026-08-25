@@ -62,6 +62,25 @@ export default async function SectionPage({ params }: { params: { section: strin
             </Link>
           ))}
         </div>
+
+        {section.subcategories.length > 0 && (
+          <div className="subcat-row">
+            <p>SUB-CATEGORIES</p>
+            <div className="chip-row">
+              {[...section.subcategories]
+                .sort((a, b) => a.order - b.order)
+                .map((sub) => {
+                  const count = articles.filter((a) => a.subcategory === sub.id).length;
+                  return (
+                    <Link className="chip chip-sub" href={`/insights/${section.id}/${sub.id}`} key={sub.id}>
+                      {sub.label}
+                      {count > 0 && <b>{count}</b>}
+                    </Link>
+                  );
+                })}
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="reviews">

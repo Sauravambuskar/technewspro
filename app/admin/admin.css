@@ -124,3 +124,9 @@
   .adm-nav a { padding:8px 11px; }
   .adm-sidebar-foot { margin-top:8px; }
 }
+
+/* sub-category editor inside the sections screen */
+.adm-subs { margin:4px 0 18px; padding:16px 16px 18px; background:#faf9f5; border:1px solid var(--adm-line); border-radius:5px; }
+.adm-subs-label { margin:0 0 12px; font:600 10px "DM Mono",monospace; letter-spacing:.09em; color:var(--adm-muted); }
+.adm-subs .adm-list-row { margin-bottom:8px; background:#fff; }
+.adm-subs .adm-list-row:last-of-type { margin-bottom:0; }

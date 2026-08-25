@@ -7,7 +7,15 @@ const seed = () => seedSections();
 
 export async function listSections(): Promise<Section[]> {
   const sections = await read<Section[]>(COLLECTION, seed);
-  return [...sections].sort((a, b) => a.order - b.order);
+  // Rows written before sub-categories existed have no array; treat as empty.
+  return sections
+    .map((section) => ({ ...section, subcategories: section.subcategories ?? [] }))
+    .sort((a, b) => a.order - b.order);
+}
+
+export async function getSubcategory(sectionId: string, subId: string) {
+  const section = await getSection(sectionId);
+  return section?.subcategories.find((sub) => sub.id === subId);
 }
 
 export async function getSection(id: string) {
@@ -34,6 +42,7 @@ export async function createSection(input: Partial<Section> & { label: string })
     eyebrow: (input.eyebrow || input.label).toUpperCase(),
     heading: input.heading?.trim() || `${input.label.trim()}.`,
     cta: input.cta?.trim() || "See all stories",
+    subcategories: input.subcategories ?? [],
     order: input.order ?? existing.length + 1,
     showInNav: input.showInNav ?? true,
     showOnHome: input.showOnHome ?? true
@@ -54,6 +63,7 @@ export async function updateSection(id: string, input: Partial<Section>): Promis
         eyebrow: input.eyebrow?.toUpperCase() ?? section.eyebrow,
         heading: input.heading?.trim() ?? section.heading,
         cta: input.cta?.trim() ?? section.cta,
+        subcategories: input.subcategories ?? section.subcategories ?? [],
         order: input.order ?? section.order,
         showInNav: input.showInNav ?? section.showInNav,
         showOnHome: input.showOnHome ?? section.showOnHome

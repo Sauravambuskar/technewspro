@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { send } from "../../apiClient";
-import type { Section } from "@/lib/types";
+import { slugify, type Section, type Subcategory } from "@/lib/types";
 
 type Counts = Record<string, number>;
 
@@ -18,6 +18,41 @@ export default function SectionManager({ sections, counts }: { sections: Section
   function edit(id: string, patch: Partial<Section>) {
     setDrafts((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
     setNote("");
+  }
+
+  function setSubs(sectionId: string, subcategories: Subcategory[]) {
+    edit(sectionId, { subcategories: subcategories.map((sub, i) => ({ ...sub, order: i + 1 })) });
+  }
+
+  function editSub(sectionId: string, subId: string, label: string) {
+    const section = drafts.find((s) => s.id === sectionId);
+    if (!section) return;
+    setSubs(sectionId, section.subcategories.map((sub) => (sub.id === subId ? { ...sub, label } : sub)));
+  }
+
+  function addSub(sectionId: string) {
+    const section = drafts.find((s) => s.id === sectionId);
+    if (!section) return;
+    setSubs(sectionId, [
+      ...section.subcategories,
+      { id: `sub-${Date.now()}`, label: "New sub-category", order: section.subcategories.length + 1 }
+    ]);
+  }
+
+  function removeSub(sectionId: string, subId: string) {
+    const section = drafts.find((s) => s.id === sectionId);
+    if (!section) return;
+    setSubs(sectionId, section.subcategories.filter((sub) => sub.id !== subId));
+  }
+
+  function moveSub(sectionId: string, index: number, delta: number) {
+    const section = drafts.find((s) => s.id === sectionId);
+    if (!section) return;
+    const target = index + delta;
+    if (target < 0 || target >= section.subcategories.length) return;
+    const next = [...section.subcategories];
+    [next[index], next[target]] = [next[target], next[index]];
+    setSubs(sectionId, next);
   }
 
   function move(index: number, delta: number) {
@@ -45,10 +80,19 @@ export default function SectionManager({ sections, counts }: { sections: Section
   }
 
   const saveAll = () =>
-    run(
-      () => send("/api/sections", "PUT", { sections: drafts.map((s, i) => ({ ...s, order: i + 1 })) }),
-      "Sections saved."
-    );
+    run(() => {
+      const normalised = drafts.map((section, i) => ({
+        ...section,
+        order: i + 1,
+        subcategories: section.subcategories.map((sub, j) => ({
+          ...sub,
+          id: sub.id.startsWith("sub-") ? slugify(sub.label) || sub.id : sub.id,
+          order: j + 1
+        }))
+      }));
+      setDrafts(normalised);
+      return send("/api/sections", "PUT", { sections: normalised });
+    }, "Sections saved.");
 
   async function addSection(event: React.FormEvent) {
     event.preventDefault();
@@ -76,8 +120,9 @@ export default function SectionManager({ sections, counts }: { sections: Section
       <div className="adm-card">
         <h2>Sections</h2>
         <p className="adm-card-note">
-          Order controls the sequence of homepage blocks and the all-stories index. The <code>latest</code>{" "}
-          section is rendered as the four-card brief at the top of the homepage.
+          Order controls the sequence of homepage blocks, the navigation and the /insights index.
+          Sub-categories fill each nav dropdown and get their own page at
+          <code>/insights/&lt;category&gt;/&lt;sub&gt;</code>.
         </p>
 
         {drafts.map((section, index) => (
@@ -116,6 +161,57 @@ export default function SectionManager({ sections, counts }: { sections: Section
                 <span>LINK TEXT</span>
                 <input type="text" value={section.cta} onChange={(e) => edit(section.id, { cta: e.target.value })} />
               </label>
+            </div>
+
+            <div className="adm-subs">
+              <p className="adm-subs-label">
+                SUB-CATEGORIES ({section.subcategories.length})
+              </p>
+              {section.subcategories.map((sub, subIndex) => (
+                <div className="adm-list-row" key={sub.id}>
+                  <span className="adm-handle">{String(subIndex + 1).padStart(2, "0")}</span>
+                  <input
+                    type="text"
+                    value={sub.label}
+                    onChange={(e) => editSub(section.id, sub.id, e.target.value)}
+                    aria-label={`Sub-category ${subIndex + 1}`}
+                  />
+                  <span className="adm-table-sub" style={{ whiteSpace: "nowrap" }}>
+                    /{sub.id}
+                  </span>
+                  <button
+                    type="button"
+                    className="adm-btn adm-btn-ghost adm-btn-sm"
+                    onClick={() => moveSub(section.id, subIndex, -1)}
+                    disabled={subIndex === 0}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    className="adm-btn adm-btn-ghost adm-btn-sm"
+                    onClick={() => moveSub(section.id, subIndex, 1)}
+                    disabled={subIndex === section.subcategories.length - 1}
+                  >
+                    ↓
+                  </button>
+                  <button
+                    type="button"
+                    className="adm-btn adm-btn-danger adm-btn-sm"
+                    onClick={() => removeSub(section.id, sub.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="adm-btn adm-btn-ghost adm-btn-sm"
+                onClick={() => addSub(section.id)}
+                style={{ marginTop: 10 }}
+              >
+                + Add sub-category
+              </button>
             </div>
 
             <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "center" }}>

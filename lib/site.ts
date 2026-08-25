@@ -23,14 +23,20 @@ export async function getSiteChrome() {
     listResources({ status: "published" })
   ]);
 
+  // Dropdowns list the section's sub-categories; sections without any fall back
+  // to their most recent headlines so the menu is never empty.
   const categories: NavEntry[] = sections.map((section) => ({
     id: section.id,
     label: section.label,
     href: `/insights/${section.id}`,
-    links: articles
-      .filter((article) => article.section === section.id)
-      .slice(0, DROPDOWN_LIMIT)
-      .map((article) => ({ label: article.title, href: `/articles/${article.slug}` }))
+    links: section.subcategories.length
+      ? [...section.subcategories]
+          .sort((a, b) => a.order - b.order)
+          .map((sub) => ({ label: sub.label, href: `/insights/${section.id}/${sub.id}` }))
+      : articles
+          .filter((article) => article.section === section.id)
+          .slice(0, DROPDOWN_LIMIT)
+          .map((article) => ({ label: article.title, href: `/articles/${article.slug}` }))
   }));
 
   const resourceLinks: NavItem[] = RESOURCE_TYPES.filter((type) =>

@@ -6,6 +6,8 @@ export type Article = {
   id: string;
   slug: string;
   section: string;
+  /** Optional sub-category id within the section; "" when unclassified. */
+  subcategory: string;
   tag: string;
   title: string;
   dek: string;
@@ -21,9 +23,16 @@ export type Article = {
   updatedAt: string;
 };
 
+export type Subcategory = {
+  id: string;
+  label: string;
+  order: number;
+};
+
 export type Section = {
   id: string;
   label: string;
+  subcategories: Subcategory[];
   eyebrow: string;
   heading: string;
   cta: string;

@@ -12,23 +12,26 @@ function byNewest(a: Article, b: Article) {
 
 export async function allArticles(): Promise<Article[]> {
   const articles = await read<Article[]>(COLLECTION, seed);
-  return [...articles].sort(byNewest);
+  // Rows written before sub-categories existed have no field; treat as unclassified.
+  return articles.map((a) => ({ ...a, subcategory: a.subcategory ?? "" })).sort(byNewest);
 }
 
 export type ArticleQuery = {
   section?: string;
+  subcategory?: string;
   status?: ArticleStatus | "all";
   search?: string;
   limit?: number;
 };
 
 export async function listArticles(query: ArticleQuery = {}): Promise<Article[]> {
-  const { section, status = "published", search, limit } = query;
+  const { section, subcategory, status = "published", search, limit } = query;
   const term = search?.trim().toLowerCase();
 
   let items = await allArticles();
   if (status !== "all") items = items.filter((a) => a.status === status);
   if (section) items = items.filter((a) => a.section === section);
+  if (subcategory) items = items.filter((a) => a.subcategory === subcategory);
   if (term) {
     items = items.filter((a) =>
       [a.title, a.dek, a.tag, a.author, a.body.join(" ")].some((field) => field.toLowerCase().includes(term))
@@ -89,6 +92,7 @@ export async function createArticle(input: ArticleInput & { title: string }): Pr
     id: newId(),
     slug: await uniqueSlug(input.slug || input.title),
     section: input.section || "latest",
+    subcategory: input.subcategory?.trim() || "",
     tag: (input.tag || "NEWS").toUpperCase(),
     title: input.title.trim(),
     dek: (input.dek || input.title).trim(),
@@ -120,6 +124,7 @@ export async function updateArticle(id: string, input: ArticleInput): Promise<Ar
         ...article,
         ...(slug ? { slug } : {}),
         section: input.section ?? article.section,
+        subcategory: input.subcategory !== undefined ? input.subcategory.trim() : (article.subcategory ?? ""),
         tag: input.tag ? input.tag.toUpperCase() : article.tag,
         title: input.title?.trim() ?? article.title,
         dek: input.dek?.trim() ?? article.dek,

@@ -29,6 +29,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.7
     })),
+    ...sections.flatMap((section) =>
+      section.subcategories.map((sub) => ({
+        url: siteUrl(`/insights/${section.id}/${sub.id}`),
+        changeFrequency: "weekly" as const,
+        priority: 0.6
+      }))
+    ),
     ...RESOURCE_TYPES.map((type) => ({
       url: siteUrl(`/resources/${type}`),
       changeFrequency: "weekly" as const,

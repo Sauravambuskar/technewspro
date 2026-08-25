@@ -10,6 +10,7 @@ type Draft = {
   title: string;
   slug: string;
   section: string;
+  subcategory: string;
   tag: string;
   dek: string;
   image: string;
@@ -27,6 +28,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
       title: "",
       slug: "",
       section: sections[0]?.id ?? "latest",
+      subcategory: "",
       tag: "",
       dek: "",
       image: "",
@@ -42,6 +44,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
     title: article.title,
     slug: article.slug,
     section: article.section,
+    subcategory: article.subcategory ?? "",
     tag: article.tag,
     dek: article.dek,
     image: article.image,
@@ -68,6 +71,9 @@ export default function ArticleEditor({
   const [error, setError] = useState("");
   const [saved, setSaved] = useState("");
 
+  const subcategories = [...(sections.find((s) => s.id === draft.section)?.subcategories ?? [])].sort(
+    (a, b) => a.order - b.order
+  );
   const paragraphs = draft.body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
   const estimate = paragraphs.length ? readingMinutes(paragraphs) : 0;
 
@@ -81,6 +87,7 @@ export default function ArticleEditor({
       title: draft.title,
       slug: draft.slug || slugify(draft.title),
       section: draft.section,
+      subcategory: draft.subcategory,
       tag: draft.tag || "NEWS",
       dek: draft.dek || draft.title,
       image: draft.image,
@@ -191,12 +198,34 @@ export default function ArticleEditor({
 
         <div className="adm-grid-2">
           <label className="adm-field">
-            <span>SECTION</span>
-            <select value={draft.section} onChange={(e) => set("section", e.target.value)}>
+            <span>CATEGORY</span>
+            <select
+              value={draft.section}
+              onChange={(e) => {
+                // Sub-categories belong to one category, so reset on change.
+                setDraft((prev) => ({ ...prev, section: e.target.value, subcategory: "" }));
+                setSaved("");
+              }}
+            >
               {sections.map((section) => (
                 <option key={section.id} value={section.id}>{section.label}</option>
               ))}
             </select>
+          </label>
+
+          <label className="adm-field">
+            <span>SUB-CATEGORY</span>
+            <select value={draft.subcategory} onChange={(e) => set("subcategory", e.target.value)}>
+              <option value="">Unclassified</option>
+              {subcategories.map((sub) => (
+                <option key={sub.id} value={sub.id}>{sub.label}</option>
+              ))}
+            </select>
+            <small>
+              {subcategories.length === 0
+                ? "This category has no sub-categories yet — add them under Sections."
+                : `Lists under /insights/${draft.section}/${draft.subcategory || "…"}`}
+            </small>
           </label>
 
           <label className="adm-field">
