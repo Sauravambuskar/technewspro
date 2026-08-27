@@ -12,8 +12,10 @@ function byNewest(a: Article, b: Article) {
 
 export async function allArticles(): Promise<Article[]> {
   const articles = await read<Article[]>(COLLECTION, seed);
-  // Rows written before sub-categories existed have no field; treat as unclassified.
-  return articles.map((a) => ({ ...a, subcategory: a.subcategory ?? "" })).sort(byNewest);
+  // Rows written before sub-categories/tags existed have no field; treat as unclassified/empty.
+  return articles
+    .map((a) => ({ ...a, subcategory: a.subcategory ?? "", tags: a.tags ?? [] }))
+    .sort(byNewest);
 }
 
 export type ArticleQuery = {
@@ -34,7 +36,9 @@ export async function listArticles(query: ArticleQuery = {}): Promise<Article[]>
   if (subcategory) items = items.filter((a) => a.subcategory === subcategory);
   if (term) {
     items = items.filter((a) =>
-      [a.title, a.dek, a.tag, a.author, a.body.join(" ")].some((field) => field.toLowerCase().includes(term))
+      [a.title, a.dek, a.tag, ...a.tags, a.author, a.body.join(" ")].some((field) =>
+        field.toLowerCase().includes(term)
+      )
     );
   }
   return typeof limit === "number" ? items.slice(0, limit) : items;
@@ -85,6 +89,12 @@ function normaliseBody(body: unknown): string[] {
   return [];
 }
 
+function normaliseTags(tags: unknown): string[] {
+  const list = Array.isArray(tags) ? tags : typeof tags === "string" ? tags.split(",") : [];
+  const cleaned = list.map((t) => String(t).trim()).filter(Boolean);
+  return cleaned.filter((value, index) => cleaned.indexOf(value) === index);
+}
+
 export async function createArticle(input: ArticleInput & { title: string }): Promise<Article> {
   const body = normaliseBody(input.body);
   const stamp = now();
@@ -94,6 +104,7 @@ export async function createArticle(input: ArticleInput & { title: string }): Pr
     section: input.section || "latest",
     subcategory: input.subcategory?.trim() || "",
     tag: (input.tag || "NEWS").toUpperCase(),
+    tags: normaliseTags(input.tags),
     title: input.title.trim(),
     dek: (input.dek || input.title).trim(),
     image: input.image?.trim() || "",
@@ -126,6 +137,7 @@ export async function updateArticle(id: string, input: ArticleInput): Promise<Ar
         section: input.section ?? article.section,
         subcategory: input.subcategory !== undefined ? input.subcategory.trim() : (article.subcategory ?? ""),
         tag: input.tag ? input.tag.toUpperCase() : article.tag,
+        tags: input.tags !== undefined ? normaliseTags(input.tags) : (article.tags ?? []),
         title: input.title?.trim() ?? article.title,
         dek: input.dek?.trim() ?? article.dek,
         image: input.image?.trim() ?? article.image,

@@ -28,6 +28,7 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     section: typeof payload.section === "string" ? payload.section : undefined,
     subcategory: typeof payload.subcategory === "string" ? payload.subcategory : undefined,
     tag: typeof payload.tag === "string" ? payload.tag : undefined,
+    tags: Array.isArray(payload.tags) ? (payload.tags as string[]) : undefined,
     dek: typeof payload.dek === "string" ? payload.dek : undefined,
     image: typeof payload.image === "string" ? payload.image : undefined,
     minutes: typeof payload.minutes === "number" ? payload.minutes : undefined,

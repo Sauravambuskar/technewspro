@@ -5,7 +5,7 @@ import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
 import ViewBeacon from "../../components/ViewBeacon";
 import { getArticleBySlug, listArticles } from "@/lib/articles";
-import { sectionLabels } from "@/lib/sections";
+import { getSubcategory, sectionLabels } from "@/lib/sections";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
 import { formatDate } from "@/lib/types";
@@ -35,10 +35,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   const article = await getArticleBySlug(params.slug);
   if (!article) notFound();
 
-  const [{ settings, nav, menu }, labels, sectionArticles] = await Promise.all([
+  const [{ settings, nav, menu }, labels, sectionArticles, subcategory] = await Promise.all([
     getSiteChrome(),
     sectionLabels(),
-    listArticles({ section: article.section, status: "published" })
+    listArticles({ section: article.section, status: "published" }),
+    article.subcategory ? getSubcategory(article.section, article.subcategory) : Promise.resolve(undefined)
   ]);
 
   const label = labels[article.section] ?? article.section;
@@ -58,6 +59,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           publisher: { "@type": "Organization", name: settings.siteName },
           image: article.image || undefined,
           articleSection: label,
+          keywords: article.tags.length ? article.tags.join(", ") : undefined,
           url: siteUrl(`/articles/${article.slug}`)
         }}
       />
@@ -68,7 +70,13 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
       <article className="article-page">
         <div className="article-head">
-          <p className="eyebrow"><Link href={`/insights/${article.section}`}>{label}</Link> / {article.tag}</p>
+          <p className="eyebrow">
+            <Link href={`/category/${article.section}`}>{label}</Link>
+            {subcategory && (
+              <> / <Link href={`/category/${article.section}/${subcategory.id}`}>{subcategory.label}</Link></>
+            )}
+            {" "}/ {article.tag}
+          </p>
           <h1>{article.title}</h1>
           <p className="article-dek">{article.dek}</p>
           <div className="article-meta">
@@ -84,8 +92,16 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           {article.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
         </div>
 
+        {article.tags.length > 0 && (
+          <div className="chip-row" aria-label="Tags">
+            {article.tags.map((tag) => (
+              <span className="chip chip-sub" key={tag}>{tag}</span>
+            ))}
+          </div>
+        )}
+
         <div className="article-back">
-          <Link href="/insights">&larr; Back to all insights</Link>
+          <Link href="/category">&larr; Back to all categories</Link>
         </div>
       </article>
 
@@ -94,7 +110,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           <div className="section-heading">
             <p>KEEP READING</p>
             <h2>More {label}.</h2>
-            <Link href={`/insights/${article.section}`}>View all <span>&rarr;</span></Link>
+            <Link href={`/category/${article.section}`}>View all <span>&rarr;</span></Link>
           </div>
           <div className="review-grid">
             {related.map((r) => (

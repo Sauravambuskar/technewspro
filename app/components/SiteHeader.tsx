@@ -171,7 +171,7 @@ export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteN
           </div>
 
           <div className="drawer-links">
-            <Link href="/insights" onClick={closeAll}>All insights</Link>
+            <Link href="/category" onClick={closeAll}>All categories</Link>
             <Link href="/resources" onClick={closeAll}>Resource center</Link>
             <Link href="/about" onClick={closeAll}>About us</Link>
             <Link href="/contact" onClick={closeAll}>Contact us</Link>

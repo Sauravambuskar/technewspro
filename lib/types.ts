@@ -9,6 +9,8 @@ export type Article = {
   /** Optional sub-category id within the section; "" when unclassified. */
   subcategory: string;
   tag: string;
+  /** Narrower topic tags for internal linking/SEO. Not a replacement for section/subcategory. */
+  tags: string[];
   title: string;
   dek: string;
   image: string;
@@ -27,6 +29,8 @@ export type Subcategory = {
   id: string;
   label: string;
   order: number;
+  /** Short intro shown on the sub-category page so it isn't a bare archive. */
+  intro: string;
 };
 
 export type Section = {
@@ -36,6 +40,8 @@ export type Section = {
   eyebrow: string;
   heading: string;
   cta: string;
+  /** Short intro shown on the category page so it isn't a bare archive. */
+  intro: string;
   order: number;
   showInNav: boolean;
   showOnHome: boolean;

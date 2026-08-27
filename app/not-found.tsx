@@ -23,14 +23,14 @@ export default function NotFound() {
 
         <div className="notfound-links">
           <Link className="btn-primary" href="/">Back to the homepage <span>&rarr;</span></Link>
-          <Link className="btn-secondary" href="/insights">Browse insights</Link>
+          <Link className="btn-secondary" href="/category">Browse categories</Link>
           <Link className="btn-secondary" href="/resources">Resource center</Link>
         </div>
 
         <div className="notfound-help">
           <p>Looking for something specific?</p>
           <ul>
-            <li><Link href="/insights">All insights, by category</Link></li>
+            <li><Link href="/category">All categories</Link></li>
             <li><Link href="/resources">Whitepapers, ebooks, case studies and press releases</Link></li>
             <li><Link href="/about">About Tech News Pro</Link></li>
             <li><Link href="/contact">Contact the team</Link></li>

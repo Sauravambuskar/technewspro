@@ -64,10 +64,10 @@ export const rawArticlesMore = [
     ]
   },
 
-  /* --------------------------------------------------- Financial Intelligence */
+  /* --------------------------------------------------- Finance & FinTech */
   {
     slug: "scenario-planning-comes-back-into-fashion",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "PLANNING",
     title: "Scenario planning comes back into fashion",
     dek: "One forecast stopped being credible somewhere around the third consecutive surprise.",
@@ -82,7 +82,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "the-hidden-cost-of-deferred-maintenance-on-finance-systems",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "SYSTEMS",
     title: "The hidden cost of deferred maintenance on finance systems",
     dek: "The close takes nine days because of decisions made a decade ago.",
@@ -97,7 +97,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "why-finance-is-taking-over-vendor-consolidation",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "PROCUREMENT",
     title: "Why finance is taking over vendor consolidation",
     dek: "Software sprawl became visible the moment somebody added up the renewals.",
@@ -112,7 +112,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "the-return-of-the-payback-period",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "INVESTMENT",
     title: "The return of the payback period",
     dek: "A blunt metric is regaining favour precisely because it is hard to argue with.",
@@ -126,10 +126,10 @@ export const rawArticlesMore = [
     ]
   },
 
-  /* --------------------------------------------------- Information Technology */
+  /* --------------------------------------------------- Technology & IT */
   {
     slug: "platform-teams-are-being-asked-to-prove-their-worth",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "PLATFORM",
     title: "Platform teams are being asked to prove their worth",
     dek: "Internal developer platforms are maturing into something with a measurable return — or being cut.",
@@ -144,7 +144,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "the-observability-bill-nobody-reads",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "OPERATIONS",
     title: "The observability bill nobody reads",
     dek: "Telemetry volume grew faster than the ability to act on any of it.",
@@ -159,7 +159,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "legacy-migration-projects-are-getting-smaller-on-purpose",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "MODERNISATION",
     title: "Legacy migration projects are getting smaller on purpose",
     dek: "The multi-year replatform keeps failing, so organisations have stopped attempting it.",
@@ -174,7 +174,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "shadow-ai-is-this-decades-shadow-it",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "SECURITY",
     title: "Shadow AI is this decade's shadow IT",
     dek: "Employees found tools that helped, and told nobody. The parallels are almost exact.",
@@ -250,10 +250,10 @@ export const rawArticlesMore = [
     ]
   },
 
-  /* ------------------------------------------------------- Marketing & Brand */
+  /* ------------------------------------------------------- Marketing & Growth */
   {
     slug: "the-attribution-model-is-not-the-strategy",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "MEASUREMENT",
     title: "The attribution model is not the strategy",
     dek: "Years of argument about touch weighting distracted from a simpler question.",
@@ -268,7 +268,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "category-creation-is-mostly-a-myth",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "POSITIONING",
     title: "Category creation is mostly a myth",
     dek: "Almost every celebrated example turns out to be a company that named something buyers already wanted.",
@@ -283,7 +283,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "the-content-volume-trap",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "CONTENT",
     title: "The content volume trap",
     dek: "Publishing capacity stopped being the constraint, and the constraint moved somewhere less convenient.",
@@ -298,7 +298,7 @@ export const rawArticlesMore = [
   },
   {
     slug: "events-are-expensive-again-and-worth-it-again",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "DEMAND GEN",
     title: "Events are expensive again, and worth it again",
     dek: "As digital channels crowded, the least scalable channel started outperforming.",

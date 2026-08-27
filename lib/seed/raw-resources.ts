@@ -29,7 +29,7 @@ export const rawResources = [
   {
     slug: "cfo-guide-to-funding-ai-in-stages",
     type: "whitepaper",
-    category: "financial-intelligence",
+    category: "finance-and-fintech",
     title: "The CFO's Guide to Funding AI in Stages",
     summary:
       "A staged investment model that establishes a measurable baseline before the large tranche is committed — with the approval criteria written out.",
@@ -77,7 +77,7 @@ export const rawResources = [
   {
     slug: "demand-creation-for-b2b-marketers",
     type: "ebook",
-    category: "marketing-and-brand",
+    category: "marketing-and-growth",
     title: "Demand Creation for B2B Marketers",
     summary:
       "Rebalancing brand and performance when acquisition costs rise faster than conversion rates — with the measurement to defend the shift internally.",
@@ -172,21 +172,21 @@ export const rawResources = [
   {
     slug: "technewspro-expands-editorial-coverage-to-corporate-finance",
     type: "press-release",
-    category: "financial-intelligence",
+    category: "finance-and-fintech",
     title: "Tech News Pro expands editorial coverage to corporate finance",
     summary:
-      "A dedicated Financial Intelligence desk joins the existing technology, sales and marketing coverage.",
+      "A dedicated Finance & FinTech desk joins the existing technology, sales and marketing coverage.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85",
     pages: 2,
     gated: false,
     date: "2026-08-10",
     highlights: [
-      "New Financial Intelligence desk covering treasury and planning",
+      "New Finance & FinTech desk covering treasury and planning",
       "Coverage begins with the 2026 budget cycle",
       "Weekly briefing available to existing subscribers"
     ],
     body: [
-      "Tech News Pro has established a dedicated Financial Intelligence desk, extending its coverage into corporate finance, treasury and planning.",
+      "Tech News Pro has established a dedicated Finance & FinTech desk, extending its coverage into corporate finance, treasury and planning.",
       "The desk begins publishing with the 2026 budget cycle, focusing on how finance functions are evaluating and funding technology investment.",
       "Coverage is included for existing subscribers at no additional cost."
     ]

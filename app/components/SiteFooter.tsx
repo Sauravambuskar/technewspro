@@ -11,7 +11,7 @@ export default function SiteFooter({ nav, settings }: { nav: NavItem[]; settings
       <p>{settings.footerTagline}</p>
       <div className="footer-links">
         {nav.map((item) => <Link href={item.href} key={item.href}>{item.label}</Link>)}
-        <Link href="/insights">All insights</Link>
+        <Link href="/category">All categories</Link>
         <Link href="/resources">Resources</Link>
         <Link href="/about">About us</Link>
         <Link href="/contact">Contact us</Link>

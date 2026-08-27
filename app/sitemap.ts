@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: siteUrl("/"), changeFrequency: "daily", priority: 1 },
-    { url: siteUrl("/insights"), changeFrequency: "daily", priority: 0.9 },
+    { url: siteUrl("/category"), changeFrequency: "daily", priority: 0.9 },
     { url: siteUrl("/resources"), changeFrequency: "weekly", priority: 0.9 },
     { url: siteUrl("/about"), changeFrequency: "monthly", priority: 0.6 },
     { url: siteUrl("/contact"), changeFrequency: "monthly", priority: 0.6 }
@@ -25,16 +25,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...sections.map((section) => ({
-      url: siteUrl(`/insights/${section.id}`),
+      url: siteUrl(`/category/${section.id}`),
       changeFrequency: "weekly" as const,
       priority: 0.7
     })),
+    // Only sub-categories with at least one published article are indexable —
+    // an empty sub-category is a thin page and stays out of the sitemap.
     ...sections.flatMap((section) =>
-      section.subcategories.map((sub) => ({
-        url: siteUrl(`/insights/${section.id}/${sub.id}`),
-        changeFrequency: "weekly" as const,
-        priority: 0.6
-      }))
+      section.subcategories
+        .filter((sub) => articles.some((a) => a.section === section.id && a.subcategory === sub.id))
+        .map((sub) => ({
+          url: siteUrl(`/category/${section.id}/${sub.id}`),
+          changeFrequency: "weekly" as const,
+          priority: 0.6
+        }))
     ),
     ...RESOURCE_TYPES.map((type) => ({
       url: siteUrl(`/resources/${type}`),

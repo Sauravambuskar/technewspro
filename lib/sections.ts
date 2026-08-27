@@ -7,9 +7,13 @@ const seed = () => seedSections();
 
 export async function listSections(): Promise<Section[]> {
   const sections = await read<Section[]>(COLLECTION, seed);
-  // Rows written before sub-categories existed have no array; treat as empty.
+  // Rows written before sub-categories/intros existed have no field; fall back gracefully.
   return sections
-    .map((section) => ({ ...section, subcategories: section.subcategories ?? [] }))
+    .map((section) => ({
+      ...section,
+      intro: section.intro ?? "",
+      subcategories: (section.subcategories ?? []).map((sub) => ({ ...sub, intro: sub.intro ?? "" }))
+    }))
     .sort((a, b) => a.order - b.order);
 }
 
@@ -41,6 +45,7 @@ export async function createSection(input: Partial<Section> & { label: string })
     label: input.label.trim(),
     eyebrow: (input.eyebrow || input.label).toUpperCase(),
     heading: input.heading?.trim() || `${input.label.trim()}.`,
+    intro: input.intro?.trim() || "",
     cta: input.cta?.trim() || "See all stories",
     subcategories: input.subcategories ?? [],
     order: input.order ?? existing.length + 1,
@@ -62,6 +67,7 @@ export async function updateSection(id: string, input: Partial<Section>): Promis
         label: input.label?.trim() ?? section.label,
         eyebrow: input.eyebrow?.toUpperCase() ?? section.eyebrow,
         heading: input.heading?.trim() ?? section.heading,
+        intro: input.intro !== undefined ? input.intro.trim() : (section.intro ?? ""),
         cta: input.cta?.trim() ?? section.cta,
         subcategories: input.subcategories ?? section.subcategories ?? [],
         order: input.order ?? section.order,

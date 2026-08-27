@@ -35,8 +35,14 @@ export default function SectionManager({ sections, counts }: { sections: Section
     if (!section) return;
     setSubs(sectionId, [
       ...section.subcategories,
-      { id: `sub-${Date.now()}`, label: "New sub-category", order: section.subcategories.length + 1 }
+      { id: `sub-${Date.now()}`, label: "New sub-category", intro: "", order: section.subcategories.length + 1 }
     ]);
+  }
+
+  function editSubIntro(sectionId: string, subId: string, intro: string) {
+    const section = drafts.find((s) => s.id === sectionId);
+    if (!section) return;
+    setSubs(sectionId, section.subcategories.map((sub) => (sub.id === subId ? { ...sub, intro } : sub)));
   }
 
   function removeSub(sectionId: string, subId: string) {
@@ -120,9 +126,11 @@ export default function SectionManager({ sections, counts }: { sections: Section
       <div className="adm-card">
         <h2>Sections</h2>
         <p className="adm-card-note">
-          Order controls the sequence of homepage blocks, the navigation and the /insights index.
+          Order controls the sequence of homepage blocks, the navigation and the /category index.
           Sub-categories fill each nav dropdown and get their own page at
-          <code>/insights/&lt;category&gt;/&lt;sub&gt;</code>.
+          <code>/category/&lt;category&gt;/&lt;sub&gt;</code>. A sub-category only appears in nav, sitemap
+          and search once it has at least one published article — this keeps thin, empty archive pages
+          out of search results.
         </p>
 
         {drafts.map((section, index) => (
@@ -163,45 +171,75 @@ export default function SectionManager({ sections, counts }: { sections: Section
               </label>
             </div>
 
+            <label className="adm-field">
+              <span>CATEGORY INTRO</span>
+              <textarea
+                rows={2}
+                style={{ minHeight: 56 }}
+                value={section.intro}
+                onChange={(e) => edit(section.id, { intro: e.target.value })}
+                placeholder="One or two sentences shown at the top of the category page for readers and search engines."
+              />
+            </label>
+
             <div className="adm-subs">
               <p className="adm-subs-label">
                 SUB-CATEGORIES ({section.subcategories.length})
               </p>
               {section.subcategories.map((sub, subIndex) => (
-                <div className="adm-list-row" key={sub.id}>
-                  <span className="adm-handle">{String(subIndex + 1).padStart(2, "0")}</span>
+                <div key={sub.id} style={{ marginBottom: 8 }}>
+                  <div className="adm-list-row">
+                    <span className="adm-handle">{String(subIndex + 1).padStart(2, "0")}</span>
+                    <input
+                      type="text"
+                      value={sub.label}
+                      onChange={(e) => editSub(section.id, sub.id, e.target.value)}
+                      aria-label={`Sub-category ${subIndex + 1}`}
+                    />
+                    <span className="adm-table-sub" style={{ whiteSpace: "nowrap" }}>
+                      /{sub.id}
+                    </span>
+                    <button
+                      type="button"
+                      className="adm-btn adm-btn-ghost adm-btn-sm"
+                      onClick={() => moveSub(section.id, subIndex, -1)}
+                      disabled={subIndex === 0}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      className="adm-btn adm-btn-ghost adm-btn-sm"
+                      onClick={() => moveSub(section.id, subIndex, 1)}
+                      disabled={subIndex === section.subcategories.length - 1}
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      className="adm-btn adm-btn-danger adm-btn-sm"
+                      onClick={() => removeSub(section.id, sub.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                   <input
                     type="text"
-                    value={sub.label}
-                    onChange={(e) => editSub(section.id, sub.id, e.target.value)}
-                    aria-label={`Sub-category ${subIndex + 1}`}
+                    value={sub.intro}
+                    onChange={(e) => editSubIntro(section.id, sub.id, e.target.value)}
+                    aria-label={`Sub-category ${subIndex + 1} intro`}
+                    placeholder="One-sentence intro shown on this sub-category's page."
+                    style={{
+                      width: "100%",
+                      marginTop: 4,
+                      border: "1px solid #eeeee8",
+                      borderRadius: 4,
+                      padding: "6px 10px",
+                      fontSize: 12.5,
+                      fontFamily: "inherit",
+                      color: "#71737b"
+                    }}
                   />
-                  <span className="adm-table-sub" style={{ whiteSpace: "nowrap" }}>
-                    /{sub.id}
-                  </span>
-                  <button
-                    type="button"
-                    className="adm-btn adm-btn-ghost adm-btn-sm"
-                    onClick={() => moveSub(section.id, subIndex, -1)}
-                    disabled={subIndex === 0}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className="adm-btn adm-btn-ghost adm-btn-sm"
-                    onClick={() => moveSub(section.id, subIndex, 1)}
-                    disabled={subIndex === section.subcategories.length - 1}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className="adm-btn adm-btn-danger adm-btn-sm"
-                    onClick={() => removeSub(section.id, sub.id)}
-                  >
-                    Remove
-                  </button>
                 </div>
               ))}
               <button

@@ -12,6 +12,7 @@ type Draft = {
   section: string;
   subcategory: string;
   tag: string;
+  tags: string;
   dek: string;
   image: string;
   author: string;
@@ -30,6 +31,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
       section: sections[0]?.id ?? "latest",
       subcategory: "",
       tag: "",
+      tags: "",
       dek: "",
       image: "",
       author: "Tech News Pro Editorial",
@@ -46,6 +48,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
     section: article.section,
     subcategory: article.subcategory ?? "",
     tag: article.tag,
+    tags: (article.tags ?? []).join(", "),
     dek: article.dek,
     image: article.image,
     author: article.author,
@@ -89,6 +92,10 @@ export default function ArticleEditor({
       section: draft.section,
       subcategory: draft.subcategory,
       tag: draft.tag || "NEWS",
+      tags: draft.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
       dek: draft.dek || draft.title,
       image: draft.image,
       author: draft.author,
@@ -224,7 +231,7 @@ export default function ArticleEditor({
             <small>
               {subcategories.length === 0
                 ? "This category has no sub-categories yet — add them under Sections."
-                : `Lists under /insights/${draft.section}/${draft.subcategory || "…"}`}
+                : `Lists under /category/${draft.section}/${draft.subcategory || "…"}`}
             </small>
           </label>
 
@@ -236,6 +243,17 @@ export default function ArticleEditor({
               onChange={(e) => set("tag", e.target.value.toUpperCase())}
               placeholder="AI, REVIEW, SECURITY…"
             />
+          </label>
+
+          <label className="adm-field">
+            <span>TAGS</span>
+            <input
+              type="text"
+              value={draft.tags}
+              onChange={(e) => set("tags", e.target.value)}
+              placeholder="pricing, b2b buying, procurement"
+            />
+            <small>Comma-separated. Narrower topics for internal linking — not a substitute for category/sub-category.</small>
           </label>
 
           <label className="adm-field">

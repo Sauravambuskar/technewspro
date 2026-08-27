@@ -49,10 +49,10 @@ export const rawArticles = [
     ]
   },
 
-  /* --------------------------------------------------- Financial Intelligence */
+  /* --------------------------------------------------- Finance & FinTech */
   {
     slug: "the-cfo-case-for-slower-ai-adoption",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "CORPORATE FINANCE",
     title: "The CFO case for slower AI adoption",
     dek: "Finance chiefs are asking for evidence, not enthusiasm — and it is changing how budgets get approved.",
@@ -67,7 +67,7 @@ export const rawArticles = [
   },
   {
     slug: "working-capital-is-quietly-becoming-a-competitive-advantage",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "TREASURY",
     title: "Working capital is quietly becoming a competitive advantage",
     dek: "With cheap credit gone, the balance sheet is doing work the growth plan used to do.",
@@ -82,7 +82,7 @@ export const rawArticles = [
   },
   {
     slug: "the-quiet-return-of-the-detailed-business-case",
-    section: "financial-intelligence",
+    section: "finance-and-fintech",
     tag: "PLANNING",
     title: "The quiet return of the detailed business case",
     dek: "Investment committees want a number, an owner and a date again.",
@@ -96,10 +96,10 @@ export const rawArticles = [
     ]
   },
 
-  /* --------------------------------------------------- Information Technology */
+  /* --------------------------------------------------- Technology & IT */
   {
     slug: "the-infrastructure-bill-nobody-forecast",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "DIGITAL INFRASTRUCTURE",
     title: "The infrastructure bill nobody forecast",
     dek: "Inference workloads have a very different cost curve to the applications they sit inside.",
@@ -114,7 +114,7 @@ export const rawArticles = [
   },
   {
     slug: "identity-is-the-perimeter-now-and-most-programmes-lag",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "SECURITY",
     title: "Identity is the perimeter now, and most programmes lag",
     dek: "Breach reporting keeps pointing at the same root causes, and they are not exotic.",
@@ -129,7 +129,7 @@ export const rawArticles = [
   },
   {
     slug: "the-integration-layer-is-where-transformations-die",
-    section: "information-technology",
+    section: "technology-and-it",
     tag: "ARCHITECTURE",
     title: "The integration layer is where transformations die",
     dek: "The platform decision gets the attention. The plumbing decides the outcome.",
@@ -190,10 +190,10 @@ export const rawArticles = [
     ]
   },
 
-  /* ------------------------------------------------------- Marketing & Brand */
+  /* ------------------------------------------------------- Marketing & Growth */
   {
     slug: "brand-is-doing-the-work-performance-cannot",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "BRAND",
     title: "Brand is doing the work performance cannot",
     dek: "As acquisition costs climb, the cheapest demand is the demand that already knows who you are.",
@@ -208,7 +208,7 @@ export const rawArticles = [
   },
   {
     slug: "content-syndication-grows-up",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "DEMAND GEN",
     title: "Content syndication grows up",
     dek: "Buyers got harder to reach, and lead quality finally started to matter more than lead volume.",
@@ -223,7 +223,7 @@ export const rawArticles = [
   },
   {
     slug: "the-metric-that-quietly-broke-b2b-marketing",
-    section: "marketing-and-brand",
+    section: "marketing-and-growth",
     tag: "PERFORMANCE",
     title: "The metric that quietly broke B2B marketing",
     dek: "Optimising for MQLs produced exactly what it incentivised, for years.",

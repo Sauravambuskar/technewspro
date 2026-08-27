@@ -112,7 +112,7 @@ export default async function Dashboard() {
       <div className="adm-card">
         <h2>Insights by category</h2>
         <p className="adm-card-note">
-          Categories drive the homepage blocks, the navigation and the /insights index.
+          Categories drive the homepage blocks, the navigation and the /category index.
         </p>
         <div className="adm-table-wrap">
           <table className="adm-table">

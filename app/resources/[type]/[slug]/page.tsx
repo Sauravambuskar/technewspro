@@ -83,7 +83,7 @@ export default async function ResourceDetail({ params }: Params) {
         <div className="resource-detail-main">
           <p className="eyebrow">
             <Link href={`/resources/${resource.type}`}>{label.singular}</Link> /{" "}
-            <Link href={`/insights/${resource.category}`}>{categoryLabel}</Link>
+            <Link href={`/category/${resource.category}`}>{categoryLabel}</Link>
           </p>
           <h1>{resource.title}</h1>
           <p className="article-dek">{resource.summary}</p>

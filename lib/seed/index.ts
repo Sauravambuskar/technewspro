@@ -4,26 +4,101 @@ import { rawArticles } from "./raw-articles";
 import { rawArticlesMore } from "./raw-articles-more";
 import { rawResources } from "./raw-resources";
 import { rawTicker } from "./raw-ticker";
-import { subcategoriesFor, subcategoryIdFor } from "./subcategories";
+import { ARTICLE_SUBCATEGORY, subcategoriesFor, subcategoryIdFor } from "./subcategories";
 
 export function seedSections(): Section[] {
   return [
-    { id: "ai-and-automation", subcategories: subcategoriesFor("ai-and-automation"), label: "AI & Automation", eyebrow: "THE AI ECONOMY", heading: "AI & Automation.", cta: "See all coverage", order: 1, showInNav: true, showOnHome: true },
-    { id: "financial-intelligence", subcategories: subcategoriesFor("financial-intelligence"), label: "Financial Intelligence", eyebrow: "CORPORATE FINANCE", heading: "Financial Intelligence.", cta: "See all coverage", order: 2, showInNav: true, showOnHome: true },
-    { id: "information-technology", subcategories: subcategoriesFor("information-technology"), label: "Information Technology", eyebrow: "DIGITAL INFRASTRUCTURE", heading: "Information Technology.", cta: "See all coverage", order: 3, showInNav: true, showOnHome: true },
-    { id: "sales-and-revenue", subcategories: subcategoriesFor("sales-and-revenue"), label: "Sales & Revenue", eyebrow: "SALES STRATEGY", heading: "Sales & Revenue.", cta: "See all coverage", order: 4, showInNav: true, showOnHome: true },
-    { id: "marketing-and-brand", subcategories: subcategoriesFor("marketing-and-brand"), label: "Marketing & Brand", eyebrow: "BRAND & PERFORMANCE", heading: "Marketing & Brand.", cta: "See all coverage", order: 5, showInNav: true, showOnHome: true }
+    {
+      id: "ai-and-automation",
+      subcategories: subcategoriesFor("ai-and-automation"),
+      label: "AI & Automation",
+      eyebrow: "THE AI ECONOMY",
+      heading: "AI & Automation.",
+      intro:
+        "Enterprise coverage of how organisations design, govern and scale AI agents and automation — from strategy and generative AI adoption to the operational and ethical questions that come with putting a model in charge of real work. Written for operators funding, building and reviewing automation programmes, not for AI hype.",
+      cta: "See all coverage",
+      order: 1,
+      showInNav: true,
+      showOnHome: true
+    },
+    {
+      id: "finance-and-fintech",
+      subcategories: subcategoriesFor("finance-and-fintech"),
+      label: "Finance & FinTech",
+      eyebrow: "CORPORATE FINANCE",
+      heading: "Finance & FinTech.",
+      intro:
+        "Analysis for finance leaders and fintech operators navigating investment, payments, compliance and capital strategy in a slower-credit environment. Coverage spans corporate finance, digital payments infrastructure, venture funding and the risk and market-analysis work behind every funding decision.",
+      cta: "See all coverage",
+      order: 2,
+      showInNav: true,
+      showOnHome: true
+    },
+    {
+      id: "technology-and-it",
+      subcategories: subcategoriesFor("technology-and-it"),
+      label: "Technology & IT",
+      eyebrow: "DIGITAL INFRASTRUCTURE",
+      heading: "Technology & IT.",
+      intro:
+        "Reporting on the infrastructure, security and platform decisions that determine whether enterprise technology programmes ship on budget. Coverage runs from cloud and DevOps to cybersecurity, SaaS procurement and the enterprise-software integration work most transformations underestimate.",
+      cta: "See all coverage",
+      order: 3,
+      showInNav: true,
+      showOnHome: true
+    },
+    {
+      id: "sales-and-revenue",
+      subcategories: subcategoriesFor("sales-and-revenue"),
+      label: "Sales & Revenue",
+      eyebrow: "SALES STRATEGY",
+      heading: "Sales & Revenue.",
+      intro:
+        "Coverage of how B2B sales and revenue teams build pipeline, run GTM motions and forecast with discipline. From lead generation and CRM automation to sales enablement, compensation design and the analytics that keep a forecast honest.",
+      cta: "See all coverage",
+      order: 4,
+      showInNav: true,
+      showOnHome: true
+    },
+    {
+      id: "marketing-and-growth",
+      subcategories: subcategoriesFor("marketing-and-growth"),
+      label: "Marketing & Growth",
+      eyebrow: "BRAND & PERFORMANCE",
+      heading: "Marketing & Growth.",
+      intro:
+        "Analysis of how B2B marketing teams balance brand and performance, own their content and social programmes, and prove growth with defensible analytics. Coverage spans SEO, influencer and performance marketing alongside the brand-strategy work that makes acquisition cheaper.",
+      cta: "See all coverage",
+      order: 5,
+      showInNav: true,
+      showOnHome: true
+    }
   ];
 }
 
+const SECTION_LABELS: Record<string, string> = {
+  "ai-and-automation": "AI & Automation",
+  "finance-and-fintech": "Finance & FinTech",
+  "technology-and-it": "Technology & IT",
+  "sales-and-revenue": "Sales & Revenue",
+  "marketing-and-growth": "Marketing & Growth"
+};
+
 export function seedArticles(): Article[] {
   const stamp = new Date().toISOString();
-  return [...rawArticles, ...rawArticlesMore].map((article) => ({
+  return [...rawArticles, ...rawArticlesMore].map((article) => {
+    const subcategoryLabel = ARTICLE_SUBCATEGORY[article.slug] ?? "";
+    const tags = [SECTION_LABELS[article.section], subcategoryLabel, article.tag]
+      .filter(Boolean)
+      .filter((value, index, all) => all.indexOf(value) === index) as string[];
+
+    return {
     id: newId(),
     slug: article.slug,
     section: article.section,
     subcategory: subcategoryIdFor(article.slug),
     tag: article.tag,
+    tags,
     title: article.title,
     dek: article.dek,
     image: article.image,
@@ -36,7 +111,8 @@ export function seedArticles(): Article[] {
     views: 0,
     createdAt: stamp,
     updatedAt: stamp
-  }));
+    };
+  });
 }
 
 export function seedResources(): Resource[] {

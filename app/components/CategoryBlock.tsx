@@ -21,7 +21,7 @@ export default function CategoryBlock({ section, articles, resources, tone }: Pr
       <div className="section-heading">
         <p>{section.eyebrow}</p>
         <h2>{section.heading}</h2>
-        <Link href={`/insights/${section.id}`}>{section.cta} <span>&rarr;</span></Link>
+        <Link href={`/category/${section.id}`}>{section.cta} <span>&rarr;</span></Link>
       </div>
 
       <div className="cat-layout">

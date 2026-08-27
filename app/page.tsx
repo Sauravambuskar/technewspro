@@ -91,7 +91,7 @@ export default async function Home() {
         <div className="section-heading">
           <p>COVERAGE</p>
           <h2>Featured categories.</h2>
-          <Link href="/insights">All insights <span>&rarr;</span></Link>
+          <Link href="/category">All categories <span>&rarr;</span></Link>
         </div>
         <div className="category-grid">
           {sections.map((section, i) => {
@@ -99,7 +99,7 @@ export default async function Home() {
             const count = inSection.length;
             const cover = inSection[0];
             return (
-              <Link className="category-card" href={`/insights/${section.id}`} key={section.id}>
+              <Link className="category-card" href={`/category/${section.id}`} key={section.id}>
                 <div className="category-card-image">
                   {cover?.image && <img src={cover.image} alt="" loading="lazy" />}
                   <span className="category-index">0{i + 1}</span>
@@ -118,7 +118,7 @@ export default async function Home() {
         <div className="section-heading">
           <p>LATEST INSIGHTS</p>
           <h2>Recent analysis.</h2>
-          <Link href="/insights">View all <span>&rarr;</span></Link>
+          <Link href="/category">View all <span>&rarr;</span></Link>
         </div>
         <div className="review-grid">
           {latest.map((article) => <ArticleCard key={article.id} article={article} showDate />)}

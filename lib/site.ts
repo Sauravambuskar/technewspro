@@ -23,21 +23,27 @@ export async function getSiteChrome() {
     listResources({ status: "published" })
   ]);
 
-  // Dropdowns list the section's sub-categories; sections without any fall back
-  // to their most recent headlines so the menu is never empty.
-  const categories: NavEntry[] = sections.map((section) => ({
-    id: section.id,
-    label: section.label,
-    href: `/insights/${section.id}`,
-    links: section.subcategories.length
-      ? [...section.subcategories]
-          .sort((a, b) => a.order - b.order)
-          .map((sub) => ({ label: sub.label, href: `/insights/${section.id}/${sub.id}` }))
-      : articles
-          .filter((article) => article.section === section.id)
-          .slice(0, DROPDOWN_LIMIT)
-          .map((article) => ({ label: article.title, href: `/articles/${article.slug}` }))
-  }));
+  // Dropdowns list the section's sub-categories that actually have published
+  // content — an empty sub-category is a thin page and doesn't earn a nav slot.
+  // Sections with no qualifying sub-category fall back to recent headlines so
+  // the menu is never empty.
+  const categories: NavEntry[] = sections.map((section) => {
+    const liveSubcategories = [...section.subcategories]
+      .sort((a, b) => a.order - b.order)
+      .filter((sub) => articles.some((a) => a.section === section.id && a.subcategory === sub.id));
+
+    return {
+      id: section.id,
+      label: section.label,
+      href: `/category/${section.id}`,
+      links: liveSubcategories.length
+        ? liveSubcategories.map((sub) => ({ label: sub.label, href: `/category/${section.id}/${sub.id}` }))
+        : articles
+            .filter((article) => article.section === section.id)
+            .slice(0, DROPDOWN_LIMIT)
+            .map((article) => ({ label: article.title, href: `/articles/${article.slug}` }))
+    };
+  });
 
   const resourceLinks: NavItem[] = RESOURCE_TYPES.filter((type) =>
     resources.some((resource) => resource.type === type)

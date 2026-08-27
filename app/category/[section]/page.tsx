@@ -5,6 +5,7 @@ import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
 import ArticleCard from "../../components/ArticleCard";
 import ResourceCard from "../../components/ResourceCard";
+import JsonLd from "../../components/JsonLd";
 import { listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
 import { getSection, listSections } from "@/lib/sections";
@@ -19,8 +20,8 @@ export async function generateMetadata({ params }: { params: { section: string }
   if (!section) return {};
   return {
     title: `${section.label} | ${settings.siteName}`,
-    description: `${section.eyebrow} — analysis, benchmarks and industry updates from ${settings.siteName}.`,
-    alternates: { canonical: siteUrl(`/insights/${section.id}`) }
+    description: section.intro || `${section.eyebrow} — analysis, benchmarks and industry updates from ${settings.siteName}.`,
+    alternates: { canonical: siteUrl(`/category/${section.id}`) }
   };
 }
 
@@ -35,19 +36,48 @@ export default async function SectionPage({ params }: { params: { section: strin
     listResources({ category: section.id, status: "published", limit: 3 })
   ]);
 
+  // A sub-category only earns a place in the nav/internal-linking once it has
+  // real content behind it, so thin, empty archive pages never get promoted.
+  const liveSubcategories = [...section.subcategories]
+    .sort((a, b) => a.order - b.order)
+    .map((sub) => ({ ...sub, count: articles.filter((a) => a.subcategory === sub.id).length }))
+    .filter((sub) => sub.count > 0);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl("/") },
+          { "@type": "ListItem", position: 2, name: "Categories", item: siteUrl("/category") },
+          { "@type": "ListItem", position: 3, name: section.label, item: siteUrl(`/category/${section.id}`) }
+        ]
+      },
+      {
+        "@type": "CollectionPage",
+        name: section.label,
+        description: section.intro || section.eyebrow,
+        url: siteUrl(`/category/${section.id}`)
+      }
+    ]
+  };
+
   return (
     <main>
       <div className="topline" />
       <SiteHeader menu={menu} siteName={settings.siteName} />
+      <JsonLd data={jsonLd} />
 
       <nav className="breadcrumb" aria-label="Breadcrumb">
-        <Link href="/">Home</Link> <span>/</span> <Link href="/insights">Insights</Link> <span>/</span>{" "}
+        <Link href="/">Home</Link> <span>/</span> <Link href="/category">Categories</Link> <span>/</span>{" "}
         <b>{section.label}</b>
       </nav>
 
       <section className="page-hero">
         <p className="eyebrow">{section.eyebrow}</p>
         <h1>{section.label}.</h1>
+        {section.intro && <p className="page-hero-lede">{section.intro}</p>}
         <p className="page-hero-lede">
           {articles.length} published {articles.length === 1 ? "analysis" : "analyses"} from this desk.
         </p>
@@ -55,7 +85,7 @@ export default async function SectionPage({ params }: { params: { section: strin
           {sections.map((other) => (
             <Link
               className={`chip${other.id === section.id ? " chip-active" : ""}`}
-              href={`/insights/${other.id}`}
+              href={`/category/${other.id}`}
               key={other.id}
             >
               {other.label}
@@ -63,21 +93,16 @@ export default async function SectionPage({ params }: { params: { section: strin
           ))}
         </div>
 
-        {section.subcategories.length > 0 && (
+        {liveSubcategories.length > 0 && (
           <div className="subcat-row">
             <p>SUB-CATEGORIES</p>
             <div className="chip-row">
-              {[...section.subcategories]
-                .sort((a, b) => a.order - b.order)
-                .map((sub) => {
-                  const count = articles.filter((a) => a.subcategory === sub.id).length;
-                  return (
-                    <Link className="chip chip-sub" href={`/insights/${section.id}/${sub.id}`} key={sub.id}>
-                      {sub.label}
-                      {count > 0 && <b>{count}</b>}
-                    </Link>
-                  );
-                })}
+              {liveSubcategories.map((sub) => (
+                <Link className="chip chip-sub" href={`/category/${section.id}/${sub.id}`} key={sub.id}>
+                  {sub.label}
+                  <b>{sub.count}</b>
+                </Link>
+              ))}
             </div>
           </div>
         )}

@@ -18,7 +18,7 @@ export default function HeroLatest({
     <aside className="hero-latest" aria-label="Recent insights">
       <div className="hero-latest-head">
         <p>RECENT</p>
-        <Link href="/insights">All insights &rarr;</Link>
+        <Link href="/category">All categories &rarr;</Link>
       </div>
 
       <Link className="hero-latest-lead" href={`/articles/${top.slug}`}>

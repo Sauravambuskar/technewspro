@@ -62,7 +62,7 @@ export default async function AboutPage() {
 
         <div className="about-desks">
           {sections.map((section) => (
-            <Link className="about-desk" href={`/insights/${section.id}`} key={section.id}>
+            <Link className="about-desk" href={`/category/${section.id}`} key={section.id}>
               <h3>{section.label}</h3>
               <p>{section.eyebrow}</p>
               <span>View coverage &#8599;</span>
