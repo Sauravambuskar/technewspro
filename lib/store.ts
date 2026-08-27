@@ -1,8 +1,8 @@
-import { Pool } from "@neondatabase/serverless";
+import mysql from "mysql2/promise";
 
-// Collection storage backed by Neon Postgres.
+// Collection storage backed by MySQL (Hostinger).
 //
-// Each collection is one JSONB row in `collections`, which keeps the repository
+// Each collection is one JSON row in `collections`, which keeps the repository
 // layer (articles, sections, ticker, …) exactly as it was when this was a file
 // store. Serverless instances don't share memory, so the read-modify-write in
 // update() is guarded by SELECT … FOR UPDATE inside a transaction rather than by
@@ -10,20 +10,20 @@ import { Pool } from "@neondatabase/serverless";
 
 const TABLE = "collections";
 
-let pool: Pool | null = null;
+let pool: mysql.Pool | null = null;
 let schemaReady: Promise<void> | null = null;
 
-// Lazy: a module-level connection would throw during `next build`, before the
-// Marketplace integration has injected DATABASE_URL.
-function getPool(): Pool {
+// Lazy: a module-level connection would throw during `next build`, before
+// DATABASE_URL is available.
+function getPool(): mysql.Pool {
   if (!pool) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
       throw new Error(
-        "DATABASE_URL is not set. Run `vercel env pull .env.local` locally, or connect the Neon integration to this project."
+        "DATABASE_URL is not set. Set it to your MySQL connection string, e.g. mysql://user:password@host:3306/database."
       );
     }
-    pool = new Pool({ connectionString });
+    pool = mysql.createPool(connectionString);
   }
   return pool;
 }
@@ -33,10 +33,10 @@ function ensureSchema(): Promise<void> {
     schemaReady = getPool()
       .query(
         `CREATE TABLE IF NOT EXISTS ${TABLE} (
-           name       text PRIMARY KEY,
-           data       jsonb NOT NULL,
-           updated_at timestamptz NOT NULL DEFAULT now()
-         )`
+           name       VARCHAR(191) PRIMARY KEY,
+           data       JSON NOT NULL,
+           updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+         ) ENGINE=InnoDB`
       )
       .then(() => undefined)
       .catch((error) => {
@@ -48,25 +48,23 @@ function ensureSchema(): Promise<void> {
   return schemaReady;
 }
 
-async function query<T>(text: string, values: unknown[] = []) {
-  await ensureSchema();
-  return getPool().query<{ data: T }>(text, values);
+/** MariaDB's JSON type is a LONGTEXT alias, so mysql2 hands the column back as a string. */
+function parseData<T>(row: { data: unknown }): T {
+  return (typeof row.data === "string" ? JSON.parse(row.data) : row.data) as T;
 }
 
 /** Read a collection, creating it from `seed` the first time it is touched. */
 export async function read<T>(name: string, seed: () => T | Promise<T>): Promise<T> {
-  const existing = await query<T>(`SELECT data FROM ${TABLE} WHERE name = $1`, [name]);
-  if (existing.rows.length > 0) return existing.rows[0].data;
+  await ensureSchema();
+  const [rows] = await getPool().query<mysql.RowDataPacket[]>(`SELECT data FROM ${TABLE} WHERE name = ?`, [name]);
+  if (rows.length > 0) return parseData<T>(rows[0] as { data: unknown });
 
   const initial = await seed();
   // Another instance may seed the same collection concurrently; first writer wins.
-  await query(`INSERT INTO ${TABLE} (name, data) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING`, [
-    name,
-    JSON.stringify(initial)
-  ]);
+  await getPool().query(`INSERT IGNORE INTO ${TABLE} (name, data) VALUES (?, ?)`, [name, JSON.stringify(initial)]);
 
-  const settled = await query<T>(`SELECT data FROM ${TABLE} WHERE name = $1`, [name]);
-  return settled.rows.length > 0 ? settled.rows[0].data : initial;
+  const [settled] = await getPool().query<mysql.RowDataPacket[]>(`SELECT data FROM ${TABLE} WHERE name = ?`, [name]);
+  return settled.length > 0 ? parseData<T>(settled[0] as { data: unknown }) : initial;
 }
 
 /** Read-modify-write a collection, holding a row lock for the whole operation. */
@@ -76,48 +74,42 @@ export async function update<T>(
   mutate: (current: T) => T | Promise<T>
 ): Promise<T> {
   await ensureSchema();
-  const client = await getPool().connect();
+  const conn = await getPool().getConnection();
 
   try {
-    await client.query("BEGIN");
+    await conn.beginTransaction();
 
-    const locked = await client.query<{ data: T }>(
-      `SELECT data FROM ${TABLE} WHERE name = $1 FOR UPDATE`,
-      [name]
-    );
+    const [locked] = await conn.query<mysql.RowDataPacket[]>(`SELECT data FROM ${TABLE} WHERE name = ? FOR UPDATE`, [
+      name
+    ]);
 
     let current: T;
-    if (locked.rows.length > 0) {
-      current = locked.rows[0].data;
+    if (locked.length > 0) {
+      current = parseData<T>(locked[0] as { data: unknown });
     } else {
       current = await seed();
-      await client.query(`INSERT INTO ${TABLE} (name, data) VALUES ($1, $2)`, [
-        name,
-        JSON.stringify(current)
-      ]);
+      await conn.query(`INSERT INTO ${TABLE} (name, data) VALUES (?, ?)`, [name, JSON.stringify(current)]);
     }
 
     const next = await mutate(current);
-    await client.query(`UPDATE ${TABLE} SET data = $2, updated_at = now() WHERE name = $1`, [
-      name,
-      JSON.stringify(next)
-    ]);
+    await conn.query(`UPDATE ${TABLE} SET data = ? WHERE name = ?`, [JSON.stringify(next), name]);
 
-    await client.query("COMMIT");
+    await conn.commit();
     return next;
   } catch (error) {
-    await client.query("ROLLBACK").catch(() => undefined);
+    await conn.rollback().catch(() => undefined);
     throw error;
   } finally {
-    client.release();
+    conn.release();
   }
 }
 
 /** Replace a collection wholesale. */
 export async function write<T>(name: string, value: T): Promise<T> {
-  await query(
-    `INSERT INTO ${TABLE} (name, data) VALUES ($1, $2)
-     ON CONFLICT (name) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`,
+  await ensureSchema();
+  await getPool().query(
+    `INSERT INTO ${TABLE} (name, data) VALUES (?, ?)
+     ON DUPLICATE KEY UPDATE data = VALUES(data)`,
     [name, JSON.stringify(value)]
   );
   return value;

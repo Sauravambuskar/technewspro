@@ -1,15 +1,15 @@
 # Tech News Pro — backend & admin
 
 The site is no longer hard-coded. Every headline, section, ticker item and piece of homepage
-copy is stored in Postgres and edited from an admin panel at **`/admin`**.
+copy is stored in MySQL (hosted on Hostinger) and edited from an admin panel at **`/admin`**.
 
 The backend is Next.js route handlers plus Node's `crypto`; the only added dependency is the
-Neon Postgres driver.
+`mysql2` driver.
 
 ## Getting started
 
 ```bash
-vercel env pull .env.local --yes   # gets DATABASE_URL from the Neon integration
+cp .env.example .env.local   # then fill in DATABASE_URL (see Storage below)
 npm run dev
 ```
 
@@ -48,45 +48,52 @@ Drafts are invisible to the public site and to the search API until published.
 | --- | --- |
 | `/` | Hero → categories → latest insights → resource centre → trending → why us → lead capture |
 | `/about` | Overview, mission, vision, editorial focus, industries, why choose us |
-| `/insights` | All insights, grouped by category |
-| `/insights/[category]` | One category, with related research |
+| `/category` | All categories, grouped by desk |
+| `/category/[section]` | One category, with related research |
+| `/category/[section]/[sub]` | One sub-category; noindexed and left out of nav/sitemap until it has a published article |
 | `/articles/[slug]` | Article detail |
 | `/resources` | Resource centre with search, format/category filters and sorting |
 | `/resources/[type]` | Whitepapers · Ebooks · Case Studies · Press Releases |
 | `/resources/[type]/[slug]` | Detail page; gated ones show the lead form before the download |
 | `/contact` | Contact form plus email, phone and office address |
 
-`/articles` redirects to `/insights`. SEO: per-page canonicals, Organization / NewsArticle / Report /
-AboutPage / ContactPage JSON-LD, a generated `sitemap.xml` covering every published URL, and
-`robots.txt` disallowing `/admin` and `/api/`. A branded 404 lives at `app/not-found.tsx` and is
-deliberately static — the global not-found is prerendered before `DATABASE_URL` exists, so it must
-not read from the database.
+`/articles` and the old `/insights/...` paths redirect to `/category/...` (see `next.config.js`).
+SEO: per-page canonicals, Organization / NewsArticle / Report / AboutPage / ContactPage /
+BreadcrumbList / CollectionPage JSON-LD, a generated `sitemap.xml` covering every published URL,
+and `robots.txt` disallowing `/admin` and `/api/`. A branded 404 lives at `app/not-found.tsx` and
+is deliberately static — the global not-found is prerendered before `DATABASE_URL` exists, so it
+must not read from the database.
 
 ## Storage
 
-Collections live as JSONB rows in a single Postgres table on **Neon**, provisioned
-through the Vercel Marketplace so `DATABASE_URL` is injected automatically:
+Collections live as JSON rows in a single MySQL table, hosted on **Hostinger**:
 
 ```sql
 CREATE TABLE collections (
-  name       text PRIMARY KEY,   -- articles, resources, sections, ticker, settings,
-  data       jsonb NOT NULL,     -- leads, subscribers, messages, users, secret
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
+  name       VARCHAR(191) PRIMARY KEY,   -- articles, resources, sections, ticker, settings,
+  data       JSON NOT NULL,              -- leads, subscribers, messages, users, secret
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB;
 ```
 
 The table is created on first use, and each collection seeds itself from `lib/seed/`
 the first time it is read. Serverless instances share no memory, so `update()` holds
-a `SELECT … FOR UPDATE` row lock for the whole read-modify-write.
+a `SELECT … FOR UPDATE` row lock (inside a transaction) for the whole read-modify-write.
 
 `lib/store.ts` is the only file that talks to the database — every repository and
 route handler goes through `read` / `update` / `write`, so swapping providers means
 changing that one file.
 
-For local development:
+`DATABASE_URL` must be a MySQL connection string, e.g.
+`mysql://user:password@host:3306/database` (percent-encode special characters in the
+password). On Hostinger, allow remote connections for the app's outbound IP(s) under
+**hPanel → Databases → Remote MySQL** — a shared-hosting MySQL server otherwise only
+accepts connections from the hosting server itself.
+
+For local development, copy `.env.example` to `.env.local` and fill in `DATABASE_URL`,
+then:
 
 ```bash
-vercel env pull .env.local --yes
 npm run dev
 ```
 
@@ -143,7 +150,7 @@ Every response is `{ ok: true, data }` or `{ ok: false, error }`.
 ## Code map
 
 ```
-lib/store.ts          Neon Postgres collection store (the only file touching the DB)
+lib/store.ts          MySQL collection store (the only file touching the DB)
 lib/types.ts          shared types and helpers (client-safe)
 lib/auth.ts           passwords, sessions, accounts
 lib/api.ts            route-handler helpers (ok/fail, requireUser, error wrapping)
