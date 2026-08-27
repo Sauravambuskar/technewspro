@@ -15,7 +15,7 @@ let schemaReady: Promise<void> | null = null;
 
 // Lazy: a module-level connection would throw during `next build`, before
 // DATABASE_URL is available.
-function getPool(): mysql.Pool {
+export function getPool(): mysql.Pool {
   if (!pool) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {

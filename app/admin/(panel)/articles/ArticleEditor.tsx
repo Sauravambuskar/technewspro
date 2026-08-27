@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { api, send } from "../../apiClient";
+import { api, send, uploadFile } from "../../apiClient";
 import { readingMinutes, slugify, type Article, type Section } from "@/lib/types";
 
 type Draft = {
@@ -73,6 +73,21 @@ export default function ArticleEditor({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState("");
+  const [uploading, setUploading] = useState(false);
+
+  async function handleImageFile(file: File | undefined) {
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const uploaded = await uploadFile(file);
+      set("image", uploaded.url);
+    } catch (caught) {
+      setError((caught as Error).message);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   const subcategories = [...(sections.find((s) => s.id === draft.section)?.subcategories ?? [])].sort(
     (a, b) => a.order - b.order
@@ -293,13 +308,27 @@ export default function ArticleEditor({
         </div>
 
         <label className="adm-field">
-          <span>HERO IMAGE URL</span>
-          <input
-            type="text"
-            value={draft.image}
-            onChange={(e) => set("image", e.target.value)}
-            placeholder="https://images.unsplash.com/…"
-          />
+          <span>HERO IMAGE</span>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <input
+              type="text"
+              value={draft.image}
+              onChange={(e) => set("image", e.target.value)}
+              placeholder="https://images.unsplash.com/… or upload a file"
+              style={{ flex: 1 }}
+            />
+            <label className="adm-btn adm-btn-ghost adm-btn-sm" style={{ cursor: "pointer", whiteSpace: "nowrap" }}>
+              {uploading ? "Uploading…" : "Upload"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                onChange={(e) => handleImageFile(e.target.files?.[0])}
+                disabled={uploading}
+                style={{ display: "none" }}
+              />
+            </label>
+          </div>
+          <small>Paste a URL, or upload a file (JPEG/PNG/WEBP/GIF/SVG, max 5MB) — it's stored in the database.</small>
         </label>
 
         {draft.image && (
