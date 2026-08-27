@@ -107,8 +107,14 @@
 .adm-message p { margin:12px 0 14px; font-size:13.5px; line-height:1.65; color:#33353c; white-space:pre-wrap; }
 
 /* ------------------------------------------------------------------ login */
-.adm-login { min-height:100vh; display:grid; place-items:center; background:var(--adm-ink); padding:24px; font-family:"DM Sans",Arial,sans-serif; --adm-ink:#11131a; --adm-muted:#71737b; --adm-acid:#d8ff35; --adm-electric:#5548ff; --adm-danger:#c1372c; --adm-ok:#1f7a4d; --adm-line:#e2e2db; }
-.adm-login-card { width:100%; max-width:394px; background:#fff; border-radius:8px; padding:34px 32px; color:var(--adm-ink); }
+.adm-login { position:relative; min-height:100vh; display:grid; place-items:center; background:var(--adm-ink); padding:24px; font-family:"DM Sans",Arial,sans-serif; overflow:hidden; --adm-ink:#11131a; --adm-muted:#71737b; --adm-acid:#d8ff35; --adm-electric:#5548ff; --adm-danger:#c1372c; --adm-ok:#1f7a4d; --adm-line:#e2e2db; }
+.adm-login::before {
+  content:""; position:absolute; inset:0;
+  background-image:url("/logo-mark.png");
+  background-repeat:no-repeat; background-position:center; background-size:min(85%, 1100px);
+  opacity:.1; pointer-events:none;
+}
+.adm-login-card { position:relative; width:100%; max-width:394px; background:#fff; border-radius:8px; padding:34px 32px; color:var(--adm-ink); box-shadow:0 24px 60px rgba(0,0,0,.35); }
 .adm-login-card .adm-logo { color:var(--adm-ink); margin-bottom:22px; }
 .adm-login-card h1 { margin:0 0 6px; font-size:26px; letter-spacing:-.04em; }
 .adm-login-card > p { margin:0 0 24px; font-size:13px; color:var(--adm-muted); line-height:1.5; }
