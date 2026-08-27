@@ -109,7 +109,7 @@
 /* ------------------------------------------------------------------ login */
 .adm-login {
   position:relative; min-height:100vh; display:grid; place-items:center; padding:24px; font-family:"DM Sans",Arial,sans-serif;
-  background-image:url("/logo.png"); background-repeat:no-repeat; background-position:center; background-size:cover; background-color:#fff;
+  background-image:url("/login-bg.png"); background-repeat:no-repeat; background-position:center; background-size:cover; background-color:#fff;
   --adm-ink:#11131a; --adm-muted:#71737b; --adm-acid:#d8ff35; --adm-electric:#5548ff; --adm-danger:#c1372c; --adm-ok:#1f7a4d; --adm-line:#e2e2db;
 }
 .adm-login-card { position:relative; width:100%; max-width:394px; background:#fff; border-radius:8px; padding:34px 32px; color:var(--adm-ink); box-shadow:0 24px 60px rgba(0,0,0,.35); }
