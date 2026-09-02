@@ -349,3 +349,16 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 .dyn-form button:hover:not(:disabled) { background:#000; }
 .dyn-form button:disabled { opacity:.6; cursor:default; }
 @media (max-width: 620px) { .dyn-form-grid { grid-template-columns:1fr; } .dyn-half { grid-column:1 / -1; } }
+
+/* Search results page */
+.search-page-form { display:flex; gap:10px; margin-top:28px; max-width:640px; flex-wrap:wrap; }
+.search-page-form input { flex:1; min-width:240px; border:1px solid #d5d5cd; border-radius:4px; padding:13px 15px; font-size:15px; font-family:inherit; color:var(--ink); background:#fff; outline:none; }
+.search-page-form input:focus { border-color:var(--electric); box-shadow:0 0 0 3px rgba(85,72,255,.12); }
+.search-page-form button { border:0; background:var(--ink); color:#fff; padding:13px 26px; border-radius:4px; font:700 13px "DM Sans",Arial,sans-serif; cursor:pointer; }
+.search-page-form button:hover { background:#000; }
+.search-page-list { display:grid; gap:2px; padding-top:28px; }
+.search-page-list a { display:block; padding:18px 20px; background:#fff; border:1px solid #e4e4dd; border-radius:5px; }
+.search-page-list a:hover { border-color:var(--electric); }
+.search-page-list b { display:block; font-size:17px; letter-spacing:-.03em; }
+.search-page-list span { display:block; margin-top:6px; font-size:13.5px; color:#65666c; line-height:1.5; }
+.search-see-all { display:block; padding:12px 16px; font:700 12px "DM Sans",Arial,sans-serif; border-top:1px solid #e4e4dd; }

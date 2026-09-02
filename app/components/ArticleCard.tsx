@@ -5,7 +5,7 @@ export default function ArticleCard({ article, showDate = false }: { article: Ar
   return (
     <article className="review-card">
       <div className="review-image">
-        {article.image && <img src={article.image} alt="" loading="lazy" />}
+        {article.image && <img src={article.image} alt={article.imageAlt} loading="lazy" />}
         <span>{article.tag}</span>
       </div>
       <h3>{article.title}</h3>

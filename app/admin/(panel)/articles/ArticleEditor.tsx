@@ -16,6 +16,7 @@ type Draft = {
   tags: string;
   dek: string;
   image: string;
+  imageAlt: string;
   author: string;
   date: string;
   minutes: string;
@@ -36,6 +37,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
       tags: "",
       dek: "",
       image: "",
+      imageAlt: "",
       author: "Tech News Pro Editorial",
       date: new Date().toISOString().slice(0, 10),
       minutes: "",
@@ -54,6 +56,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
     tags: (article.tags ?? []).join(", "),
     dek: article.dek,
     image: article.image,
+    imageAlt: article.imageAlt ?? "",
     author: article.author,
     date: article.date,
     minutes: String(article.minutes),
@@ -117,6 +120,7 @@ export default function ArticleEditor({
         .filter(Boolean),
       dek: draft.dek || draft.title,
       image: draft.image,
+      imageAlt: draft.imageAlt,
       author: draft.author,
       date: draft.date,
       minutes: draft.minutes ? Number(draft.minutes) : undefined,
@@ -341,10 +345,22 @@ export default function ArticleEditor({
           <small>Paste a URL, or upload a file (JPEG/PNG/WEBP/GIF/SVG, max 5MB) — it's stored in the database.</small>
         </label>
 
+
+        <label className="adm-field">
+          <span>IMAGE ALT TEXT</span>
+          <input
+            type="text"
+            value={draft.imageAlt}
+            onChange={(e) => set("imageAlt", e.target.value)}
+            placeholder="Describe the picture for someone who can't see it"
+          />
+          <small>Read aloud by screen readers and used by image search. Leave empty only if the image is purely decorative.</small>
+        </label>
+
         {draft.image && (
           <img
             src={draft.image}
-            alt=""
+            alt={draft.imageAlt}
             style={{ width: "100%", maxHeight: 220, objectFit: "cover", borderRadius: 4, marginBottom: 16 }}
           />
         )}

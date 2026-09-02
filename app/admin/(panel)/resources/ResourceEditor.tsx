@@ -24,6 +24,7 @@ type Draft = {
   category: string;
   summary: string;
   image: string;
+  imageAlt: string;
   author: string;
   date: string;
   pages: string;
@@ -45,6 +46,7 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
       category: sections[0]?.id ?? "",
       summary: "",
       image: "",
+      imageAlt: "",
       author: "Tech News Pro Research",
       date: new Date().toISOString().slice(0, 10),
       pages: "",
@@ -64,6 +66,7 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
     category: resource.category,
     summary: resource.summary,
     image: resource.image,
+    imageAlt: resource.imageAlt ?? "",
     author: resource.author,
     date: resource.date,
     pages: resource.pages ? String(resource.pages) : "",
@@ -122,6 +125,7 @@ export default function ResourceEditor({
       category: draft.category,
       summary: draft.summary || draft.title,
       image: draft.image,
+      imageAlt: draft.imageAlt,
       author: draft.author,
       date: draft.date,
       pages: draft.pages ? Number(draft.pages) : 0,
@@ -322,10 +326,22 @@ export default function ResourceEditor({
           <small>Paste a URL, or upload a file (JPEG/PNG/WEBP/GIF/SVG, max 5MB) — it's stored in the database.</small>
         </label>
 
+
+        <label className="adm-field">
+          <span>IMAGE ALT TEXT</span>
+          <input
+            type="text"
+            value={draft.imageAlt}
+            onChange={(e) => set("imageAlt", e.target.value)}
+            placeholder="Describe the picture for someone who can't see it"
+          />
+          <small>Read aloud by screen readers and used by image search. Leave empty only if the image is purely decorative.</small>
+        </label>
+
         {draft.image && (
           <img
             src={draft.image}
-            alt=""
+            alt={draft.imageAlt}
             style={{ width: "100%", maxHeight: 220, objectFit: "cover", borderRadius: 4, marginBottom: 16 }}
           />
         )}

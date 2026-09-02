@@ -41,6 +41,7 @@ export const POST = handler(async (request: Request) => {
     tags: Array.isArray(payload.tags) ? (payload.tags as string[]) : undefined,
     dek: typeof payload.dek === "string" ? payload.dek : undefined,
     image: typeof payload.image === "string" ? payload.image : undefined,
+    imageAlt: typeof payload.imageAlt === "string" ? payload.imageAlt : undefined,
     minutes: typeof payload.minutes === "number" ? payload.minutes : undefined,
     date: typeof payload.date === "string" ? payload.date : undefined,
     body: payload.body as string | string[] | undefined,

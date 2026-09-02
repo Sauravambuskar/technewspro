@@ -23,7 +23,7 @@ export default function HeroLatest({
 
       <Link className="hero-latest-lead" href={`/articles/${top.slug}`}>
         <div className="hero-latest-lead-image">
-          {top.image && <img src={top.image} alt="" />}
+          {top.image && <img src={top.image} alt={top.imageAlt} />}
           <span>{top.tag}</span>
         </div>
         <h3>{top.title}</h3>
@@ -36,7 +36,7 @@ export default function HeroLatest({
         {rest.map((article) => (
           <Link className="hero-latest-item" href={`/articles/${article.slug}`} key={article.id}>
             <div className="hero-latest-thumb">
-              {article.image && <img src={article.image} alt="" loading="lazy" />}
+              {article.image && <img src={article.image} alt={article.imageAlt} loading="lazy" />}
             </div>
             <div>
               <h4>{article.title}</h4>

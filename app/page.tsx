@@ -101,7 +101,7 @@ export default async function Home() {
             return (
               <Link className="category-card" href={`/category/${section.id}`} key={section.id}>
                 <div className="category-card-image">
-                  {cover?.image && <img src={cover.image} alt="" loading="lazy" />}
+                  {cover?.image && <img src={cover.image} alt={cover.imageAlt} loading="lazy" />}
                   <span className="category-index">0{i + 1}</span>
                 </div>
                 <h3>{section.label}</h3>
@@ -178,7 +178,7 @@ export default async function Home() {
             <div className="section-label">TRENDING TOPICS</div>
             {trending.map((article, i) => (
               <Link className="side-story" key={article.id} href={`/articles/${article.slug}`}>
-                {article.image && <img src={article.image} alt="" loading="lazy" />}
+                {article.image && <img src={article.image} alt={article.imageAlt} loading="lazy" />}
                 <div>
                   <span>0{i + 1} / {article.tag}</span>
                   <h3>{article.title}</h3>

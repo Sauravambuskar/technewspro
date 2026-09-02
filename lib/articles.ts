@@ -14,7 +14,7 @@ export async function allArticles(): Promise<Article[]> {
   const articles = await read<Article[]>(COLLECTION, seed);
   // Rows written before sub-categories/tags/SEO existed have no field; fill in defaults.
   return articles
-    .map((a) => ({ ...a, subcategory: a.subcategory ?? "", tags: a.tags ?? [], seo: normaliseSeo(a.seo) }))
+    .map((a) => ({ ...a, subcategory: a.subcategory ?? "", tags: a.tags ?? [], imageAlt: a.imageAlt ?? "", seo: normaliseSeo(a.seo) }))
     .sort(byNewest);
 }
 
@@ -110,6 +110,7 @@ export async function createArticle(input: ArticleInput & { title: string }): Pr
     title: input.title.trim(),
     dek: (input.dek || input.title).trim(),
     image: input.image?.trim() || "",
+    imageAlt: input.imageAlt?.trim() || "",
     minutes: input.minutes && input.minutes > 0 ? input.minutes : readingMinutes(body),
     date: input.date || stamp.slice(0, 10),
     body,
@@ -144,6 +145,7 @@ export async function updateArticle(id: string, input: ArticleInput): Promise<Ar
         title: input.title?.trim() ?? article.title,
         dek: input.dek?.trim() ?? article.dek,
         image: input.image?.trim() ?? article.image,
+        imageAlt: input.imageAlt?.trim() ?? article.imageAlt ?? "",
         minutes: input.minutes && input.minutes > 0 ? input.minutes : readingMinutes(body),
         date: input.date ?? article.date,
         body,

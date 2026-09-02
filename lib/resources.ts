@@ -13,7 +13,7 @@ function byNewest(a: Resource, b: Resource) {
 export async function allResources(): Promise<Resource[]> {
   const resources = await read<Resource[]>(COLLECTION, seed);
   // Rows written before the SEO box existed have no object; fill in the defaults.
-  return resources.map((r) => ({ ...r, seo: normaliseSeo(r.seo) })).sort(byNewest);
+  return resources.map((r) => ({ ...r, imageAlt: r.imageAlt ?? "", seo: normaliseSeo(r.seo) })).sort(byNewest);
 }
 
 export type ResourceQuery = {
@@ -104,6 +104,7 @@ export async function createResource(input: ResourceInput & { title: string }): 
     title: input.title.trim(),
     summary: (input.summary || input.title).trim(),
     image: input.image?.trim() || "",
+    imageAlt: input.imageAlt?.trim() || "",
     body: normaliseBody(input.body),
     highlights: normaliseHighlights(input.highlights),
     pages: input.pages && input.pages > 0 ? input.pages : 0,
@@ -139,6 +140,7 @@ export async function updateResource(id: string, input: ResourceInput): Promise<
         title: input.title?.trim() ?? resource.title,
         summary: input.summary?.trim() ?? resource.summary,
         image: input.image?.trim() ?? resource.image,
+        imageAlt: input.imageAlt?.trim() ?? resource.imageAlt ?? "",
         body: input.body !== undefined ? normaliseBody(input.body) : resource.body,
         highlights: input.highlights !== undefined ? normaliseHighlights(input.highlights) : resource.highlights,
         pages: input.pages !== undefined && input.pages >= 0 ? input.pages : resource.pages,

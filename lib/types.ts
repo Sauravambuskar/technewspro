@@ -96,6 +96,8 @@ export type Article = {
   title: string;
   dek: string;
   image: string;
+  /** Describes the image for screen readers and search engines. */
+  imageAlt: string;
   minutes: number;
   date: string;
   body: string[];
@@ -178,6 +180,8 @@ export type Resource = {
   title: string;
   summary: string;
   image: string;
+  /** Describes the image for screen readers and search engines. */
+  imageAlt: string;
   body: string[];
   highlights: string[];
   pages: number;

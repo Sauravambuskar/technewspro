@@ -32,6 +32,7 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     category: typeof payload.category === "string" ? payload.category : undefined,
     summary: typeof payload.summary === "string" ? payload.summary : undefined,
     image: typeof payload.image === "string" ? payload.image : undefined,
+    imageAlt: typeof payload.imageAlt === "string" ? payload.imageAlt : undefined,
     body: payload.body as string | string[] | undefined,
     highlights: payload.highlights as string | string[] | undefined,
     pages: typeof payload.pages === "number" ? payload.pages : undefined,

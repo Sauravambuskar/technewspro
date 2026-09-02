@@ -15,10 +15,12 @@ export const POST = handler(async (request: Request) => {
   if (!EMAIL_RE.test(email)) return fail("Enter a valid email address.");
 
   const result = await subscribe(email, typeof payload.source === "string" ? payload.source : "website");
+  // No confirmation email is sent — nothing here talks to an SMTP provider yet,
+  // so don't promise the reader one.
   const message =
     result.status === "already-subscribed"
-      ? "You're already on the list — see you Sunday."
-      : `You're in — confirmation sent to ${result.subscriber.email}.`;
+      ? "You're already on the list — see you Tuesday."
+      : `You're in — ${result.subscriber.email} will get the next brief.`;
 
   return ok({ status: result.status, message }, { status: result.status === "created" ? 201 : 200 });
 });

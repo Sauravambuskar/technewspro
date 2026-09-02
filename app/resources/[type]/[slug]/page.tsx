@@ -96,7 +96,7 @@ export default async function ResourceDetail({ params }: Params) {
 
           {resource.image && (
             <div className="article-hero-image">
-              <img src={resource.image} alt="" />
+              <img src={resource.image} alt={resource.imageAlt} />
             </div>
           )}
 

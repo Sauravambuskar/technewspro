@@ -27,7 +27,7 @@ export default function CategoryBlock({ section, articles, resources, tone }: Pr
       <div className="cat-layout">
         <article className="cat-lead">
           <Link href={`/articles/${lead.slug}`} className="cat-lead-image">
-            {lead.image && <img src={lead.image} alt="" loading="lazy" />}
+            {lead.image && <img src={lead.image} alt={lead.imageAlt} loading="lazy" />}
             <span>{lead.tag}</span>
           </Link>
           <p className="cat-lead-meta">{formatDate(lead.date)} · {lead.minutes} min read</p>
@@ -42,7 +42,7 @@ export default function CategoryBlock({ section, articles, resources, tone }: Pr
           {secondary.map((article, i) => (
             <Link className="cat-item" href={`/articles/${article.slug}`} key={article.id}>
               <div className="cat-item-image">
-                {article.image && <img src={article.image} alt="" loading="lazy" />}
+                {article.image && <img src={article.image} alt={article.imageAlt} loading="lazy" />}
               </div>
               <div className="cat-item-body">
                 <span>0{i + 2} / {article.tag}</span>
@@ -64,7 +64,7 @@ export default function CategoryBlock({ section, articles, resources, tone }: Pr
                 href={`/resources/${resource.type}/${resource.slug}`}
                 key={resource.id}
               >
-                {resource.image && <img src={resource.image} alt="" loading="lazy" />}
+                {resource.image && <img src={resource.image} alt={resource.imageAlt} loading="lazy" />}
                 <div>
                   <span>
                     {RESOURCE_TYPE_LABELS[resource.type].singular}

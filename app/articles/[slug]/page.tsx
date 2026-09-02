@@ -86,7 +86,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           </div>
         </div>
 
-        {article.image && <div className="article-hero-image"><img src={article.image} alt="" /></div>}
+        {article.image && <div className="article-hero-image"><img src={article.image} alt={article.imageAlt} /></div>}
 
         <div className="article-body">
           {article.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
@@ -115,7 +115,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           <div className="review-grid">
             {related.map((r) => (
               <article className="review-card" key={r.slug}>
-                <div className="review-image"><img src={r.image} alt="" /><span>{r.tag}</span></div>
+                <div className="review-image"><img src={r.image} alt={r.imageAlt} /><span>{r.tag}</span></div>
                 <h3>{r.title}</h3>
                 <p>{r.dek}</p>
                 <Link href={`/articles/${r.slug}`}>Read story <b>&#8599;</b></Link>

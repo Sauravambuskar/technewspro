@@ -105,7 +105,7 @@ export default function ResourceBrowser({ resources, sections, lockedType }: Pro
           {visible.map((resource) => (
             <article className="resource-card" key={resource.id}>
               <div className="resource-card-image">
-                {resource.image && <img src={resource.image} alt="" loading="lazy" />}
+                {resource.image && <img src={resource.image} alt={resource.imageAlt} loading="lazy" />}
                 <span className="resource-type">{RESOURCE_TYPE_LABELS[resource.type].singular}</span>
                 {resource.gated && <span className="resource-gated">Gated</span>}
               </div>

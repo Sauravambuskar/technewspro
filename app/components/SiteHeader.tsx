@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { NavEntry } from "@/lib/site";
 
 type SearchHit = { href: string; title: string; tag: string };
@@ -14,6 +15,7 @@ export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteN
   const [results, setResults] = useState<SearchHit[]>([]);
   const [searching, setSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   function closeAll() {
     setSearchOpen(false);
@@ -188,6 +190,14 @@ export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteN
               placeholder="Search insights, research and resources…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                // Enter takes you to the full results page, not just the dropdown.
+                if (e.key !== "Enter") return;
+                const term = query.trim();
+                if (!term) return;
+                closeAll();
+                router.push(`/search?q=${encodeURIComponent(term)}`);
+              }}
               aria-label="Search the site"
             />
             {query.trim() && (
@@ -204,6 +214,14 @@ export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteN
                     {searching ? "Searching…" : `Nothing matches “${query}”.`}
                   </p>
                 )}
+                {/* The dropdown is capped at a handful of hits; this is the way to the rest. */}
+                <Link
+                  className="search-see-all"
+                  href={`/search?q=${encodeURIComponent(query.trim())}`}
+                  onClick={closeAll}
+                >
+                  See all results for “{query.trim()}” &rarr;
+                </Link>
               </div>
             )}
           </div>

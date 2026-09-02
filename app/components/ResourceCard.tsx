@@ -7,7 +7,7 @@ export default function ResourceCard({ resource }: { resource: Resource }) {
   return (
     <article className="resource-card">
       <div className="resource-card-image">
-        {resource.image && <img src={resource.image} alt="" loading="lazy" />}
+        {resource.image && <img src={resource.image} alt={resource.imageAlt} loading="lazy" />}
         <span className="resource-type">{label}</span>
         {resource.gated && <span className="resource-gated">Gated</span>}
       </div>
