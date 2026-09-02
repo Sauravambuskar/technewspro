@@ -66,7 +66,7 @@ export default function ResourceTable({
     <>
       {error && <p className="adm-note adm-note-error" role="alert">{error}</p>}
 
-      <div className="adm-toolbar">
+      <div className="adm-toolbar" data-tour="toolbar">
         <input
           type="text"
           placeholder="Search titles, summaries, slugs…"
@@ -88,7 +88,7 @@ export default function ResourceTable({
         <span className="adm-table-sub">{visible.length} of {resources.length}</span>
       </div>
 
-      <div className="adm-table-wrap">
+      <div className="adm-table-wrap" data-tour="table">
         {visible.length === 0 ? (
           <p className="adm-empty">No resources match those filters.</p>
         ) : (

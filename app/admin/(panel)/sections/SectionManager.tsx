@@ -123,7 +123,7 @@ export default function SectionManager({ sections, counts }: { sections: Section
       {error && <p className="adm-note adm-note-error" role="alert">{error}</p>}
       {note && <p className="adm-note adm-note-ok" role="status">{note}</p>}
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="sections">
         <h2>Sections</h2>
         <p className="adm-card-note">
           Order controls the sequence of homepage blocks, the navigation and the /category index.
@@ -299,7 +299,7 @@ export default function SectionManager({ sections, counts }: { sections: Section
           </div>
         ))}
 
-        <div className="adm-form-actions">
+        <div className="adm-form-actions" data-tour="sections-save">
           <button type="button" className="adm-btn adm-btn-accent" onClick={saveAll} disabled={busy}>
             {busy ? "Saving…" : "Save sections"}
           </button>

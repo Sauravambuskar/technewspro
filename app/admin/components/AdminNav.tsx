@@ -22,7 +22,7 @@ export default function AdminNav({ badges }: { badges: NavBadge }) {
   const pathname = usePathname();
 
   return (
-    <nav className="adm-nav">
+    <nav className="adm-nav" data-tour="nav">
       {LINKS.map((link) => {
         const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
         const count = link.badge ? badges[link.badge] : undefined;

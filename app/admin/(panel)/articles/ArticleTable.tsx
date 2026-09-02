@@ -55,7 +55,7 @@ export default function ArticleTable({ articles, sections }: { articles: Article
     <>
       {error && <p className="adm-note adm-note-error" role="alert">{error}</p>}
 
-      <div className="adm-toolbar">
+      <div className="adm-toolbar" data-tour="toolbar">
         <input
           type="text"
           placeholder="Search titles, slugs, tags, authors…"
@@ -77,7 +77,7 @@ export default function ArticleTable({ articles, sections }: { articles: Article
         <span className="adm-table-sub">{visible.length} of {articles.length}</span>
       </div>
 
-      <div className="adm-table-wrap">
+      <div className="adm-table-wrap" data-tour="table">
         {visible.length === 0 ? (
           <p className="adm-empty">No stories match those filters.</p>
         ) : (

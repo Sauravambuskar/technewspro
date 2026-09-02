@@ -13,7 +13,7 @@ export default function PageHead({
         <p>{eyebrow}</p>
         <h1>{title}</h1>
       </div>
-      {children && <div className="adm-head-actions">{children}</div>}
+      {children && <div className="adm-head-actions" data-tour="page-actions">{children}</div>}
     </div>
   );
 }

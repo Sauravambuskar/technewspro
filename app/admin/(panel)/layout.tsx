@@ -7,6 +7,7 @@ import { listMessages } from "@/lib/messages";
 import { allResources } from "@/lib/resources";
 import { listSubscribers } from "@/lib/subscribers";
 import AdminNav from "../components/AdminNav";
+import HelpTour from "../components/HelpTour";
 import SignOutButton from "../components/SignOutButton";
 
 export const dynamic = "force-dynamic";
@@ -60,8 +61,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             <Link href="/admin/team">Team</Link> before putting the site online.
           </p>
         )}
-        {children}
+        <div data-tour="page-body">{children}</div>
       </main>
+
+      <HelpTour />
     </div>
   );
 }

@@ -181,7 +181,7 @@ export default function ArticleEditor({
       {error && <p className="adm-note adm-note-error" role="alert">{error}</p>}
       {saved && <p className="adm-note adm-note-ok" role="status">{saved}</p>}
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="editor-content">
         <h2>The story</h2>
         <p className="adm-card-note">Headline, standfirst and body copy as readers will see them.</p>
 
@@ -224,7 +224,7 @@ export default function ArticleEditor({
         </label>
       </div>
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="editor-placement">
         <h2>Placement</h2>
         <p className="adm-card-note">Where the story appears and how it is labelled.</p>
 
@@ -317,7 +317,7 @@ export default function ArticleEditor({
           </label>
         </div>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="editor-image">
           <span>HERO IMAGE</span>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <input
@@ -364,7 +364,7 @@ export default function ArticleEditor({
         }}
       />
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="editor-publishing">
         <h2>Publishing</h2>
         <p className="adm-card-note">Drafts stay off the public site until you publish them.</p>
 
@@ -384,7 +384,7 @@ export default function ArticleEditor({
           The exact story in that slot is pinned under Site settings → Homepage.
         </small>
 
-        <div className="adm-form-actions">
+        <div className="adm-form-actions" data-tour="editor-save">
           <button className="adm-btn adm-btn-accent" type="submit" disabled={busy}>
             {busy ? "Saving…" : article ? "Save changes" : "Create story"}
           </button>

@@ -37,7 +37,7 @@ export default async function Dashboard() {
         <Link className="adm-btn adm-btn-accent" href="/admin/articles/new">+ New insight</Link>
       </PageHead>
 
-      <div className="adm-stats">
+      <div className="adm-stats" data-tour="stats">
         <div className="adm-stat adm-stat-accent">
           <p>PUBLISHED</p>
           <strong>{published.length}</strong>
@@ -75,6 +75,7 @@ export default async function Dashboard() {
         </div>
       </div>
 
+      <div data-tour="dash-tables">
       <div className="adm-card">
         <h2>Most read</h2>
         <p className="adm-card-note">Ranked by reads recorded on the public article pages.</p>
@@ -172,6 +173,7 @@ export default async function Dashboard() {
           </div>
         </div>
       )}
+      </div>
     </>
   );
 }

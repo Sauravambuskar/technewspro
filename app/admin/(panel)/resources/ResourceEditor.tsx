@@ -189,7 +189,7 @@ export default function ResourceEditor({
       {error && <p className="adm-note adm-note-error" role="alert">{error}</p>}
       {saved && <p className="adm-note adm-note-ok" role="status">{saved}</p>}
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="editor-content">
         <h2>The resource</h2>
         <p className="adm-card-note">Title, summary and the copy shown on the detail page.</p>
 
@@ -240,7 +240,7 @@ export default function ResourceEditor({
         </label>
       </div>
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="editor-placement">
         <h2>Classification</h2>
         <p className="adm-card-note">Format and category drive the listing pages and the URL.</p>
 
@@ -298,7 +298,7 @@ export default function ResourceEditor({
           </label>
         </div>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="editor-image">
           <span>COVER IMAGE</span>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <input
@@ -345,7 +345,7 @@ export default function ResourceEditor({
         }}
       />
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="editor-publishing">
         <h2>Download &amp; publishing</h2>
         <p className="adm-card-note">
           Gated resources show the lead form first. Every submission lands under Leads.
@@ -380,7 +380,7 @@ export default function ResourceEditor({
           </select>
         </label>
 
-        <div className="adm-form-actions">
+        <div className="adm-form-actions" data-tour="editor-save">
           <button className="adm-btn adm-btn-accent" type="submit" disabled={busy}>
             {busy ? "Saving…" : resource ? "Save changes" : "Create resource"}
           </button>

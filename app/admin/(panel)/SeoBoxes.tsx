@@ -151,7 +151,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
 
   return (
     <>
-      <div className="adm-card">
+      <div className="adm-card" data-tour="seo-search">
         <h2>Search appearance</h2>
         <p className="adm-card-note">
           How this page looks in Google, and whether search engines may index it. Every field falls back to
@@ -260,7 +260,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
         </div>
       </div>
 
-      <div className="adm-card">
+      <div className="adm-card" data-tour="seo-social">
         <h2>Social appearance</h2>
         <p className="adm-card-note">
           What Facebook, LinkedIn, WhatsApp and X show when someone shares this page. Empty fields fall back
