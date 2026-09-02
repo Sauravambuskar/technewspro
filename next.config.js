@@ -5,6 +5,8 @@ const nextConfig = {
     // /category/..., and three categories were renamed. Specific renamed-id
     // rules must come before the generic passthrough so they win the match.
     return [
+      // The article listing lives at /category; this kept the old path working.
+      { source: "/articles", destination: "/category", permanent: true },
       { source: "/insights", destination: "/category", permanent: true },
       { source: "/insights/financial-intelligence", destination: "/category/finance-and-fintech", permanent: true },
       { source: "/insights/financial-intelligence/:sub", destination: "/category/finance-and-fintech/:sub", permanent: true },
