@@ -40,7 +40,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     status: payload.status as ArticleStatus | undefined,
     featured: typeof payload.featured === "boolean" ? payload.featured : undefined,
     author: typeof payload.author === "string" ? payload.author : undefined,
-    date: typeof payload.date === "string" ? payload.date : undefined
+    date: typeof payload.date === "string" ? payload.date : undefined,
+    seo: payload.seo
   });
 
   if (!resource) return fail("Resource not found.", 404);

@@ -12,7 +12,7 @@ import { sectionLabels } from "@/lib/sections";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
 import { RESOURCE_TYPE_LABELS, formatDate, isResourceType } from "@/lib/types";
-import { siteUrl } from "@/lib/seo";
+import { buildMetadata, siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -21,18 +21,18 @@ type Params = { params: { type: string; slug: string } };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const [resource, settings] = await Promise.all([getResourceBySlug(params.slug), getSettings()]);
   if (!resource) return {};
-  return {
-    title: `${resource.title} | ${settings.siteName}`,
-    description: resource.summary,
-    alternates: { canonical: siteUrl(`/resources/${resource.type}/${resource.slug}`) },
-    openGraph: {
+
+  return buildMetadata(
+    resource.seo,
+    {
       title: resource.title,
       description: resource.summary,
-      images: resource.image ? [resource.image] : undefined,
-      type: "article",
-      publishedTime: resource.date
-    }
-  };
+      image: resource.image,
+      path: `/resources/${resource.type}/${resource.slug}`,
+      siteName: settings.siteName
+    },
+    { openGraph: { type: "article", publishedTime: resource.date } }
+  );
 }
 
 export default async function ResourceDetail({ params }: Params) {

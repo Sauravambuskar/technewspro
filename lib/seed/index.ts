@@ -1,5 +1,5 @@
 import { newId } from "../store";
-import type { Article, Resource, ResourceType, Section, Settings, TickerItem } from "../types";
+import { emptySeo, type Article, type Resource, type ResourceType, type Section, type Settings, type TickerItem } from "../types";
 import { rawArticles } from "./raw-articles";
 import { rawArticlesMore } from "./raw-articles-more";
 import { rawResources } from "./raw-resources";
@@ -108,6 +108,7 @@ export function seedArticles(): Article[] {
     status: "published" as const,
     featured: article.slug === "pipeline-coverage-is-lying-to-you",
     author: "Tech News Pro Editorial",
+    seo: emptySeo(),
     views: 0,
     createdAt: stamp,
     updatedAt: stamp
@@ -134,6 +135,7 @@ export function seedResources(): Resource[] {
     featured: resource.slug === "the-2026-ai-automation-readiness-benchmark",
     author: "Tech News Pro Research",
     date: resource.date,
+    seo: emptySeo(),
     views: 0,
     downloads: 0,
     createdAt: stamp,

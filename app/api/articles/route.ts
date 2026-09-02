@@ -46,7 +46,8 @@ export const POST = handler(async (request: Request) => {
     body: payload.body as string | string[] | undefined,
     status: payload.status as ArticleStatus | undefined,
     featured: Boolean(payload.featured),
-    author: typeof payload.author === "string" ? payload.author : undefined
+    author: typeof payload.author === "string" ? payload.author : undefined,
+    seo: payload.seo
   });
 
   return ok(article, { status: 201 });

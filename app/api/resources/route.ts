@@ -51,7 +51,8 @@ export const POST = handler(async (request: Request) => {
     status: payload.status as ArticleStatus | undefined,
     featured: Boolean(payload.featured),
     author: typeof payload.author === "string" ? payload.author : undefined,
-    date: typeof payload.date === "string" ? payload.date : undefined
+    date: typeof payload.date === "string" ? payload.date : undefined,
+    seo: payload.seo
   });
 
   return ok(resource, { status: 201 });

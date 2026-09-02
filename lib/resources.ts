@@ -1,6 +1,6 @@
 import { newId, now, read, update } from "./store";
 import { seedResources } from "./seed";
-import { isResourceType, slugify, type ArticleStatus, type Resource, type ResourceType } from "./types";
+import { isResourceType, normaliseSeo, slugify, type ArticleStatus, type Resource, type ResourceType } from "./types";
 
 const COLLECTION = "resources";
 const seed = () => seedResources();
@@ -12,7 +12,8 @@ function byNewest(a: Resource, b: Resource) {
 
 export async function allResources(): Promise<Resource[]> {
   const resources = await read<Resource[]>(COLLECTION, seed);
-  return [...resources].sort(byNewest);
+  // Rows written before the SEO box existed have no object; fill in the defaults.
+  return resources.map((r) => ({ ...r, seo: normaliseSeo(r.seo) })).sort(byNewest);
 }
 
 export type ResourceQuery = {
@@ -75,9 +76,13 @@ async function uniqueSlug(desired: string, ignoreId?: string) {
   return candidate;
 }
 
-export type ResourceInput = Partial<Omit<Resource, "id" | "createdAt" | "updatedAt" | "views" | "downloads" | "body" | "highlights">> & {
+export type ResourceInput = Partial<
+  Omit<Resource, "id" | "createdAt" | "updatedAt" | "views" | "downloads" | "body" | "highlights" | "seo">
+> & {
   body?: string | string[];
   highlights?: string | string[];
+  /** Shaped by normaliseSeo, so a partial or malformed object from the API is safe. */
+  seo?: unknown;
 };
 
 function toLines(value: unknown, splitOn: RegExp): string[] {
@@ -108,6 +113,7 @@ export async function createResource(input: ResourceInput & { title: string }): 
     featured: Boolean(input.featured),
     author: input.author?.trim() || "Tech News Pro Research",
     date: input.date || stamp.slice(0, 10),
+    seo: normaliseSeo(input.seo),
     views: 0,
     downloads: 0,
     createdAt: stamp,
@@ -142,6 +148,7 @@ export async function updateResource(id: string, input: ResourceInput): Promise<
         featured: input.featured ?? resource.featured,
         author: input.author?.trim() ?? resource.author,
         date: input.date ?? resource.date,
+        seo: input.seo !== undefined ? normaliseSeo(input.seo) : normaliseSeo(resource.seo),
         updatedAt: now()
       };
       return saved;

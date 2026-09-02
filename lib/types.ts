@@ -1,6 +1,88 @@
-// Shared types. Safe to import from client components — no node APIs in here.
+  // Shared types. Safe to import from client components — no node APIs in here.
 
 export type ArticleStatus = "draft" | "published";
+
+export const TWITTER_CARDS = ["summary_large_image", "summary"] as const;
+export type TwitterCard = (typeof TWITTER_CARDS)[number];
+
+/** Extra meta-robots directives, beyond plain index/follow. */
+export const ROBOTS_DIRECTIVES = ["noimageindex", "noarchive", "nosnippet"] as const;
+export type RobotsDirective = (typeof ROBOTS_DIRECTIVES)[number];
+
+/**
+ * Per-item search and social overrides. Every text field is optional — an empty
+ * string means "fall back to the item's own title / dek / hero image", which is
+ * what the public pages do when they build their metadata.
+ */
+export type Seo = {
+  /** Used only by the editor's on-page checks; never rendered on the site. */
+  focusKeyword: string;
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  index: boolean;
+  follow: boolean;
+  advanced: RobotsDirective[];
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: string;
+  twitterCard: TwitterCard;
+  twitterTitle: string;
+  twitterDescription: string;
+  twitterImage: string;
+};
+
+export function emptySeo(): Seo {
+  return {
+    focusKeyword: "",
+    metaTitle: "",
+    metaDescription: "",
+    canonicalUrl: "",
+    index: true,
+    follow: true,
+    advanced: [],
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    twitterCard: "summary_large_image",
+    twitterTitle: "",
+    twitterDescription: "",
+    twitterImage: ""
+  };
+}
+
+/** Rows written before the SEO box existed have no object; fill in the defaults. */
+export function normaliseSeo(value: unknown): Seo {
+  const base = emptySeo();
+  if (!value || typeof value !== "object") return base;
+  const input = value as Record<string, unknown>;
+
+  const text = (key: keyof Seo) => (typeof input[key] === "string" ? (input[key] as string).trim() : "");
+  const flag = (key: keyof Seo, fallback: boolean) =>
+    typeof input[key] === "boolean" ? (input[key] as boolean) : fallback;
+
+  return {
+    ...base,
+    focusKeyword: text("focusKeyword"),
+    metaTitle: text("metaTitle"),
+    metaDescription: text("metaDescription"),
+    canonicalUrl: text("canonicalUrl"),
+    index: flag("index", true),
+    follow: flag("follow", true),
+    advanced: Array.isArray(input.advanced)
+      ? (input.advanced.filter((d) => (ROBOTS_DIRECTIVES as readonly unknown[]).includes(d)) as RobotsDirective[])
+      : [],
+    ogTitle: text("ogTitle"),
+    ogDescription: text("ogDescription"),
+    ogImage: text("ogImage"),
+    twitterCard: (TWITTER_CARDS as readonly unknown[]).includes(input.twitterCard)
+      ? (input.twitterCard as TwitterCard)
+      : base.twitterCard,
+    twitterTitle: text("twitterTitle"),
+    twitterDescription: text("twitterDescription"),
+    twitterImage: text("twitterImage")
+  };
+}
 
 export type Article = {
   id: string;
@@ -20,6 +102,7 @@ export type Article = {
   status: ArticleStatus;
   featured: boolean;
   author: string;
+  seo: Seo;
   views: number;
   createdAt: string;
   updatedAt: string;
@@ -105,6 +188,7 @@ export type Resource = {
   featured: boolean;
   author: string;
   date: string;
+  seo: Seo;
   views: number;
   downloads: number;
   createdAt: string;

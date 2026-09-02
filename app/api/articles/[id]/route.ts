@@ -36,7 +36,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     body: payload.body as string | string[] | undefined,
     status: payload.status as ArticleStatus | undefined,
     featured: typeof payload.featured === "boolean" ? payload.featured : undefined,
-    author: typeof payload.author === "string" ? payload.author : undefined
+    author: typeof payload.author === "string" ? payload.author : undefined,
+    seo: payload.seo
   });
 
   if (!article) return fail("Article not found.", 404);

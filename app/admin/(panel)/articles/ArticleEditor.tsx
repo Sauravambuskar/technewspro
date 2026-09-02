@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, send, uploadFile } from "../../apiClient";
-import { readingMinutes, slugify, type Article, type Section } from "@/lib/types";
+import SeoBoxes from "../SeoBoxes";
+import { emptySeo, normaliseSeo, readingMinutes, slugify, type Article, type Section, type Seo } from "@/lib/types";
 
 type Draft = {
   title: string;
@@ -21,6 +22,7 @@ type Draft = {
   body: string;
   status: "draft" | "published";
   featured: boolean;
+  seo: Seo;
 };
 
 function toDraft(article: Article | undefined, sections: Section[]): Draft {
@@ -39,7 +41,8 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
       minutes: "",
       body: "",
       status: "draft",
-      featured: false
+      featured: false,
+      seo: emptySeo()
     };
   }
   return {
@@ -56,7 +59,8 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
     minutes: String(article.minutes),
     body: article.body.join("\n\n"),
     status: article.status,
-    featured: article.featured
+    featured: article.featured,
+    seo: normaliseSeo(article.seo)
   };
 }
 
@@ -118,8 +122,14 @@ export default function ArticleEditor({
       minutes: draft.minutes ? Number(draft.minutes) : undefined,
       body: paragraphs,
       status: draft.status,
-      featured: draft.featured
+      featured: draft.featured,
+      seo: draft.seo
     };
+  }
+
+  function setSeo(patch: Partial<Seo>) {
+    setDraft((prev) => ({ ...prev, seo: { ...prev.seo, ...patch } }));
+    setSaved("");
   }
 
   async function save(event: React.FormEvent) {
@@ -339,6 +349,20 @@ export default function ArticleEditor({
           />
         )}
       </div>
+
+      <SeoBoxes
+        seo={draft.seo}
+        onChange={setSeo}
+        onError={setError}
+        fallbacks={{
+          title: draft.title,
+          description: draft.dek || draft.title,
+          image: draft.image,
+          path: `/articles/${draft.slug || slugify(draft.title) || "…"}`,
+          siteName: "Tech News Pro",
+          body: draft.body
+        }}
+      />
 
       <div className="adm-card">
         <h2>Publishing</h2>

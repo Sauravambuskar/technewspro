@@ -45,17 +45,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.7
     })),
-    ...articles.map((article) => ({
-      url: siteUrl(`/articles/${article.slug}`),
-      lastModified: new Date(article.updatedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.8
-    })),
-    ...resources.map((resource) => ({
-      url: siteUrl(`/resources/${resource.type}/${resource.slug}`),
-      lastModified: new Date(resource.updatedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.8
-    }))
+    // A page marked noindex in its SEO box shouldn't be submitted for crawling either.
+    ...articles
+      .filter((article) => article.seo.index)
+      .map((article) => ({
+        url: siteUrl(`/articles/${article.slug}`),
+        lastModified: new Date(article.updatedAt),
+        changeFrequency: "monthly" as const,
+        priority: 0.8
+      })),
+    ...resources
+      .filter((resource) => resource.seo.index)
+      .map((resource) => ({
+        url: siteUrl(`/resources/${resource.type}/${resource.slug}`),
+        lastModified: new Date(resource.updatedAt),
+        changeFrequency: "monthly" as const,
+        priority: 0.8
+      }))
   ];
 }

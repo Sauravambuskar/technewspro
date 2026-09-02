@@ -9,7 +9,7 @@ import { getSubcategory, sectionLabels } from "@/lib/sections";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
 import { formatDate } from "@/lib/types";
-import { siteUrl } from "@/lib/seo";
+import { buildMetadata, siteUrl } from "@/lib/seo";
 import JsonLd from "../../components/JsonLd";
 
 export const dynamic = "force-dynamic";
@@ -17,18 +17,18 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const [article, settings] = await Promise.all([getArticleBySlug(params.slug), getSettings()]);
   if (!article) return {};
-  return {
-    title: `${article.title} | ${settings.siteName}`,
-    description: article.dek,
-    alternates: { canonical: siteUrl(`/articles/${article.slug}`) },
-    openGraph: {
+
+  return buildMetadata(
+    article.seo,
+    {
       title: article.title,
       description: article.dek,
-      images: article.image ? [article.image] : undefined,
-      type: "article",
-      publishedTime: article.date
-    }
-  };
+      image: article.image,
+      path: `/articles/${article.slug}`,
+      siteName: settings.siteName
+    },
+    { openGraph: { type: "article", publishedTime: article.date } }
+  );
 }
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {

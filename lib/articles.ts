@@ -1,6 +1,6 @@
 import { newId, now, read, update } from "./store";
 import { seedArticles } from "./seed";
-import { readingMinutes, slugify, type Article, type ArticleStatus } from "./types";
+import { normaliseSeo, readingMinutes, slugify, type Article, type ArticleStatus } from "./types";
 
 const COLLECTION = "articles";
 const seed = () => seedArticles();
@@ -12,9 +12,9 @@ function byNewest(a: Article, b: Article) {
 
 export async function allArticles(): Promise<Article[]> {
   const articles = await read<Article[]>(COLLECTION, seed);
-  // Rows written before sub-categories/tags existed have no field; treat as unclassified/empty.
+  // Rows written before sub-categories/tags/SEO existed have no field; fill in defaults.
   return articles
-    .map((a) => ({ ...a, subcategory: a.subcategory ?? "", tags: a.tags ?? [] }))
+    .map((a) => ({ ...a, subcategory: a.subcategory ?? "", tags: a.tags ?? [], seo: normaliseSeo(a.seo) }))
     .sort(byNewest);
 }
 
@@ -74,8 +74,10 @@ async function uniqueSlug(desired: string, ignoreId?: string) {
   return candidate;
 }
 
-export type ArticleInput = Partial<Omit<Article, "id" | "createdAt" | "updatedAt" | "views" | "body">> & {
+export type ArticleInput = Partial<Omit<Article, "id" | "createdAt" | "updatedAt" | "views" | "body" | "seo">> & {
   body?: string | string[];
+  /** Shaped by normaliseSeo, so a partial or malformed object from the API is safe. */
+  seo?: unknown;
 };
 
 function normaliseBody(body: unknown): string[] {
@@ -114,6 +116,7 @@ export async function createArticle(input: ArticleInput & { title: string }): Pr
     status: input.status === "published" ? "published" : "draft",
     featured: Boolean(input.featured),
     author: input.author?.trim() || "Tech News Pro Editorial",
+    seo: normaliseSeo(input.seo),
     views: 0,
     createdAt: stamp,
     updatedAt: stamp
@@ -147,6 +150,7 @@ export async function updateArticle(id: string, input: ArticleInput): Promise<Ar
         status: input.status ?? article.status,
         featured: input.featured ?? article.featured,
         author: input.author?.trim() ?? article.author,
+        seo: input.seo !== undefined ? normaliseSeo(input.seo) : normaliseSeo(article.seo),
         updatedAt: now()
       };
       return saved;

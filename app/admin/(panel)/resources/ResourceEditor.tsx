@@ -4,13 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, send, uploadFile } from "../../apiClient";
+import SeoBoxes from "../SeoBoxes";
 import {
   RESOURCE_TYPES,
   RESOURCE_TYPE_LABELS,
+  emptySeo,
+  normaliseSeo,
   slugify,
   type Resource,
   type ResourceType,
-  type Section
+  type Section,
+  type Seo
 } from "@/lib/types";
 
 type Draft = {
@@ -29,6 +33,7 @@ type Draft = {
   gated: boolean;
   status: "draft" | "published";
   featured: boolean;
+  seo: Seo;
 };
 
 function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
@@ -48,7 +53,8 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
       highlights: "",
       gated: true,
       status: "draft",
-      featured: false
+      featured: false,
+      seo: emptySeo()
     };
   }
   return {
@@ -66,7 +72,8 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
     highlights: resource.highlights.join("\n"),
     gated: resource.gated,
     status: resource.status,
-    featured: resource.featured
+    featured: resource.featured,
+    seo: normaliseSeo(resource.seo)
   };
 }
 
@@ -123,8 +130,14 @@ export default function ResourceEditor({
       highlights,
       gated: draft.gated,
       status: draft.status,
-      featured: draft.featured
+      featured: draft.featured,
+      seo: draft.seo
     };
+  }
+
+  function setSeo(patch: Partial<Seo>) {
+    setDraft((prev) => ({ ...prev, seo: { ...prev.seo, ...patch } }));
+    setSaved("");
   }
 
   async function save(event: React.FormEvent) {
@@ -317,6 +330,20 @@ export default function ResourceEditor({
           />
         )}
       </div>
+
+      <SeoBoxes
+        seo={draft.seo}
+        onChange={setSeo}
+        onError={setError}
+        fallbacks={{
+          title: draft.title,
+          description: draft.summary || draft.title,
+          image: draft.image,
+          path: `/resources/${draft.type}/${draft.slug || slugify(draft.title) || "…"}`,
+          siteName: "Tech News Pro",
+          body: draft.body
+        }}
+      />
 
       <div className="adm-card">
         <h2>Download &amp; publishing</h2>
