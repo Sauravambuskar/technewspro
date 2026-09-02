@@ -84,6 +84,27 @@ a `SELECT … FOR UPDATE` row lock (inside a transaction) for the whole read-mod
 route handler goes through `read` / `update` / `write`, so swapping providers means
 changing that one file.
 
+## Email
+
+Notifications are sent through [Resend](https://resend.com)'s HTTP API. Nothing is
+sent until two environment variables exist, and the site works normally without
+them — `lib/email.ts` no-ops and the Notifications card under **Site settings**
+says so.
+
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Turns sending on. Without it nothing is emailed. |
+| `EMAIL_FROM` | The sender, e.g. `desk@yourdomain.com`. Defaults to Resend's shared `onboarding@resend.dev`, which only delivers to the address that owns the Resend account. |
+
+Sending as your own domain needs that domain verified in Resend (SPF/DKIM records
+in its DNS). Until then `onboarding@resend.dev` is useful for checking the wiring
+but cannot reach readers.
+
+Who gets alerted, and about what, is set in the panel rather than in code:
+**Site settings → Notifications**, which also has a *Send a test email* button.
+Alerts never block a submission — `notify()` is fire-and-forget, so a mail
+failure is logged and the reader's form still succeeds.
+
 `DATABASE_URL` must be a MySQL connection string, e.g.
 `mysql://user:password@host:3306/database` (percent-encode special characters in the
 password). On Hostinger, allow remote connections for the app's outbound IP(s) under

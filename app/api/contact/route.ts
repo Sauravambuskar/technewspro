@@ -1,5 +1,7 @@
 import { fail, handler, ok, readJson, requireString } from "@/lib/api";
+import { notify } from "@/lib/email";
 import { createMessage } from "@/lib/messages";
+import { getSettings } from "@/lib/settings";
 import { clientKey, rateLimit } from "@/lib/ratelimit";
 import { EMAIL_RE } from "@/lib/subscribers";
 
@@ -23,6 +25,16 @@ export const POST = handler(async (request: Request) => {
     body,
     subject: typeof payload.subject === "string" ? payload.subject : undefined
   });
+
+  const settings = await getSettings();
+  if (settings.notifyOnMessage && settings.notifyEmail) {
+    notify({
+      to: settings.notifyEmail,
+      replyTo: message.email,
+      subject: `New message: ${message.subject || "(no subject)"}`,
+      text: `${message.name} <${message.email}> wrote:\n\n${message.body}\n\nRead it in the panel: /admin/messages`
+    });
+  }
 
   return ok({ id: message.id, message: "Thanks — your note is with the newsroom." }, { status: 201 });
 });

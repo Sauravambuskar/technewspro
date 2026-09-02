@@ -1,5 +1,7 @@
 import { fail, handler, ok, readJson, requireString } from "@/lib/api";
 import { clientKey, rateLimit } from "@/lib/ratelimit";
+import { notify } from "@/lib/email";
+import { getSettings } from "@/lib/settings";
 import { EMAIL_RE, subscribe } from "@/lib/subscribers";
 
 export const runtime = "nodejs";
@@ -21,6 +23,15 @@ export const POST = handler(async (request: Request) => {
     result.status === "already-subscribed"
       ? "You're already on the list — see you Tuesday."
       : `You're in — ${result.subscriber.email} will get the next brief.`;
+
+  const settings = await getSettings();
+  if (result.status === "created" && settings.notifyOnSubscriber && settings.notifyEmail) {
+    notify({
+      to: settings.notifyEmail,
+      subject: "New newsletter subscriber",
+      text: `${result.subscriber.email} signed up from ${result.subscriber.source}.\n\nAll subscribers: /admin/subscribers`
+    });
+  }
 
   return ok({ status: result.status, message }, { status: result.status === "created" ? 201 : 200 });
 });

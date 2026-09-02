@@ -1,5 +1,7 @@
 import { fail, handler, ok, readJson, requireUser, requireString } from "@/lib/api";
+import { notify } from "@/lib/email";
 import { createLead, leadsToCsv, listLeads } from "@/lib/leads";
+import { getSettings } from "@/lib/settings";
 import { clientKey, rateLimit } from "@/lib/ratelimit";
 import { getResourceById, recordDownload } from "@/lib/resources";
 import { EMAIL_RE } from "@/lib/subscribers";
@@ -58,6 +60,26 @@ export const POST = handler(async (request: Request) => {
   });
 
   if (resource) await recordDownload(resource.id);
+
+  const settings = await getSettings();
+  if (settings.notifyOnLead && settings.notifyEmail) {
+    notify({
+      to: settings.notifyEmail,
+      replyTo: lead.email,
+      subject: `New ${lead.intent} lead: ${lead.name}`,
+      text: [
+        `${lead.name} <${lead.email}>`,
+        lead.company && `Company: ${lead.company}`,
+        lead.jobTitle && `Role: ${lead.jobTitle}`,
+        lead.phone && `Phone: ${lead.phone}`,
+        lead.resourceTitle && `Wanted: ${lead.resourceTitle}`,
+        lead.message && `\n${lead.message}`,
+        "\nAll leads: /admin/leads"
+      ]
+        .filter(Boolean)
+        .join("\n")
+    });
+  }
 
   return ok(
     {

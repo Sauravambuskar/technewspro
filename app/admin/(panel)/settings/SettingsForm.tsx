@@ -68,6 +68,20 @@ export default function SettingsForm({
     }
   }
 
+  async function sendTest() {
+    setBusy(true);
+    setError("");
+    setNote("");
+    try {
+      const result = await send<{ to: string; from: string }>("/api/notifications/test", "POST");
+      setNote(`Test sent to ${result.to} from ${result.from}. Check the inbox, and the spam folder.`);
+    } catch (caught) {
+      setError((caught as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const text = (key: keyof Settings, label: string, hint?: string) => (
     <label className="adm-field">
       <span>{label}</span>
@@ -272,6 +286,56 @@ export default function SettingsForm({
           {text("contactPhone", "PHONE NUMBER")}
         </div>
         {text("contactAddress", "OFFICE ADDRESS")}
+      </div>
+
+      <div className="adm-card" data-tour="notifications">
+        <h2>Notifications</h2>
+        <p className="adm-card-note">
+          Where to send an alert when a reader gets in touch. Everything is still stored in the panel either
+          way — this only decides whether you also get an email about it.
+        </p>
+
+        {text(
+          "notifyEmail",
+          "SEND ALERTS TO",
+          "Leave empty to turn every notification off."
+        )}
+
+        <label className="adm-check">
+          <input
+            type="checkbox"
+            checked={form.notifyOnMessage}
+            onChange={(e) => set("notifyOnMessage", e.target.checked)}
+          />
+          A message through the contact form
+        </label>
+        <label className="adm-check">
+          <input type="checkbox" checked={form.notifyOnLead} onChange={(e) => set("notifyOnLead", e.target.checked)} />
+          A new lead from a gated download or partnership form
+        </label>
+        <label className="adm-check">
+          <input
+            type="checkbox"
+            checked={form.notifyOnFormSubmission}
+            onChange={(e) => set("notifyOnFormSubmission", e.target.checked)}
+          />
+          A response to one of your built forms
+        </label>
+        <label className="adm-check">
+          <input
+            type="checkbox"
+            checked={form.notifyOnSubscriber}
+            onChange={(e) => set("notifyOnSubscriber", e.target.checked)}
+          />
+          A newsletter sign-up <span style={{ color: "#71737b", fontWeight: 400 }}>&nbsp;— noisy on a busy site</span>
+        </label>
+
+        <div className="adm-form-actions">
+          <button className="adm-btn adm-btn-ghost" type="button" onClick={sendTest} disabled={busy}>
+            Send a test email
+          </button>
+          <small style={{ color: "#71737b", fontSize: 11.5 }}>Save first — the test uses the saved address.</small>
+        </div>
       </div>
 
       <div className="adm-card">

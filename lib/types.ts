@@ -416,6 +416,14 @@ export type Settings = {
   contactTitle: string;
   contactBlurb: string;
   contactEmail: string;
+
+  // Where notification email goes, and which events send it. Nothing is sent
+  // until RESEND_API_KEY is configured; see lib/email.ts.
+  notifyEmail: string;
+  notifyOnMessage: boolean;
+  notifyOnLead: boolean;
+  notifyOnSubscriber: boolean;
+  notifyOnFormSubmission: boolean;
   contactPhone: string;
   contactAddress: string;
 };

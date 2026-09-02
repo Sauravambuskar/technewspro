@@ -1,5 +1,7 @@
 import { fail, handler, ok, readJson } from "@/lib/api";
+import { notify } from "@/lib/email";
 import { getFormById, recordSubmission } from "@/lib/forms";
+import { getSettings } from "@/lib/settings";
 import { clientKey, rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
@@ -20,6 +22,19 @@ export const POST = handler(async (request: Request, { params }: Ctx) => {
   const payload = await readJson<Record<string, unknown>>(request);
   const { submission, errors } = await recordSubmission(form, payload);
   if (!submission) return fail(errors[0] ?? "Please check the form and try again.", 400, errors);
+
+  const settings = await getSettings();
+  if (settings.notifyOnFormSubmission && settings.notifyEmail) {
+    const lines = form.fields
+      .map((field) => `${field.label}: ${submission.values[field.name] || "—"}`)
+      .join("\n");
+
+    notify({
+      to: settings.notifyEmail,
+      subject: `New response: ${form.name}`,
+      text: `${lines}\n\nAll responses: /admin/forms/${form.id}/submissions`
+    });
+  }
 
   return ok({ id: submission.id, message: form.successMessage }, { status: 201 });
 });

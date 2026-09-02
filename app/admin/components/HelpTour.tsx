@@ -693,6 +693,15 @@ function stepsForPath(pathname: string): DriveStep[] {
               "Site name, the homepage hero, the About and Contact copy, footer and social links. Every field here is live text on the public site — save and it's changed.",
             side: "top"
           }
+        },
+        {
+          element: '[data-tour="notifications"]',
+          popover: {
+            title: "Getting told when someone writes in",
+            description:
+              "Set an address here and pick which events email you — contact messages, leads, form responses, sign-ups. Everything is still stored in the panel regardless; this only adds the alert.",
+            side: "top"
+          }
         }
       ];
 

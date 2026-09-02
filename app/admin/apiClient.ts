@@ -18,8 +18,8 @@ export async function api<T = unknown>(url: string, init: RequestInit = {}): Pro
   return payload.data as T;
 }
 
-export function send(url: string, method: "POST" | "PATCH" | "PUT" | "DELETE", body?: unknown) {
-  return api(url, { method, body: body === undefined ? undefined : JSON.stringify(body) });
+export function send<T = unknown>(url: string, method: "POST" | "PATCH" | "PUT" | "DELETE", body?: unknown) {
+  return api<T>(url, { method, body: body === undefined ? undefined : JSON.stringify(body) });
 }
 
 /** Multipart upload — no content-type header, so the browser sets the boundary itself. */
