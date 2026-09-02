@@ -35,6 +35,10 @@ export default async function CustomPage({ params }: { params: { slug: string } 
 
   const { settings, nav, menu, footerPages } = await getSiteChrome();
 
+  // Canvas is a deliberately blank page: no header, footer or breadcrumb.
+  const canvas = page.layout === "canvas";
+  const fullWidth = page.layout === "full-width";
+
   return (
     <main>
       <JsonLd
@@ -49,33 +53,46 @@ export default async function CustomPage({ params }: { params: { slug: string } 
         }}
       />
 
-      <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      {!canvas && (
+        <>
+          <div className="topline" />
+          <SiteHeader menu={menu} siteName={settings.siteName} />
+        </>
+      )}
+
       <ViewBeacon slug={page.slug} kind="page" />
 
-      <nav className="breadcrumb" aria-label="Breadcrumb">
-        <Link href="/">Home</Link> <span>/</span> <b>{page.title}</b>
-      </nav>
+      {!canvas && (
+        <nav className="breadcrumb" aria-label="Breadcrumb">
+          <Link href="/">Home</Link> <span>/</span> <b>{page.title}</b>
+        </nav>
+      )}
 
-      <article className="article-page">
-        <div className="article-head">
-          <h1>{page.title}</h1>
-          {page.summary && <p className="article-dek">{page.summary}</p>}
-          <div className="article-meta">
-            <span>Last updated {formatDate(page.updatedAt.slice(0, 10))}</span>
+      <article className={`article-page${canvas || fullWidth ? " page-wide" : ""}`}>
+        {!page.hideTitle && (
+          <div className="article-head">
+            <h1>{page.title}</h1>
+            {page.summary && <p className="article-dek">{page.summary}</p>}
+            {!canvas && (
+              <div className="article-meta">
+                <span>Last updated {formatDate(page.updatedAt.slice(0, 10))}</span>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         <div className="article-body">
           {page.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
         </div>
 
-        <div className="article-back">
-          <Link href="/">&larr; Back to the homepage</Link>
-        </div>
+        {!canvas && (
+          <div className="article-back">
+            <Link href="/">&larr; Back to the homepage</Link>
+          </div>
+        )}
       </article>
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      {!canvas && <SiteFooter nav={nav} settings={settings} pages={footerPages} />}
     </main>
   );
 }

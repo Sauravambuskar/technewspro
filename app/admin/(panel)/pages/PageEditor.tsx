@@ -5,7 +5,18 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, send } from "../../apiClient";
 import SeoBoxes from "../SeoBoxes";
-import { emptySeo, isReservedSlug, normaliseSeo, slugify, type Page, type Seo } from "@/lib/types";
+import {
+  PAGE_LAYOUTS,
+  PAGE_LAYOUT_LABELS,
+  emptySeo,
+  isPageLayout,
+  isReservedSlug,
+  normaliseSeo,
+  slugify,
+  type Page,
+  type PageLayout,
+  type Seo
+} from "@/lib/types";
 
 type Draft = {
   title: string;
@@ -14,10 +25,23 @@ type Draft = {
   body: string;
   author: string;
   status: "draft" | "published";
+  layout: PageLayout;
+  hideTitle: boolean;
   showInNav: boolean;
   showInFooter: boolean;
   seo: Seo;
 };
+
+/** Little wireframe of what each template keeps, so the choice is visible. */
+function LayoutPreview({ layout }: { layout: PageLayout }) {
+  return (
+    <span className={`adm-layout-preview adm-layout-${layout}`} aria-hidden="true">
+      <i className="adm-lp-header" />
+      <i className="adm-lp-body" />
+      <i className="adm-lp-footer" />
+    </span>
+  );
+}
 
 function toDraft(page: Page | undefined): Draft {
   if (!page) {
@@ -28,6 +52,8 @@ function toDraft(page: Page | undefined): Draft {
       body: "",
       author: "Tech News Pro",
       status: "draft",
+      layout: "default",
+      hideTitle: false,
       showInNav: false,
       showInFooter: true,
       seo: emptySeo()
@@ -40,6 +66,8 @@ function toDraft(page: Page | undefined): Draft {
     body: page.body.join("\n\n"),
     author: page.author,
     status: page.status,
+    layout: isPageLayout(page.layout) ? page.layout : "default",
+    hideTitle: page.hideTitle ?? false,
     showInNav: page.showInNav,
     showInFooter: page.showInFooter,
     seo: normaliseSeo(page.seo)
@@ -76,6 +104,8 @@ export default function PageEditor({ page }: { page?: Page }) {
       body: paragraphs,
       author: draft.author,
       status: draft.status,
+      layout: draft.layout,
+      hideTitle: draft.hideTitle,
       showInNav: draft.showInNav,
       showInFooter: draft.showInFooter,
       seo: draft.seo
@@ -169,6 +199,40 @@ export default function PageEditor({ page }: { page?: Page }) {
           />
           <small>{paragraphs.length} paragraph{paragraphs.length === 1 ? "" : "s"}</small>
         </label>
+      </div>
+
+      <div className="adm-card" data-tour="editor-layout">
+        <h2>Layout</h2>
+        <p className="adm-card-note">
+          How much of the site wraps around this page. Pick the reading column for text, or strip the chrome
+          away for a landing page.
+        </p>
+
+        <div className="adm-layout-picker">
+          {PAGE_LAYOUTS.map((option) => (
+            <label className={`adm-layout-option${draft.layout === option ? " adm-layout-active" : ""}`} key={option}>
+              <input
+                type="radio"
+                name="page-layout"
+                value={option}
+                checked={draft.layout === option}
+                onChange={() => set("layout", option)}
+              />
+              <LayoutPreview layout={option} />
+              <b>{PAGE_LAYOUT_LABELS[option].label}</b>
+              <small>{PAGE_LAYOUT_LABELS[option].hint}</small>
+            </label>
+          ))}
+        </div>
+
+        <label className="adm-check" style={{ marginTop: 18 }}>
+          <input type="checkbox" checked={draft.hideTitle} onChange={(e) => set("hideTitle", e.target.checked)} />
+          Hide the page title and intro
+        </label>
+        <small style={{ display: "block", color: "#71737b", fontSize: 11.5, marginTop: -6 }}>
+          Useful when the body opens with its own headline. The title is still used for the tab, search results
+          and menus.
+        </small>
       </div>
 
       <div className="adm-card" data-tour="editor-placement">

@@ -1,5 +1,12 @@
 import { newId, now, read, update } from "./store";
-import { isReservedSlug, normaliseSeo, slugify, type ArticleStatus, type Page } from "./types";
+import {
+  isPageLayout,
+  isReservedSlug,
+  normaliseSeo,
+  slugify,
+  type ArticleStatus,
+  type Page
+} from "./types";
 
 const COLLECTION = "pages";
 // Standalone pages are authored, never seeded — a new site simply has none.
@@ -12,7 +19,15 @@ function byOrder(a: Page, b: Page) {
 
 export async function allPages(): Promise<Page[]> {
   const pages = await read<Page[]>(COLLECTION, seed);
-  return pages.map((p) => ({ ...p, seo: normaliseSeo(p.seo) })).sort(byOrder);
+  // Rows written before the layout options existed have no field; fill in defaults.
+  return pages
+    .map((p) => ({
+      ...p,
+      seo: normaliseSeo(p.seo),
+      layout: isPageLayout(p.layout) ? p.layout : "default",
+      hideTitle: p.hideTitle ?? false
+    }))
+    .sort(byOrder);
 }
 
 export async function listPages(status: ArticleStatus | "all" = "published"): Promise<Page[]> {
@@ -64,6 +79,8 @@ export async function createPage(input: PageInput & { title: string }): Promise<
     summary: input.summary?.trim() || "",
     body: normaliseBody(input.body),
     status: input.status === "published" ? "published" : "draft",
+    layout: isPageLayout(input.layout) ? input.layout : "default",
+    hideTitle: input.hideTitle ?? false,
     showInNav: input.showInNav ?? false,
     showInFooter: input.showInFooter ?? true,
     order: input.order ?? existing.length + 1,
@@ -92,6 +109,8 @@ export async function updatePage(id: string, input: PageInput): Promise<Page | u
         summary: input.summary?.trim() ?? page.summary,
         body: input.body !== undefined ? normaliseBody(input.body) : page.body,
         status: input.status ?? page.status,
+        layout: isPageLayout(input.layout) ? input.layout : (page.layout ?? "default"),
+        hideTitle: input.hideTitle ?? page.hideTitle ?? false,
         showInNav: input.showInNav ?? page.showInNav,
         showInFooter: input.showInFooter ?? page.showInFooter,
         order: input.order ?? page.order,

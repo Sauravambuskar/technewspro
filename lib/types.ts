@@ -196,6 +196,33 @@ export type Resource = {
 };
 
 /**
+ * How much of the site's chrome a page keeps, in the spirit of Elementor's
+ * page templates: the default reading column, an edge-to-edge landing page, or
+ * a blank canvas with no header or footer at all.
+ */
+export const PAGE_LAYOUTS = ["default", "full-width", "canvas"] as const;
+export type PageLayout = (typeof PAGE_LAYOUTS)[number];
+
+export const PAGE_LAYOUT_LABELS: Record<PageLayout, { label: string; hint: string }> = {
+  default: {
+    label: "Default",
+    hint: "Header, footer, breadcrumb and a centred reading column. Right for policies and long text."
+  },
+  "full-width": {
+    label: "Full width",
+    hint: "Header and footer stay, but the content runs edge to edge. Right for a landing page."
+  },
+  canvas: {
+    label: "Canvas",
+    hint: "No header, no footer, no breadcrumb — a blank page. Right for a campaign or standalone offer."
+  }
+};
+
+export function isPageLayout(value: unknown): value is PageLayout {
+  return typeof value === "string" && (PAGE_LAYOUTS as readonly string[]).includes(value);
+}
+
+/**
  * A standalone page — privacy policy, terms, advertise-with-us and so on.
  * Lives at the site root (/privacy-policy), so its slug must not collide with a
  * built-in route; see RESERVED_SLUGS.
@@ -208,6 +235,9 @@ export type Page = {
   summary: string;
   body: string[];
   status: ArticleStatus;
+  layout: PageLayout;
+  /** Lets the body supply its own opening heading instead. */
+  hideTitle: boolean;
   showInNav: boolean;
   showInFooter: boolean;
   order: number;

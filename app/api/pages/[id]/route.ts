@@ -1,6 +1,6 @@
 import { fail, handler, ok, readJson, requireUser } from "@/lib/api";
 import { deletePage, getPageById, updatePage } from "@/lib/pages";
-import type { ArticleStatus } from "@/lib/types";
+import { isPageLayout, type ArticleStatus } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,6 +28,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     summary: typeof payload.summary === "string" ? payload.summary : undefined,
     body: payload.body as string | string[] | undefined,
     status: payload.status as ArticleStatus | undefined,
+    layout: isPageLayout(payload.layout) ? payload.layout : undefined,
+    hideTitle: typeof payload.hideTitle === "boolean" ? payload.hideTitle : undefined,
     showInNav: typeof payload.showInNav === "boolean" ? payload.showInNav : undefined,
     showInFooter: typeof payload.showInFooter === "boolean" ? payload.showInFooter : undefined,
     order: typeof payload.order === "number" ? payload.order : undefined,

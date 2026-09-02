@@ -313,3 +313,10 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 .contact-form .form-message { margin-top:14px; }
 .contact-form .form-success { color:#1f7a4d; }
 @media (max-width: 900px) { .contact-page { grid-template-columns:1fr; } }
+
+/* Custom page layouts — full-width and canvas drop the centred reading column
+   so a landing page can run edge to edge. */
+.article-page.page-wide { max-width:none; padding-left:clamp(20px,8vw,150px); padding-right:clamp(20px,8vw,150px); }
+.article-page.page-wide .article-dek { max-width:900px; }
+.article-page.page-wide .article-body p { max-width:none; }
+@media (max-width: 620px) { .article-page.page-wide { padding-left:20px; padding-right:20px; } }

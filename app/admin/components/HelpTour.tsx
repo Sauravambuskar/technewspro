@@ -397,9 +397,18 @@ const PAGE_EDITOR_STEPS: DriveStep[] = [
     }
   },
   {
+    element: '[data-tour="editor-layout"]',
+    popover: {
+      title: "4. Pick a layout",
+      description:
+        "Default keeps the header, footer and a centred reading column — right for policies. Full width keeps the chrome but lets the content run edge to edge. Canvas strips everything for a standalone landing page.",
+      side: "top"
+    }
+  },
+  {
     element: '[data-tour="f-slug"]',
     popover: {
-      title: "4. Its address",
+      title: "5. Its address",
       description:
         "Pages live at the site root, so this one will be reachable at /your-slug. Addresses the site already uses — /about, /contact, /category — are taken, and saving will move you to the next free one.",
       side: "bottom"
@@ -408,7 +417,7 @@ const PAGE_EDITOR_STEPS: DriveStep[] = [
   {
     element: '[data-tour="editor-placement"]',
     popover: {
-      title: "5. Where it gets linked",
+      title: "6. Where it gets linked",
       description:
         "Nav puts it in the top menu; footer puts it in the bottom links. Legal pages usually want the footer only. Tick neither and the page still works — it's just unlisted.",
       side: "top"
@@ -417,7 +426,7 @@ const PAGE_EDITOR_STEPS: DriveStep[] = [
   {
     element: '[data-tour="seo-search"]',
     popover: {
-      title: "6. Search and social",
+      title: "7. Search and social",
       description:
         "The same SEO and sharing controls as an article. Policy pages are often set to noindex here so they stay out of search results.",
       side: "top"
@@ -426,7 +435,7 @@ const PAGE_EDITOR_STEPS: DriveStep[] = [
   {
     element: '[data-tour="editor-publishing"]',
     popover: {
-      title: "7. Draft until you say so",
+      title: "8. Draft until you say so",
       description: "Nothing is visible on the public site while the status is Draft.",
       side: "top"
     }
@@ -434,7 +443,7 @@ const PAGE_EDITOR_STEPS: DriveStep[] = [
   {
     element: '[data-tour="editor-save"]',
     popover: {
-      title: "8. Save your work",
+      title: "9. Save your work",
       description: "Changes aren't stored until you press this. There's no autosave.",
       side: "top",
       align: "start"
