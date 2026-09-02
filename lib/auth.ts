@@ -29,11 +29,23 @@ export function verifyPassword(password: string, stored: string) {
 
 /* -------------------------------------------------------------------- secrets */
 
+// The stored secret never changes once created, so reading it from the database
+// on every request is pure latency. Memoised for the life of the instance.
+let secretPromise: Promise<string> | null = null;
+
 async function sessionSecret(): Promise<string> {
   if (process.env.ADMIN_SESSION_SECRET) return process.env.ADMIN_SESSION_SECRET;
-  // Persisted so sessions survive a dev-server restart without any configuration.
-  const stored = await read<{ value: string }>(SECRET, () => ({ value: randomBytes(32).toString("hex") }));
-  return stored.value;
+
+  if (!secretPromise) {
+    // Persisted so sessions survive a dev-server restart without any configuration.
+    secretPromise = read<{ value: string }>(SECRET, () => ({ value: randomBytes(32).toString("hex") }))
+      .then((stored) => stored.value)
+      .catch((error) => {
+        secretPromise = null; // let the next request retry
+        throw error;
+      });
+  }
+  return secretPromise;
 }
 
 /* -------------------------------------------------------------------- users */
@@ -114,10 +126,21 @@ export async function deleteUser(id: string) {
   return removed;
 }
 
+// scrypt is deliberately slow, and this check runs on every admin page render to
+// decide whether to show one warning banner. The answer only changes when the
+// stored hash does, so memoise against the hash: same hash, same answer, no work.
+let defaultPasswordCheck: { hash: string; result: boolean } | null = null;
+
 /** True while the seeded account still uses the fallback password. */
 export async function usingDefaultPassword() {
   const user = await findUserByEmail(DEFAULT_ADMIN_EMAIL);
-  return Boolean(user && verifyPassword(DEFAULT_ADMIN_PASSWORD, user.passwordHash));
+  if (!user) return false;
+
+  if (defaultPasswordCheck?.hash === user.passwordHash) return defaultPasswordCheck.result;
+
+  const result = verifyPassword(DEFAULT_ADMIN_PASSWORD, user.passwordHash);
+  defaultPasswordCheck = { hash: user.passwordHash, result };
+  return result;
 }
 
 /* ------------------------------------------------------------------ sessions */
