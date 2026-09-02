@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [{ settings, nav, menu }, sections] = await Promise.all([getSiteChrome(), listSections()]);
+  const [{ settings, nav, menu, footerPages }, sections] = await Promise.all([getSiteChrome(), listSections()]);
 
   return (
     <main>
@@ -96,7 +96,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

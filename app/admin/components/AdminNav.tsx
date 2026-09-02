@@ -3,13 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export type NavBadge = { articles?: number; resources?: number; messages?: number; leads?: number; subscribers?: number };
+export type NavBadge = {
+  articles?: number;
+  resources?: number;
+  pages?: number;
+  messages?: number;
+  leads?: number;
+  subscribers?: number;
+};
 
 // `tour` is the data-tour hook the guided walkthrough targets for each link.
 const LINKS = [
   { href: "/admin", label: "Dashboard", exact: true, tour: "dashboard" },
   { href: "/admin/articles", label: "Articles", badge: "articles" as const, tour: "articles" },
   { href: "/admin/resources", label: "Resources", badge: "resources" as const, tour: "resources" },
+  { href: "/admin/pages", label: "Pages", badge: "pages" as const, tour: "pages" },
   { href: "/admin/sections", label: "Sections", tour: "sections" },
   { href: "/admin/ticker", label: "News ticker", tour: "ticker" },
   { href: "/admin/leads", label: "Leads", badge: "leads" as const, tour: "leads" },

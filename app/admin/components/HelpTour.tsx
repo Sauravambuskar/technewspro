@@ -101,9 +101,18 @@ const PRODUCT_TOUR: DriveStep[] = [
     }
   },
   {
+    element: '[data-tour="nav-pages"]',
+    popover: {
+      title: "4. Pages",
+      description:
+        "Standalone pages that sit outside the categories — privacy policy, terms, advertise with us. Each one gets a clean address at the site root and can be linked from the nav, the footer, or neither.",
+      side: "right"
+    }
+  },
+  {
     element: '[data-tour="nav-sections"]',
     popover: {
-      title: "4. Sections",
+      title: "5. Sections",
       description:
         "Your categories and sub-categories. Renaming one here updates it everywhere — navigation, category pages, breadcrumbs and the sitemap.",
       side: "right"
@@ -112,7 +121,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-ticker"]',
     popover: {
-      title: "5. News ticker",
+      title: "6. News ticker",
       description:
         "The scrolling headline bar at the top of the public site. Add lines, reorder them, or switch the whole thing off.",
       side: "right"
@@ -121,7 +130,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-leads"]',
     popover: {
-      title: "6. Leads",
+      title: "7. Leads",
       description:
         "Everyone who filled in a gated download or a partnership form, and which resource they wanted. Exportable as CSV.",
       side: "right"
@@ -130,7 +139,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-subscribers"]',
     popover: {
-      title: "7. Subscribers",
+      title: "8. Subscribers",
       description:
         "Your newsletter list, with the page each sign-up came from. You can unsubscribe someone by hand and export the list.",
       side: "right"
@@ -139,7 +148,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-messages"]',
     popover: {
-      title: "8. Inbox",
+      title: "9. Inbox",
       description:
         "Messages sent through the contact form. The badge counts unread ones, and clears as you open them.",
       side: "right"
@@ -148,7 +157,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-settings"]',
     popover: {
-      title: "9. Site settings",
+      title: "10. Site settings",
       description:
         "The words around the content: site name, homepage hero, About and Contact copy, footer and social links. Every field is live text on the public site.",
       side: "right"
@@ -157,7 +166,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-team"]',
     popover: {
-      title: "10. Team",
+      title: "11. Team",
       description:
         "Add editors or admins, change a password, remove an account. If you're still on the default password, change it here first.",
       side: "right"
@@ -166,7 +175,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="stats"]',
     popover: {
-      title: "11. Your numbers at a glance",
+      title: "12. Your numbers at a glance",
       description:
         "Refreshed on every visit. “Drafts waiting” is the useful one — it's how much is written but not yet live.",
       side: "bottom"
@@ -175,7 +184,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="dash-tables"]',
     popover: {
-      title: "12. What's working",
+      title: "13. What's working",
       description:
         "Your best-read stories, how coverage splits across categories, and anything still in draft. Click any title to open it.",
       side: "top"
@@ -184,7 +193,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="page-actions"]',
     popover: {
-      title: "13. Write something",
+      title: "14. Write something",
       description: "The quickest way into a blank story or resource. These buttons sit at the top of most screens.",
       side: "bottom",
       align: "end"
@@ -193,7 +202,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="view-site"]',
     popover: {
-      title: "14. See it as a reader does",
+      title: "15. See it as a reader does",
       description: "Opens the public site in a new tab, so you can check your work without losing your place here.",
       side: "right"
     }
@@ -201,7 +210,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="account"]',
     popover: {
-      title: "15. You, and the way out",
+      title: "16. You, and the way out",
       description: "Who you're signed in as and what you're allowed to do, with the sign-out button underneath.",
       side: "right"
     }
@@ -360,6 +369,79 @@ const EDITOR_STEPS: DriveStep[] = [
   }
 ];
 
+/** Custom pages have no category or hero image, so they get their own walkthrough. */
+const PAGE_EDITOR_STEPS: DriveStep[] = [
+  {
+    element: '[data-tour="editor-content"]',
+    popover: {
+      title: "1. What a page is for",
+      description:
+        "Standalone content that isn't news — a privacy policy, terms, an advertise-with-us page. It sits outside the categories and never appears in the article feeds.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="f-title"]',
+    popover: {
+      title: "2. The title",
+      description: "Typing here fills in the address below, until you edit that yourself.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="f-body"]',
+    popover: {
+      title: "3. The body",
+      description: "Leave a blank line between paragraphs — each block becomes its own paragraph on the page.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="f-slug"]',
+    popover: {
+      title: "4. Its address",
+      description:
+        "Pages live at the site root, so this one will be reachable at /your-slug. Addresses the site already uses — /about, /contact, /category — are taken, and saving will move you to the next free one.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="editor-placement"]',
+    popover: {
+      title: "5. Where it gets linked",
+      description:
+        "Nav puts it in the top menu; footer puts it in the bottom links. Legal pages usually want the footer only. Tick neither and the page still works — it's just unlisted.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="seo-search"]',
+    popover: {
+      title: "6. Search and social",
+      description:
+        "The same SEO and sharing controls as an article. Policy pages are often set to noindex here so they stay out of search results.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="editor-publishing"]',
+    popover: {
+      title: "7. Draft until you say so",
+      description: "Nothing is visible on the public site while the status is Draft.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="editor-save"]',
+    popover: {
+      title: "8. Save your work",
+      description: "Changes aren't stored until you press this. There's no autosave.",
+      side: "top",
+      align: "start"
+    }
+  }
+];
+
 const tableSteps = (noun: string): DriveStep[] => [
   {
     element: '[data-tour="toolbar"]',
@@ -400,6 +482,7 @@ const tableSteps = (noun: string): DriveStep[] => [
 
 /** Page-specific steps, keyed by the most specific matching route. */
 function stepsForPath(pathname: string): DriveStep[] {
+  if (/^\/admin\/pages\/(new|[^/]+)$/.test(pathname)) return PAGE_EDITOR_STEPS;
   if (/^\/admin\/(articles|resources)\/(new|[^/]+)$/.test(pathname)) return EDITOR_STEPS;
 
   switch (pathname) {
@@ -411,6 +494,8 @@ function stepsForPath(pathname: string): DriveStep[] {
       return tableSteps("articles");
     case "/admin/resources":
       return tableSteps("resources");
+    case "/admin/pages":
+      return tableSteps("pages");
 
     case "/admin/sections":
       return [

@@ -43,7 +43,7 @@ export default async function ResourceDetail({ params }: Params) {
   // Keep one canonical URL per resource even if the type in the path is stale.
   if (resource.type !== params.type) redirect(`/resources/${resource.type}/${resource.slug}`);
 
-  const [{ settings, nav, menu }, labels, related] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, labels, related] = await Promise.all([
     getSiteChrome(),
     sectionLabels(),
     listResources({ type: resource.type, status: "published", limit: 4 })
@@ -162,7 +162,7 @@ export default async function ResourceDetail({ params }: Params) {
         </section>
       )}
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

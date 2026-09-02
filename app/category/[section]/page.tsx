@@ -29,7 +29,7 @@ export default async function SectionPage({ params }: { params: { section: strin
   const section = await getSection(params.section);
   if (!section) notFound();
 
-  const [{ settings, nav, menu }, sections, articles, resources] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, sections, articles, resources] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listArticles({ section: section.id, status: "published" }),
@@ -131,7 +131,7 @@ export default async function SectionPage({ params }: { params: { section: strin
         </section>
       )}
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

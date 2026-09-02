@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { listArticles } from "@/lib/articles";
+import { listPages } from "@/lib/pages";
 import { listResources } from "@/lib/resources";
 import { listSections } from "@/lib/sections";
 import { siteUrl } from "@/lib/seo";
@@ -8,10 +9,11 @@ import { RESOURCE_TYPES } from "@/lib/types";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [sections, articles, resources] = await Promise.all([
+  const [sections, articles, resources, pages] = await Promise.all([
     listSections(),
     listArticles({ status: "published" }),
-    listResources({ status: "published" })
+    listResources({ status: "published" }),
+    listPages("published")
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -61,6 +63,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(resource.updatedAt),
         changeFrequency: "monthly" as const,
         priority: 0.8
+      })),
+    ...pages
+      .filter((page) => page.seo.index)
+      .map((page) => ({
+        url: siteUrl(`/${page.slug}`),
+        lastModified: new Date(page.updatedAt),
+        changeFrequency: "yearly" as const,
+        priority: 0.4
       }))
   ];
 }

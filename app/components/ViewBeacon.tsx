@@ -8,7 +8,7 @@ export default function ViewBeacon({
   kind = "article"
 }: {
   slug: string;
-  kind?: "article" | "resource";
+  kind?: "article" | "resource" | "page";
 }) {
   useEffect(() => {
     const key = `sip:viewed:${kind}:${slug}`;

@@ -19,7 +19,7 @@ import { siteUrl } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [{ settings, nav, menu }, sections, published, resources, ticker] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, sections, published, resources, ticker] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listArticles({ status: "published" }),
@@ -232,7 +232,7 @@ export default async function Home() {
         <NewsletterForm blurb={settings.newsletterBlurb} />
       </section>
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { getCurrentUser, usingDefaultPassword } from "@/lib/auth";
 import { allArticles } from "@/lib/articles";
 import { listLeads } from "@/lib/leads";
 import { listMessages } from "@/lib/messages";
+import { allPages } from "@/lib/pages";
 import { allResources } from "@/lib/resources";
 import { listSubscribers } from "@/lib/subscribers";
 import AdminNav from "../components/AdminNav";
@@ -16,9 +17,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const user = await getCurrentUser();
   if (!user) redirect("/admin/login");
 
-  const [articles, resources, messages, leads, subscribers, insecure] = await Promise.all([
+  const [articles, resources, pages, messages, leads, subscribers, insecure] = await Promise.all([
     allArticles(),
     allResources(),
+    allPages(),
     listMessages(),
     listLeads(),
     listSubscribers(),
@@ -39,6 +41,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           badges={{
             articles: articles.filter((a) => a.status === "draft").length,
             resources: resources.filter((r) => r.status === "draft").length,
+            pages: pages.filter((p) => p.status === "draft").length,
             messages: messages.filter((m) => !m.read).length,
             leads: leads.length,
             subscribers: subscribers.filter((s) => s.status === "subscribed").length

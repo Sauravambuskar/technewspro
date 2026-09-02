@@ -28,7 +28,7 @@ export default async function ResourceTypePage({ params }: { params: { type: str
   if (!isResourceType(params.type)) notFound();
   const type = params.type;
 
-  const [{ settings, nav, menu }, sections, resources] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, sections, resources] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listResources({ type, status: "published" })
@@ -69,7 +69,7 @@ export default async function ResourceTypePage({ params }: { params: { type: str
         <ResourceBrowser resources={resources} sections={sections} lockedType={type} />
       </section>
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

@@ -35,7 +35,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   const article = await getArticleBySlug(params.slug);
   if (!article) notFound();
 
-  const [{ settings, nav, menu }, labels, sectionArticles, subcategory] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, labels, sectionArticles, subcategory] = await Promise.all([
     getSiteChrome(),
     sectionLabels(),
     listArticles({ section: article.section, status: "published" }),
@@ -125,7 +125,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </section>
       )}
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

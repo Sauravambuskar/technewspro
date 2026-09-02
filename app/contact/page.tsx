@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const { settings, nav, menu } = await getSiteChrome();
+  const { settings, nav, menu, footerPages } = await getSiteChrome();
 
   return (
     <main>
@@ -63,7 +63,7 @@ export default async function ContactPage() {
         <ContactForm />
       </section>
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

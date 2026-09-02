@@ -2,7 +2,16 @@ import Link from "next/link";
 import type { NavItem } from "@/lib/site";
 import type { Settings } from "@/lib/types";
 
-export default function SiteFooter({ nav, settings }: { nav: NavItem[]; settings: Settings }) {
+export default function SiteFooter({
+  nav,
+  settings,
+  pages = []
+}: {
+  nav: NavItem[];
+  settings: Settings;
+  /** Custom pages that opted into the footer. */
+  pages?: NavItem[];
+}) {
   return (
     <footer id="about">
       <Link className="brand footer-brand" href="/">
@@ -16,6 +25,7 @@ export default function SiteFooter({ nav, settings }: { nav: NavItem[]; settings
         <Link href="/about">About us</Link>
         <Link href="/contact">Contact us</Link>
         <Link href="/#newsletter">Newsletter</Link>
+        {pages.map((page) => <Link href={page.href} key={page.href}>{page.label}</Link>)}
       </div>
       <div className="socials">
         {settings.socials.map((social) => (

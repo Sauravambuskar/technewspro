@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CategoryIndex() {
-  const [{ settings, nav, menu }, sections, published] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, sections, published] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listArticles({ status: "published" })
@@ -62,7 +62,7 @@ export default async function CategoryIndex() {
         );
       })}
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

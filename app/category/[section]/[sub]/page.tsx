@@ -42,7 +42,7 @@ export default async function SubcategoryPage({ params }: Params) {
   ]);
   if (!section || !sub) notFound();
 
-  const [{ settings, nav, menu }, articles] = await Promise.all([
+  const [{ settings, nav, menu, footerPages }, articles] = await Promise.all([
     getSiteChrome(),
     listArticles({ section: section.id, subcategory: sub.id, status: "published" })
   ]);
@@ -115,7 +115,7 @@ export default async function SubcategoryPage({ params }: Params) {
         )}
       </section>
 
-      <SiteFooter nav={nav} settings={settings} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
     </main>
   );
 }

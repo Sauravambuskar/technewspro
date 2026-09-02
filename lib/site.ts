@@ -1,4 +1,5 @@
 import { listArticles } from "./articles";
+import { listPages } from "./pages";
 import { listResources } from "./resources";
 import { navSections } from "./sections";
 import { getSettings } from "./settings";
@@ -16,11 +17,12 @@ const DROPDOWN_LIMIT = 5;
 
 /** Everything the header and footer need, resolved once per request. */
 export async function getSiteChrome() {
-  const [settings, sections, articles, resources] = await Promise.all([
+  const [settings, sections, articles, resources, pages] = await Promise.all([
     getSettings(),
     navSections(),
     listArticles({ status: "published" }),
-    listResources({ status: "published" })
+    listResources({ status: "published" }),
+    listPages("published")
   ]);
 
   // Dropdowns list the section's sub-categories that actually have published
@@ -52,15 +54,25 @@ export async function getSiteChrome() {
     href: `/resources/${type}`
   }));
 
+  // Custom pages opt in to the header and the footer independently.
+  const navPages: NavEntry[] = pages
+    .filter((page) => page.showInNav)
+    .map((page) => ({ id: `page-${page.id}`, label: page.title, href: `/${page.slug}`, links: [] }));
+
+  const footerPages: NavItem[] = pages
+    .filter((page) => page.showInFooter)
+    .map((page) => ({ label: page.title, href: `/${page.slug}` }));
+
   const menu: NavEntry[] = [
     ...categories,
     { id: "resources", label: "Resources", href: "/resources", links: resourceLinks },
     { id: "about", label: "About Us", href: "/about", links: [] },
-    { id: "contact", label: "Contact Us", href: "/contact", links: [] }
+    { id: "contact", label: "Contact Us", href: "/contact", links: [] },
+    ...navPages
   ];
 
   // Footer columns
   const nav: NavItem[] = categories.map(({ label, href }) => ({ label, href }));
 
-  return { settings, nav, menu, resourceLinks };
+  return { settings, nav, menu, resourceLinks, footerPages };
 }

@@ -195,6 +195,48 @@ export type Resource = {
   updatedAt: string;
 };
 
+/**
+ * A standalone page — privacy policy, terms, advertise-with-us and so on.
+ * Lives at the site root (/privacy-policy), so its slug must not collide with a
+ * built-in route; see RESERVED_SLUGS.
+ */
+export type Page = {
+  id: string;
+  slug: string;
+  title: string;
+  /** Shown under the heading, and the fallback meta description. */
+  summary: string;
+  body: string[];
+  status: ArticleStatus;
+  showInNav: boolean;
+  showInFooter: boolean;
+  order: number;
+  seo: Seo;
+  author: string;
+  views: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/** Paths the app already owns, which a custom page may not take over. */
+export const RESERVED_SLUGS = [
+  "admin",
+  "api",
+  "about",
+  "contact",
+  "articles",
+  "category",
+  "insights",
+  "resources",
+  "sitemap.xml",
+  "robots.txt",
+  "favicon.ico"
+];
+
+export function isReservedSlug(slug: string) {
+  return RESERVED_SLUGS.includes(slug.trim().toLowerCase());
+}
+
 export type Lead = {
   id: string;
   name: string;
