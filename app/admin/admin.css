@@ -192,6 +192,20 @@
 .adm-layout-canvas .adm-lp-body { width:100%; height:36px; margin:0; }
 .adm-layout-canvas .adm-lp-header, .adm-layout-canvas .adm-lp-footer { display:none; }
 
+/* ------------------------------------------------------------ form builder */
+.adm-fb-field { border:1px solid var(--adm-line); border-radius:5px; margin-bottom:10px; background:#faf9f5; }
+.adm-fb-open { background:#fff; border-color:#c3c3ba; }
+.adm-fb-head { display:flex; align-items:center; gap:8px; padding:11px 13px; }
+.adm-fb-summary {
+  flex:1; min-width:0; text-align:left; border:0; background:none; cursor:pointer;
+  font-family:inherit; color:var(--adm-ink); padding:0;
+}
+.adm-fb-summary b { display:block; font-size:13.5px; letter-spacing:-.01em; }
+.adm-fb-summary span { display:block; margin-top:2px; font:500 11px "DM Mono",monospace; color:var(--adm-muted); }
+.adm-fb-body { padding:4px 13px 6px; border-top:1px solid var(--adm-line); }
+.adm-fb-key { margin:2px 0 12px; font-size:11.5px; color:var(--adm-muted); }
+.adm-fb-key code { font:500 11px "DM Mono",monospace; background:#eeeee8; padding:2px 6px; border-radius:3px; }
+
 /* ------------------------------------------------- guided tour (Driver.js) */
 .adm-help-fab {
   position:fixed; right:22px; bottom:22px; z-index:900;

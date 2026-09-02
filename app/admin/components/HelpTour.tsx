@@ -110,9 +110,18 @@ const PRODUCT_TOUR: DriveStep[] = [
     }
   },
   {
+    element: '[data-tour="nav-forms"]',
+    popover: {
+      title: "5. Forms",
+      description:
+        "Build a form field by field — text, email, dropdowns, tick boxes — then attach it to a page. Everything people send lands under the form's Responses, and exports as CSV.",
+      side: "right"
+    }
+  },
+  {
     element: '[data-tour="nav-sections"]',
     popover: {
-      title: "5. Sections",
+      title: "6. Sections",
       description:
         "Your categories and sub-categories. Renaming one here updates it everywhere — navigation, category pages, breadcrumbs and the sitemap.",
       side: "right"
@@ -121,7 +130,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-ticker"]',
     popover: {
-      title: "6. News ticker",
+      title: "7. News ticker",
       description:
         "The scrolling headline bar at the top of the public site. Add lines, reorder them, or switch the whole thing off.",
       side: "right"
@@ -130,7 +139,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-leads"]',
     popover: {
-      title: "7. Leads",
+      title: "8. Leads",
       description:
         "Everyone who filled in a gated download or a partnership form, and which resource they wanted. Exportable as CSV.",
       side: "right"
@@ -139,7 +148,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-subscribers"]',
     popover: {
-      title: "8. Subscribers",
+      title: "9. Subscribers",
       description:
         "Your newsletter list, with the page each sign-up came from. You can unsubscribe someone by hand and export the list.",
       side: "right"
@@ -148,7 +157,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-messages"]',
     popover: {
-      title: "9. Inbox",
+      title: "10. Inbox",
       description:
         "Messages sent through the contact form. The badge counts unread ones, and clears as you open them.",
       side: "right"
@@ -157,7 +166,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-settings"]',
     popover: {
-      title: "10. Site settings",
+      title: "11. Site settings",
       description:
         "The words around the content: site name, homepage hero, About and Contact copy, footer and social links. Every field is live text on the public site.",
       side: "right"
@@ -166,7 +175,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-team"]',
     popover: {
-      title: "11. Team",
+      title: "12. Team",
       description:
         "Add editors or admins, change a password, remove an account. If you're still on the default password, change it here first.",
       side: "right"
@@ -175,7 +184,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="stats"]',
     popover: {
-      title: "12. Your numbers at a glance",
+      title: "13. Your numbers at a glance",
       description:
         "Refreshed on every visit. “Drafts waiting” is the useful one — it's how much is written but not yet live.",
       side: "bottom"
@@ -184,7 +193,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="dash-tables"]',
     popover: {
-      title: "13. What's working",
+      title: "14. What's working",
       description:
         "Your best-read stories, how coverage splits across categories, and anything still in draft. Click any title to open it.",
       side: "top"
@@ -193,7 +202,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="page-actions"]',
     popover: {
-      title: "14. Write something",
+      title: "15. Write something",
       description: "The quickest way into a blank story or resource. These buttons sit at the top of most screens.",
       side: "bottom",
       align: "end"
@@ -202,7 +211,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="view-site"]',
     popover: {
-      title: "15. See it as a reader does",
+      title: "16. See it as a reader does",
       description: "Opens the public site in a new tab, so you can check your work without losing your place here.",
       side: "right"
     }
@@ -210,7 +219,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="account"]',
     popover: {
-      title: "16. You, and the way out",
+      title: "17. You, and the way out",
       description: "Who you're signed in as and what you're allowed to do, with the sign-out button underneath.",
       side: "right"
     }
@@ -451,6 +460,55 @@ const PAGE_EDITOR_STEPS: DriveStep[] = [
   }
 ];
 
+const FORM_EDITOR_STEPS: DriveStep[] = [
+  {
+    element: '[data-tour="form-basics"]',
+    popover: {
+      title: "1. Name it and word it",
+      description:
+        "The name is only for you. The intro sits above the first field, the button text is what people click, and the thank-you message replaces the form once it's sent.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="form-fields"]',
+    popover: {
+      title: "2. Build the fields",
+      description:
+        "Add what you need to collect, in the order you want it asked. Click any field to open its settings, and use the arrows to reorder.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="form-fields"] .adm-fb-field:first-child',
+    popover: {
+      title: "3. What a field can be",
+      description:
+        "Nine types — single line, paragraph, email, phone, number, date, dropdown, choose-one and a tick box. Set a label, mark it required, and put two short fields side by side with half width.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="form-publishing"]',
+    popover: {
+      title: "4. Publish, then attach it",
+      description:
+        "A draft form stays hidden even on a live page. Publish it, then pick it in the Form box on any page under Pages — that's what puts it on the site.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="editor-save"], [data-tour="form-publishing"] .adm-form-actions',
+    popover: {
+      title: "5. Save, and read the replies",
+      description:
+        "Nothing is stored until you save. Once the form is live, View responses shows everything sent to it, with a CSV export.",
+      side: "top",
+      align: "start"
+    }
+  }
+];
+
 const tableSteps = (noun: string): DriveStep[] => [
   {
     element: '[data-tour="toolbar"]',
@@ -491,6 +549,20 @@ const tableSteps = (noun: string): DriveStep[] => [
 
 /** Page-specific steps, keyed by the most specific matching route. */
 function stepsForPath(pathname: string): DriveStep[] {
+  if (/^\/admin\/forms\/[^/]+\/submissions$/.test(pathname)) {
+    return [
+      {
+        element: '[data-tour="page-body"]',
+        popover: {
+          title: "Everything people sent",
+          description:
+            "One row per response, in the order your fields are asked. Export the lot as CSV, or delete a row you don't need. There's no email notification — responses live here.",
+          side: "top"
+        }
+      }
+    ];
+  }
+  if (/^\/admin\/forms\/(new|[^/]+)$/.test(pathname)) return FORM_EDITOR_STEPS;
   if (/^\/admin\/pages\/(new|[^/]+)$/.test(pathname)) return PAGE_EDITOR_STEPS;
   if (/^\/admin\/(articles|resources)\/(new|[^/]+)$/.test(pathname)) return EDITOR_STEPS;
 
@@ -505,6 +577,28 @@ function stepsForPath(pathname: string): DriveStep[] {
       return tableSteps("resources");
     case "/admin/pages":
       return tableSteps("pages");
+    case "/admin/forms":
+      return [
+        {
+          element: '[data-tour="page-body"]',
+          popover: {
+            title: "Your forms",
+            description:
+              "Each row is a form you've built, with how many responses it has collected. Open one to edit its fields, or jump straight to the responses.",
+            side: "top"
+          }
+        },
+        {
+          element: '[data-tour="page-actions"]',
+          popover: {
+            title: "Build a new one",
+            description:
+              "Starts you off with name, email and message — change or remove any of them. Publish it, then attach it to a page.",
+            side: "bottom",
+            align: "end"
+          }
+        }
+      ];
 
     case "/admin/sections":
       return [

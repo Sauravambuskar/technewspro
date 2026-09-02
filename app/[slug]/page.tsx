@@ -5,6 +5,8 @@ import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import JsonLd from "../components/JsonLd";
 import ViewBeacon from "../components/ViewBeacon";
+import DynamicForm from "../components/DynamicForm";
+import { getFormById } from "@/lib/forms";
 import { getPageBySlug } from "@/lib/pages";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
@@ -33,7 +35,13 @@ export default async function CustomPage({ params }: { params: { slug: string } 
   const page = await getPageBySlug(params.slug);
   if (!page) notFound();
 
-  const { settings, nav, menu, footerPages } = await getSiteChrome();
+  const [{ settings, nav, menu, footerPages }, attachedForm] = await Promise.all([
+    getSiteChrome(),
+    page.formId ? getFormById(page.formId) : Promise.resolve(undefined)
+  ]);
+
+  // A form still in draft shouldn't appear to readers.
+  const form = attachedForm?.status === "published" ? attachedForm : undefined;
 
   // Canvas is a deliberately blank page: no header, footer or breadcrumb.
   const canvas = page.layout === "canvas";
@@ -84,6 +92,8 @@ export default async function CustomPage({ params }: { params: { slug: string } 
         <div className="article-body">
           {page.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
         </div>
+
+        {form && <DynamicForm form={form} />}
 
         {!canvas && (
           <div className="article-back">

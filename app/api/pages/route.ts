@@ -31,6 +31,7 @@ export const POST = handler(async (request: Request) => {
     status: payload.status as ArticleStatus | undefined,
     layout: isPageLayout(payload.layout) ? payload.layout : undefined,
     hideTitle: typeof payload.hideTitle === "boolean" ? payload.hideTitle : undefined,
+    formId: typeof payload.formId === "string" ? payload.formId : undefined,
     showInNav: typeof payload.showInNav === "boolean" ? payload.showInNav : undefined,
     showInFooter: typeof payload.showInFooter === "boolean" ? payload.showInFooter : undefined,
     order: typeof payload.order === "number" ? payload.order : undefined,

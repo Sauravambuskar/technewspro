@@ -238,6 +238,8 @@ export type Page = {
   layout: PageLayout;
   /** Lets the body supply its own opening heading instead. */
   hideTitle: boolean;
+  /** Id of a form to render under the body; "" for none. */
+  formId: string;
   showInNav: boolean;
   showInFooter: boolean;
   order: number;
@@ -265,6 +267,86 @@ export const RESERVED_SLUGS = [
 
 export function isReservedSlug(slug: string) {
   return RESERVED_SLUGS.includes(slug.trim().toLowerCase());
+}
+
+/* ------------------------------------------------------------------- forms */
+
+export const FIELD_TYPES = [
+  "text",
+  "email",
+  "tel",
+  "number",
+  "date",
+  "textarea",
+  "select",
+  "radio",
+  "checkbox"
+] as const;
+export type FieldType = (typeof FIELD_TYPES)[number];
+
+export const FIELD_TYPE_LABELS: Record<FieldType, string> = {
+  text: "Single line text",
+  email: "Email address",
+  tel: "Phone number",
+  number: "Number",
+  date: "Date",
+  textarea: "Paragraph text",
+  select: "Dropdown",
+  radio: "Choose one",
+  checkbox: "Tick box"
+};
+
+/** Types whose answers come from a fixed list the author writes. */
+export const CHOICE_TYPES: FieldType[] = ["select", "radio"];
+
+export type FormField = {
+  id: string;
+  type: FieldType;
+  label: string;
+  /** Key the answer is stored under. Derived from the label, editable. */
+  name: string;
+  placeholder: string;
+  help: string;
+  required: boolean;
+  /** Only used by select and radio. */
+  options: string[];
+  width: "full" | "half";
+};
+
+export type FormDefinition = {
+  id: string;
+  name: string;
+  /** Shown above the fields on the public page. */
+  description: string;
+  fields: FormField[];
+  submitLabel: string;
+  successMessage: string;
+  status: ArticleStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FormSubmission = {
+  id: string;
+  formId: string;
+  /** Answers keyed by field name, as submitted. */
+  values: Record<string, string>;
+  createdAt: string;
+};
+
+export function isFieldType(value: unknown): value is FieldType {
+  return typeof value === "string" && (FIELD_TYPES as readonly string[]).includes(value);
+}
+
+/** A stable, storable key for a field, derived from its label. */
+export function fieldName(label: string, fallback: string) {
+  const key = label
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 40);
+  return key || fallback;
 }
 
 export type Lead = {

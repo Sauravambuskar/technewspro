@@ -13,6 +13,7 @@ import {
   isReservedSlug,
   normaliseSeo,
   slugify,
+  type FormDefinition,
   type Page,
   type PageLayout,
   type Seo
@@ -27,6 +28,7 @@ type Draft = {
   status: "draft" | "published";
   layout: PageLayout;
   hideTitle: boolean;
+  formId: string;
   showInNav: boolean;
   showInFooter: boolean;
   seo: Seo;
@@ -54,6 +56,7 @@ function toDraft(page: Page | undefined): Draft {
       status: "draft",
       layout: "default",
       hideTitle: false,
+      formId: "",
       showInNav: false,
       showInFooter: true,
       seo: emptySeo()
@@ -68,13 +71,14 @@ function toDraft(page: Page | undefined): Draft {
     status: page.status,
     layout: isPageLayout(page.layout) ? page.layout : "default",
     hideTitle: page.hideTitle ?? false,
+    formId: page.formId ?? "",
     showInNav: page.showInNav,
     showInFooter: page.showInFooter,
     seo: normaliseSeo(page.seo)
   };
 }
 
-export default function PageEditor({ page }: { page?: Page }) {
+export default function PageEditor({ page, forms = [] }: { page?: Page; forms?: FormDefinition[] }) {
   const router = useRouter();
   const [draft, setDraft] = useState<Draft>(() => toDraft(page));
   const [slugTouched, setSlugTouched] = useState(Boolean(page));
@@ -106,6 +110,7 @@ export default function PageEditor({ page }: { page?: Page }) {
       status: draft.status,
       layout: draft.layout,
       hideTitle: draft.hideTitle,
+      formId: draft.formId,
       showInNav: draft.showInNav,
       showInFooter: draft.showInFooter,
       seo: draft.seo
@@ -233,6 +238,32 @@ export default function PageEditor({ page }: { page?: Page }) {
           Useful when the body opens with its own headline. The title is still used for the tab, search results
           and menus.
         </small>
+      </div>
+
+      <div className="adm-card" data-tour="editor-form">
+        <h2>Form</h2>
+        <p className="adm-card-note">
+          Drop a form built under <Link href="/admin/forms">Forms</Link> at the bottom of this page. Responses
+          land there, not in your inbox.
+        </p>
+
+        <label className="adm-field" style={{ maxWidth: 420, marginBottom: 0 }}>
+          <span>ATTACHED FORM</span>
+          <select value={draft.formId} onChange={(e) => set("formId", e.target.value)}>
+            <option value="">None</option>
+            {forms.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.name}
+                {f.status === "draft" ? " (draft — hidden until published)" : ""}
+              </option>
+            ))}
+          </select>
+          <small>
+            {forms.length === 0
+              ? "No forms built yet — create one under Forms first."
+              : "A draft form stays hidden even on a published page."}
+          </small>
+        </label>
       </div>
 
       <div className="adm-card" data-tour="editor-placement">

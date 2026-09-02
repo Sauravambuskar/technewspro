@@ -25,7 +25,8 @@ export async function allPages(): Promise<Page[]> {
       ...p,
       seo: normaliseSeo(p.seo),
       layout: isPageLayout(p.layout) ? p.layout : "default",
-      hideTitle: p.hideTitle ?? false
+      hideTitle: p.hideTitle ?? false,
+      formId: p.formId ?? ""
     }))
     .sort(byOrder);
 }
@@ -81,6 +82,7 @@ export async function createPage(input: PageInput & { title: string }): Promise<
     status: input.status === "published" ? "published" : "draft",
     layout: isPageLayout(input.layout) ? input.layout : "default",
     hideTitle: input.hideTitle ?? false,
+    formId: input.formId?.trim() || "",
     showInNav: input.showInNav ?? false,
     showInFooter: input.showInFooter ?? true,
     order: input.order ?? existing.length + 1,
@@ -111,6 +113,7 @@ export async function updatePage(id: string, input: PageInput): Promise<Page | u
         status: input.status ?? page.status,
         layout: isPageLayout(input.layout) ? input.layout : (page.layout ?? "default"),
         hideTitle: input.hideTitle ?? page.hideTitle ?? false,
+        formId: input.formId !== undefined ? input.formId.trim() : (page.formId ?? ""),
         showInNav: input.showInNav ?? page.showInNav,
         showInFooter: input.showInFooter ?? page.showInFooter,
         order: input.order ?? page.order,

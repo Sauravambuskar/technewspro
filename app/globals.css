@@ -320,3 +320,32 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 .article-page.page-wide .article-dek { max-width:900px; }
 .article-page.page-wide .article-body p { max-width:none; }
 @media (max-width: 620px) { .article-page.page-wide { padding-left:20px; padding-right:20px; } }
+
+/* Forms built in the admin panel and rendered on a page. */
+.dyn-form { margin:44px 0 0; padding:30px clamp(20px,3vw,34px); background:#fff; border:1px solid #dedfd8; border-radius:6px; }
+.dyn-form-intro { margin:0 0 22px; max-width:600px; color:#4c4e54; font-size:15px; line-height:1.6; }
+.dyn-form-error { margin:0 0 18px; padding:11px 14px; border-radius:4px; background:#fbeceb; color:#c1372c; font-size:13px; font-weight:600; }
+.dyn-form-done { margin:0; font-size:16px; font-weight:600; color:#1f7a4d; }
+.dyn-form-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0 20px; }
+.dyn-field { display:block; margin-bottom:18px; border:0; padding:0; min-width:0; }
+.dyn-full { grid-column:1 / -1; }
+.dyn-half { grid-column:span 1; }
+.dyn-field > span, .dyn-field legend { display:block; margin-bottom:7px; font:600 11px "DM Mono",monospace; letter-spacing:.06em; color:#3d3f46; text-transform:uppercase; }
+.dyn-field > span b, .dyn-field legend b { color:var(--electric); }
+.dyn-field input[type=text], .dyn-field input[type=email], .dyn-field input[type=tel],
+.dyn-field input[type=number], .dyn-field input[type=date], .dyn-field textarea, .dyn-field select {
+  width:100%; box-sizing:border-box; border:1px solid #d5d5cd; border-radius:4px; padding:11px 13px;
+  font-size:14.5px; font-family:inherit; color:var(--ink); background:#fff; outline:none; }
+.dyn-field textarea { resize:vertical; line-height:1.6; }
+.dyn-field input:focus, .dyn-field textarea:focus, .dyn-field select:focus { border-color:var(--electric); box-shadow:0 0 0 3px rgba(85,72,255,.12); }
+.dyn-field small { display:block; margin-top:6px; font-size:12px; color:#71737b; line-height:1.5; }
+.dyn-field-check { display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap; }
+.dyn-field-check input { width:17px; height:17px; margin-top:2px; accent-color:var(--electric); flex:none; }
+.dyn-field-check > span { margin-bottom:0; text-transform:none; font:500 14px "DM Sans",Arial,sans-serif; letter-spacing:0; }
+.dyn-field-check small { flex-basis:100%; }
+.dyn-radio { display:flex; align-items:center; gap:9px; margin-bottom:8px; font-size:14.5px; cursor:pointer; }
+.dyn-radio input { width:16px; height:16px; accent-color:var(--electric); }
+.dyn-form button { border:0; background:var(--ink); color:#fff; padding:13px 26px; border-radius:4px; font:700 13px "DM Sans",Arial,sans-serif; cursor:pointer; }
+.dyn-form button:hover:not(:disabled) { background:#000; }
+.dyn-form button:disabled { opacity:.6; cursor:default; }
+@media (max-width: 620px) { .dyn-form-grid { grid-template-columns:1fr; } .dyn-half { grid-column:1 / -1; } }
