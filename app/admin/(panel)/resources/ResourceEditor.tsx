@@ -193,7 +193,7 @@ export default function ResourceEditor({
         <h2>The resource</h2>
         <p className="adm-card-note">Title, summary and the copy shown on the detail page.</p>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-title">
           <span>TITLE</span>
           <input
             type="text"
@@ -206,7 +206,7 @@ export default function ResourceEditor({
           />
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-dek">
           <span>SUMMARY</span>
           <textarea
             rows={3}
@@ -217,7 +217,7 @@ export default function ResourceEditor({
           <small>Shown on every card and used as the meta description.</small>
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-highlights">
           <span>WHAT&rsquo;S INSIDE — ONE BULLET PER LINE</span>
           <textarea
             rows={5}
@@ -228,7 +228,7 @@ export default function ResourceEditor({
           <small>{highlights.length} bullet{highlights.length === 1 ? "" : "s"}</small>
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-body">
           <span>BODY</span>
           <textarea
             rows={12}
@@ -245,7 +245,7 @@ export default function ResourceEditor({
         <p className="adm-card-note">Format and category drive the listing pages and the URL.</p>
 
         <div className="adm-grid-2">
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-category">
             <span>FORMAT</span>
             <select value={draft.type} onChange={(e) => set("type", e.target.value as ResourceType)}>
               {RESOURCE_TYPES.map((type) => (
@@ -254,7 +254,7 @@ export default function ResourceEditor({
             </select>
           </label>
 
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-subcategory">
             <span>CATEGORY</span>
             <select value={draft.category} onChange={(e) => set("category", e.target.value)}>
               {sections.map((section) => (
@@ -263,7 +263,7 @@ export default function ResourceEditor({
             </select>
           </label>
 
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-slug">
             <span>URL SLUG</span>
             <input
               type="text"
@@ -351,7 +351,7 @@ export default function ResourceEditor({
           Gated resources show the lead form first. Every submission lands under Leads.
         </p>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-file">
           <span>FILE URL (PDF)</span>
           <input
             type="text"
@@ -362,17 +362,17 @@ export default function ResourceEditor({
           <small>Leave empty and the on-page copy is the deliverable — the form still captures the lead.</small>
         </label>
 
-        <label className="adm-check">
+        <label className="adm-check" data-tour="f-gated">
           <input type="checkbox" checked={draft.gated} onChange={(e) => set("gated", e.target.checked)} />
           Require the lead form before the download
         </label>
 
-        <label className="adm-check">
+        <label className="adm-check" data-tour="f-featured">
           <input type="checkbox" checked={draft.featured} onChange={(e) => set("featured", e.target.checked)} />
           Feature in the resource center
         </label>
 
-        <label className="adm-field" style={{ maxWidth: 260 }}>
+        <label className="adm-field" data-tour="f-status" style={{ maxWidth: 260 }}>
           <span>STATUS</span>
           <select value={draft.status} onChange={(e) => set("status", e.target.value as Draft["status"])}>
             <option value="draft">Draft</option>

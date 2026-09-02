@@ -185,7 +185,7 @@ export default function ArticleEditor({
         <h2>The story</h2>
         <p className="adm-card-note">Headline, standfirst and body copy as readers will see them.</p>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-title">
           <span>TITLE</span>
           <input
             type="text"
@@ -198,7 +198,7 @@ export default function ArticleEditor({
           />
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-dek">
           <span>STANDFIRST (DEK)</span>
           <textarea
             rows={2}
@@ -209,7 +209,7 @@ export default function ArticleEditor({
           <small>Shown under the headline and on every card. Falls back to the title if left empty.</small>
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="f-body">
           <span>BODY</span>
           <textarea
             rows={16}
@@ -229,7 +229,7 @@ export default function ArticleEditor({
         <p className="adm-card-note">Where the story appears and how it is labelled.</p>
 
         <div className="adm-grid-2">
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-category">
             <span>CATEGORY</span>
             <select
               value={draft.section}
@@ -245,7 +245,7 @@ export default function ArticleEditor({
             </select>
           </label>
 
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-subcategory">
             <span>SUB-CATEGORY</span>
             <select value={draft.subcategory} onChange={(e) => set("subcategory", e.target.value)}>
               <option value="">Unclassified</option>
@@ -260,7 +260,7 @@ export default function ArticleEditor({
             </small>
           </label>
 
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-kicker">
             <span>KICKER / TAG</span>
             <input
               type="text"
@@ -270,7 +270,7 @@ export default function ArticleEditor({
             />
           </label>
 
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-tags">
             <span>TAGS</span>
             <input
               type="text"
@@ -281,7 +281,7 @@ export default function ArticleEditor({
             <small>Comma-separated. Narrower topics for internal linking — not a substitute for category/sub-category.</small>
           </label>
 
-          <label className="adm-field">
+          <label className="adm-field" data-tour="f-slug">
             <span>URL SLUG</span>
             <input
               type="text"
@@ -368,7 +368,7 @@ export default function ArticleEditor({
         <h2>Publishing</h2>
         <p className="adm-card-note">Drafts stay off the public site until you publish them.</p>
 
-        <label className="adm-field" style={{ maxWidth: 260 }}>
+        <label className="adm-field" data-tour="f-status" style={{ maxWidth: 260 }}>
           <span>STATUS</span>
           <select value={draft.status} onChange={(e) => set("status", e.target.value as Draft["status"])}>
             <option value="draft">Draft</option>
@@ -376,7 +376,7 @@ export default function ArticleEditor({
           </select>
         </label>
 
-        <label className="adm-check">
+        <label className="adm-check" data-tour="f-featured">
           <input type="checkbox" checked={draft.featured} onChange={(e) => set("featured", e.target.checked)} />
           Eligible for the homepage feature slot
         </label>

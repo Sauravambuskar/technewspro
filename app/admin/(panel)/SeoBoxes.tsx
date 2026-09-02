@@ -158,7 +158,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           the story&rsquo;s own title, standfirst and hero image when left empty.
         </p>
 
-        <div className="adm-seo-preview">
+        <div className="adm-seo-preview" data-tour="s-google">
           <p className="adm-seo-preview-label">GOOGLE PREVIEW</p>
           <div className="adm-seo-snippet">
             <span className="adm-seo-snippet-url">{previewUrl}</span>
@@ -168,7 +168,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           {!seo.index && <p className="adm-seo-noindex">Currently set to noindex — this page will not appear here.</p>}
         </div>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="s-keyphrase">
           <span>FOCUS KEYPHRASE</span>
           <input
             type="text"
@@ -190,7 +190,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           </ul>
         )}
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="s-title">
           <span>SEO TITLE</span>
           <input
             type="text"
@@ -202,7 +202,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           <small>Google usually cuts off around {TITLE_LIMIT} characters.</small>
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="s-description">
           <span>META DESCRIPTION</span>
           <textarea
             rows={3}
@@ -215,7 +215,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           <small>Falls back to the standfirst when empty.</small>
         </label>
 
-        <label className="adm-field">
+        <label className="adm-field" data-tour="s-canonical">
           <span>CANONICAL URL</span>
           <input
             type="text"
@@ -226,7 +226,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           <small>Only set this when the same content lives at another address that should rank instead.</small>
         </label>
 
-        <div className="adm-seo-robots">
+        <div className="adm-seo-robots" data-tour="s-indexing">
           <p className="adm-subs-label">INDEXING</p>
 
           <div className="adm-grid-2">
@@ -267,7 +267,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           to the SEO title, meta description and hero image.
         </p>
 
-        <div className="adm-seo-preview">
+        <div className="adm-seo-preview" data-tour="s-share">
           <p className="adm-seo-preview-label">SHARE PREVIEW</p>
           <div className="adm-seo-social-card">
             {ogImage ? (
@@ -319,7 +319,7 @@ export default function SeoBoxes({ seo, onChange, fallbacks, onError }: Props) {
           X / TWITTER
         </p>
 
-        <label className="adm-field" style={{ maxWidth: 320 }}>
+        <label className="adm-field" data-tour="s-card" style={{ maxWidth: 320 }}>
           <span>CARD TYPE</span>
           <select
             value={seo.twitterCard}

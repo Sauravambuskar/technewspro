@@ -1,11 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { driver, type DriveStep } from "driver.js";
 import "driver.js/dist/driver.css";
 
 // Guided walkthrough for the control panel, powered by Driver.js.
+//
+// It runs by itself the first time an author signs in, and after that from the
+// "Guide me" button in the corner of every screen. Each screen has its own set
+// of steps, so the tour always explains whatever is actually on the page.
 //
 // Every step targets a `data-tour="…"` hook rather than a class name, so
 // restyling a screen can't silently break the tour. Steps whose element isn't
@@ -14,105 +18,354 @@ import "driver.js/dist/driver.css";
 
 const SEEN_KEY = "tnp-admin-tour-seen";
 
-/** Steps shown on every screen, before and after the page-specific ones. */
-function sidebarStep(): DriveStep {
-  return {
-    element: '[data-tour="nav"]',
-    popover: {
-      title: "Everything lives here",
-      description:
-        "Your main navigation. Articles and Resources hold the content; Sections and News ticker shape how it's organised; Leads, Subscribers and Inbox are what readers send back.",
-      side: "right",
-      align: "start"
-    }
-  };
+function seen() {
+  try {
+    return window.localStorage.getItem(SEEN_KEY) === "1";
+  } catch {
+    // Private mode or blocked storage: treat it as seen so we never nag.
+    return true;
+  }
 }
 
-function helpStep(): DriveStep {
-  return {
-    element: '[data-tour="help-button"]',
+function markSeen() {
+  try {
+    window.localStorage.setItem(SEEN_KEY, "1");
+  } catch {
+    // Nothing to do — the tour still ran, which is what matters.
+  }
+}
+
+/* ------------------------------------------------------------ shared steps */
+
+const WELCOME: DriveStep = {
+  popover: {
+    title: "Welcome to the control panel",
+    description:
+      "This is where every word on the public site is written and edited. Here's a quick look around — use the buttons or the arrow keys, and press Escape whenever you've seen enough."
+  }
+};
+
+const SIDEBAR: DriveStep = {
+  element: '[data-tour="nav"]',
+  popover: {
+    title: "Everything lives here",
+    description:
+      "Your main navigation, on every screen. The numbers are things waiting for you — unpublished drafts, unread mail, new leads.",
+    side: "right",
+    align: "start"
+  }
+};
+
+const HELP: DriveStep = {
+  element: '[data-tour="help-button"]',
+  popover: {
+    title: "Stuck? Come back here",
+    description:
+      "This button is on every screen, and the walkthrough it plays is written for whichever screen you're on. Nothing in the tour changes your content.",
+    side: "left",
+    align: "end"
+  }
+};
+
+/* ------------------------------------------- the full first-run product tour */
+
+/** Walks the whole sidebar, so a new author sees what each area is for. */
+const PRODUCT_TOUR: DriveStep[] = [
+  WELCOME,
+  SIDEBAR,
+  {
+    element: '[data-tour="nav-dashboard"]',
     popover: {
-      title: "Stuck? Come back here",
+      title: "1. Dashboard",
       description:
-        "This button is on every screen, and the walkthrough it plays is written for whichever screen you're on. Nothing you do in the tour changes your content.",
-      side: "left",
+        "Where you land: reads, downloads, leads and what's still sitting in draft. Start here to see whether anything needs attention.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-articles"]',
+    popover: {
+      title: "2. Articles",
+      description:
+        "Your stories — writing, editing, publishing and deleting. This is where most of the day-to-day work happens.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-resources"]',
+    popover: {
+      title: "3. Resources",
+      description:
+        "Whitepapers, ebooks, case studies and press releases. These can be gated, so a reader has to leave their details before downloading.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-sections"]',
+    popover: {
+      title: "4. Sections",
+      description:
+        "Your categories and sub-categories. Renaming one here updates it everywhere — navigation, category pages, breadcrumbs and the sitemap.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-ticker"]',
+    popover: {
+      title: "5. News ticker",
+      description:
+        "The scrolling headline bar at the top of the public site. Add lines, reorder them, or switch the whole thing off.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-leads"]',
+    popover: {
+      title: "6. Leads",
+      description:
+        "Everyone who filled in a gated download or a partnership form, and which resource they wanted. Exportable as CSV.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-subscribers"]',
+    popover: {
+      title: "7. Subscribers",
+      description:
+        "Your newsletter list, with the page each sign-up came from. You can unsubscribe someone by hand and export the list.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-messages"]',
+    popover: {
+      title: "8. Inbox",
+      description:
+        "Messages sent through the contact form. The badge counts unread ones, and clears as you open them.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-settings"]',
+    popover: {
+      title: "9. Site settings",
+      description:
+        "The words around the content: site name, homepage hero, About and Contact copy, footer and social links. Every field is live text on the public site.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="nav-team"]',
+    popover: {
+      title: "10. Team",
+      description:
+        "Add editors or admins, change a password, remove an account. If you're still on the default password, change it here first.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="stats"]',
+    popover: {
+      title: "11. Your numbers at a glance",
+      description:
+        "Refreshed on every visit. “Drafts waiting” is the useful one — it's how much is written but not yet live.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="dash-tables"]',
+    popover: {
+      title: "12. What's working",
+      description:
+        "Your best-read stories, how coverage splits across categories, and anything still in draft. Click any title to open it.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="page-actions"]',
+    popover: {
+      title: "13. Write something",
+      description: "The quickest way into a blank story or resource. These buttons sit at the top of most screens.",
+      side: "bottom",
       align: "end"
     }
-  };
-}
+  },
+  {
+    element: '[data-tour="view-site"]',
+    popover: {
+      title: "14. See it as a reader does",
+      description: "Opens the public site in a new tab, so you can check your work without losing your place here.",
+      side: "right"
+    }
+  },
+  {
+    element: '[data-tour="account"]',
+    popover: {
+      title: "15. You, and the way out",
+      description: "Who you're signed in as and what you're allowed to do, with the sign-out button underneath.",
+      side: "right"
+    }
+  },
+  HELP
+];
+
+/* ---------------------------------------------------------- per-screen tours */
 
 const EDITOR_STEPS: DriveStep[] = [
   {
     element: '[data-tour="editor-content"]',
     popover: {
-      title: "Start with the writing",
-      description:
-        "The headline, the standfirst underneath it, and the body. Leave a blank line between paragraphs — each block becomes its own paragraph on the site.",
+      title: "1. Start with the writing",
+      description: "The headline, the line underneath it, and the body copy. Everything else on this page supports these three.",
       side: "top"
     }
   },
   {
-    element: '[data-tour="editor-placement"]',
+    element: '[data-tour="f-title"]',
     popover: {
-      title: "Where it appears",
+      title: "2. The headline",
+      description: "Typing here fills in the URL slug automatically — until you edit the slug yourself, at which point it stops.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="f-dek"]',
+    popover: {
+      title: "3. The standfirst",
       description:
-        "Category and sub-category decide which section page it lists under and its URL. Tags are for narrower topics — use them instead of inventing a new category.",
+        "One or two sentences under the headline. It's also used on every card, and as the meta description if you don't write a separate one.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="f-body"]',
+    popover: {
+      title: "4. The body",
+      description: "Leave a blank line between paragraphs — each block becomes its own paragraph. The read time is counted from this.",
       side: "top"
+    }
+  },
+  {
+    element: '[data-tour="f-category"]',
+    popover: {
+      title: "5. Category",
+      description: "Decides which section page it lists under, and the first part of its URL. Manage the list under Sections.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="f-subcategory"]',
+    popover: {
+      title: "6. Sub-category",
+      description:
+        "Optional, and it resets when you change category. A sub-category stays out of the nav and sitemap until it has at least one published article.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="f-tags"]',
+    popover: {
+      title: "7. Tags",
+      description:
+        "Comma-separated, for narrower topics. Use these instead of inventing a new category every time a subject comes up.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="f-slug"]',
+    popover: {
+      title: "8. The URL",
+      description:
+        "The address readers and Google will use. Worth changing before you publish; changing it afterwards breaks any existing links.",
+      side: "bottom"
     }
   },
   {
     element: '[data-tour="editor-image"]',
     popover: {
-      title: "The hero image",
+      title: "9. The main image",
       description:
-        "Paste a URL, or press Upload to store a file in the database. This image is also the default one used when the page is shared on social media.",
+        "Paste a URL, or press Upload to store a file in the database. This is also the default image used when the page is shared.",
       side: "top"
     }
   },
   {
     element: '[data-tour="seo-search"]',
     popover: {
-      title: "How Google sees it",
+      title: "10. How Google sees it",
+      description: "The next few steps cover search. Leave all of it empty and the page still works — these are overrides.",
+      side: "top"
+    }
+  },
+  {
+    element: '[data-tour="s-google"]',
+    popover: {
+      title: "11. The search preview",
+      description: "A live mock-up of your result in Google. It updates as you type in the fields below.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="s-keyphrase"]',
+    popover: {
+      title: "12. Focus keyphrase",
       description:
-        "The preview updates as you type. Set a focus keyphrase to get the checks below it, and use the Indexing controls to keep a page out of search results entirely.",
+        "The phrase you want this page to rank for. Type one and a checklist appears, telling you where it is and isn't used.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="s-title"]',
+    popover: {
+      title: "13. SEO title and description",
+      description:
+        "The meter turns amber then red as you approach the length Google truncates at. Leave them empty to reuse the headline and standfirst.",
+      side: "bottom"
+    }
+  },
+  {
+    element: '[data-tour="s-indexing"]',
+    popover: {
+      title: "14. Keeping a page out of Google",
+      description:
+        "Set it to noindex and the page stays live for anyone with the link, but drops out of search results and out of your sitemap.",
       side: "top"
     }
   },
   {
     element: '[data-tour="seo-social"]',
     popover: {
-      title: "How a shared link looks",
+      title: "15. How a shared link looks",
       description:
-        "What Facebook, LinkedIn, WhatsApp and X show. Leave these empty and they fall back to your SEO title, description and hero image — only fill them in when you want something different.",
+        "What Facebook, LinkedIn, WhatsApp and X show. The preview is above; empty fields fall back to your SEO title, description and main image.",
       side: "top"
     }
   },
   {
     element: '[data-tour="editor-publishing"]',
     popover: {
-      title: "Draft until you say so",
-      description:
-        "Nothing is visible on the public site while the status is Draft. Switch to Published, save, and it goes live immediately.",
+      title: "16. Draft until you say so",
+      description: "Nothing is visible on the public site while the status is Draft. Switch to Published, save, and it's live.",
       side: "top"
     }
   },
   {
     element: '[data-tour="editor-save"]',
     popover: {
-      title: "Save your work",
-      description: "Changes aren't stored until you press this. There's no autosave.",
+      title: "17. Save your work",
+      description: "Changes aren't stored until you press this. There's no autosave, so save before you navigate away.",
       side: "top",
       align: "start"
     }
   }
 ];
 
-const TABLE_STEPS = (noun: string): DriveStep[] => [
+const tableSteps = (noun: string): DriveStep[] => [
   {
     element: '[data-tour="toolbar"]',
     popover: {
-      title: "Find things fast",
-      description: `Search runs across titles, slugs and authors. The dropdowns narrow the list down to a status or category.`,
+      title: "1. Find things fast",
+      description: "Search runs across titles, slugs, tags and authors. The dropdowns narrow the list to a status or a category.",
       side: "bottom",
       align: "start"
     }
@@ -120,16 +373,25 @@ const TABLE_STEPS = (noun: string): DriveStep[] => [
   {
     element: '[data-tour="table"]',
     popover: {
-      title: `Your ${noun}`,
-      description: `Click a title to open it. The buttons on the right publish or unpublish it without opening the editor, and delete it for good.`,
+      title: `2. Your ${noun}`,
+      description: "Click a title to open it in the editor. Drafts are marked, so you can see at a glance what isn't live yet.",
       side: "top"
+    }
+  },
+  {
+    element: '[data-tour="table"] tbody tr:first-child',
+    popover: {
+      title: "3. Row actions",
+      description:
+        "The buttons on the right publish or unpublish without opening the editor, and delete for good. Deleting asks first, and can't be undone.",
+      side: "bottom"
     }
   },
   {
     element: '[data-tour="page-actions"]',
     popover: {
-      title: "Start something new",
-      description: `Creates a blank ${noun.replace(/s$/, "")} and opens the editor on it.`,
+      title: `4. Start a new ${noun.replace(/s$/, "")}`,
+      description: "Opens a blank editor. It saves as a draft first, so nothing goes live by accident.",
       side: "bottom",
       align: "end"
     }
@@ -138,63 +400,43 @@ const TABLE_STEPS = (noun: string): DriveStep[] => [
 
 /** Page-specific steps, keyed by the most specific matching route. */
 function stepsForPath(pathname: string): DriveStep[] {
-  if (/^\/admin\/articles\/(new|[^/]+)$/.test(pathname)) return EDITOR_STEPS;
-  if (/^\/admin\/resources\/(new|[^/]+)$/.test(pathname)) return EDITOR_STEPS;
+  if (/^\/admin\/(articles|resources)\/(new|[^/]+)$/.test(pathname)) return EDITOR_STEPS;
 
   switch (pathname) {
     case "/admin":
-      return [
-        {
-          element: '[data-tour="stats"]',
-          popover: {
-            title: "The numbers that matter",
-            description:
-              "Reads, downloads, leads and unread mail, refreshed on every visit. Drafts waiting tells you how much is written but not yet live.",
-            side: "bottom"
-          }
-        },
-        {
-          element: '[data-tour="page-actions"]',
-          popover: {
-            title: "Write something",
-            description: "The quickest way into a blank story or resource from anywhere in the panel.",
-            side: "bottom",
-            align: "end"
-          }
-        },
-        {
-          element: '[data-tour="dash-tables"]',
-          popover: {
-            title: "What's working",
-            description:
-              "Your best-read stories, how your coverage splits across categories, and anything still sitting in draft.",
-            side: "top"
-          }
-        }
-      ];
+      // The dashboard is the natural home, so its button replays the full tour.
+      return PRODUCT_TOUR.slice(2, -1);
 
     case "/admin/articles":
-      return TABLE_STEPS("articles");
+      return tableSteps("articles");
     case "/admin/resources":
-      return TABLE_STEPS("resources");
+      return tableSteps("resources");
 
     case "/admin/sections":
       return [
         {
           element: '[data-tour="sections"]',
           popover: {
-            title: "Your categories",
+            title: "1. Your categories",
             description:
-              "Renaming one updates it everywhere — navigation, category pages, breadcrumbs and the sitemap. The order here is the order readers see.",
+              "Renaming one updates it everywhere — navigation, category pages, breadcrumbs, SEO titles and the sitemap. The order here is the order readers see.",
+            side: "top"
+          }
+        },
+        {
+          element: '[data-tour="sections"] .adm-subs',
+          popover: {
+            title: "2. Sub-categories",
+            description:
+              "Each one gets its own page and its own slot in the nav dropdown — but only once it has a published article behind it, so you never ship an empty page.",
             side: "top"
           }
         },
         {
           element: '[data-tour="sections-save"]',
           popover: {
-            title: "Save when you're done",
-            description:
-              "Edits to categories and sub-categories are held until you press this. A sub-category stays out of the nav and sitemap until it has a published article.",
+            title: "3. Save when you're done",
+            description: "Every edit above is held in the browser until you press this. Nothing changes on the live site before then.",
             side: "top",
             align: "start"
           }
@@ -287,51 +529,55 @@ function stepsForPath(pathname: string): DriveStep[] {
 export default function HelpTour() {
   const pathname = usePathname();
   const [ready, setReady] = useState(false);
+  const autoStarted = useRef(false);
 
-  // The button is rendered by the server too, but the tour only means anything
-  // once the page has hydrated and the anchors exist.
-  useEffect(() => setReady(true), []);
+  const run = useCallback(
+    (steps: DriveStep[]) => {
+      // Drop anything that isn't on this particular page, so an empty table or a
+      // create screen never leaves the tour pointing at nothing.
+      const usable = steps.filter((step) => !step.element || document.querySelector(step.element as string));
+      if (usable.length === 0) return;
+
+      driver({
+        showProgress: true,
+        allowClose: true,
+        overlayColor: "#11131a",
+        overlayOpacity: 0.7,
+        stagePadding: 6,
+        stageRadius: 6,
+        popoverClass: "adm-tour",
+        nextBtnText: "Next →",
+        prevBtnText: "← Back",
+        doneBtnText: "Got it",
+        steps: usable,
+        onDestroyed: markSeen
+      }).drive();
+    },
+    []
+  );
 
   const startTour = useCallback(() => {
-    const steps: DriveStep[] = [
-      {
-        popover: {
-          title: "Welcome to the control panel",
-          description:
-            "A quick tour of this screen — three or four steps. Use the arrow keys or the buttons, and press Escape whenever you've seen enough."
-        }
-      },
-      sidebarStep(),
-      ...stepsForPath(pathname),
-      helpStep()
-    ];
+    run([WELCOME, SIDEBAR, ...stepsForPath(pathname), HELP]);
+  }, [pathname, run]);
 
-    // Drop anything that isn't on this particular page, so an empty table or a
-    // create screen never leaves the tour pointing at nothing.
-    const usable = steps.filter(
-      (step) => !step.element || document.querySelector(step.element as string)
-    );
+  useEffect(() => {
+    setReady(true);
 
-    driver({
-      showProgress: true,
-      allowClose: true,
-      overlayColor: "#11131a",
-      overlayOpacity: 0.7,
-      stagePadding: 6,
-      stageRadius: 6,
-      popoverClass: "adm-tour",
-      nextBtnText: "Next →",
-      prevBtnText: "← Back",
-      doneBtnText: "Got it",
-      steps: usable
-    }).drive();
+    // First sign-in: introduce the whole panel without waiting to be asked.
+    // Only ever once — finishing or dismissing it is enough to stop it coming back.
+    if (seen()) return;
 
-    try {
-      window.localStorage.setItem(SEEN_KEY, "1");
-    } catch {
-      // Private mode or blocked storage — the tour still ran, that's what matters.
-    }
-  }, [pathname]);
+    // Let the screen settle first, so nothing is highlighted mid-layout. The ref
+    // is set inside the callback, not before it: in StrictMode this effect is
+    // mounted twice, and guarding early would let the cleanup cancel the only
+    // timer we ever scheduled.
+    const timer = window.setTimeout(() => {
+      if (autoStarted.current) return;
+      autoStarted.current = true;
+      run(PRODUCT_TOUR);
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [run]);
 
   return (
     <button

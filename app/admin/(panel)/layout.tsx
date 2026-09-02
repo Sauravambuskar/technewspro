@@ -45,11 +45,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           }}
         />
 
-        <div className="adm-sidebar-foot">
+        <div className="adm-sidebar-foot" data-tour="account">
           <strong>{user.name}</strong>
           {user.email} · {user.role}
           <br />
-          <Link href="/" target="_blank" rel="noreferrer">View the live site ↗</Link>
+          <Link href="/" target="_blank" rel="noreferrer" data-tour="view-site">View the live site ↗</Link>
           <SignOutButton />
         </div>
       </aside>
