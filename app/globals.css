@@ -421,3 +421,41 @@ body { overflow-wrap: anywhere; }
   .article-row { grid-template-columns:1fr; gap:16px; padding:24px 0; }
   .article-row-image { height:200px; }
 }
+
+/* Latest-by-category digest on the homepage. Deliberately image-free: the job
+   is to fit every desk's recent headlines in one screen. */
+.digest { padding:clamp(44px,5vw,72px) clamp(20px,8vw,150px); background:#f2f1ec; border-bottom:1px solid #dfdfd8; }
+.digest-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0; }
+.digest-col { padding:0 26px; border-right:1px solid #d9d9d1; min-width:0; }
+.digest-col:first-child { padding-left:0; }
+.digest-col:last-child { border-right:0; padding-right:0; }
+
+.digest-col h3 { margin:0 0 18px; padding-bottom:12px; border-bottom:2px solid var(--ink); font-size:15px; letter-spacing:-.02em; }
+.digest-col h3 a { color:var(--ink); }
+.digest-col h3 a:hover { color:var(--electric); }
+
+.digest-col ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:17px; }
+.digest-col li { display:flex; flex-direction:column; gap:5px; }
+.digest-chip { align-self:flex-start; font:700 9px "DM Sans",Arial,sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--electric); }
+.digest-col li a { font-size:14px; font-weight:600; line-height:1.32; letter-spacing:-.02em; color:var(--ink); }
+.digest-col li a:hover { color:var(--electric); }
+.digest-col li p { margin:0; font-size:11px; color:#77787e; }
+
+.digest-more { display:inline-block; margin-top:20px; font-size:11px; font-weight:700; color:var(--ink); border-bottom:1px solid; padding-bottom:4px; }
+.digest-more span { margin-left:8px; color:var(--electric); }
+
+@media (max-width: 1100px) {
+  .digest-grid { grid-template-columns:repeat(3,1fr); gap:34px 0; }
+  .digest-col:nth-child(3n) { border-right:0; padding-right:0; }
+  .digest-col:nth-child(3n+1) { padding-left:0; }
+}
+@media (max-width: 720px) {
+  .digest-grid { grid-template-columns:1fr 1fr; gap:30px 0; }
+  .digest-col { padding:0 18px; }
+  .digest-col:nth-child(odd) { padding-left:0; }
+  .digest-col:nth-child(even) { border-right:0; padding-right:0; }
+}
+@media (max-width: 460px) {
+  .digest-grid { grid-template-columns:1fr; gap:28px; }
+  .digest-col { padding:0; border-right:0; }
+}

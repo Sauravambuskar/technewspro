@@ -7,6 +7,7 @@ import ArticleCard from "./components/ArticleCard";
 import ResourceCard from "./components/ResourceCard";
 import CategoryBlock from "./components/CategoryBlock";
 import HeroLatest from "./components/HeroLatest";
+import CategoryDigest from "./components/CategoryDigest";
 import JsonLd from "./components/JsonLd";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
@@ -86,7 +87,10 @@ export default async function Home() {
         <HeroLatest articles={published.slice(0, 5)} sections={sections} />
       </section>
 
-      {/* 2 — Featured categories */}
+      {/* 2 — Latest by category: a text-only scan of every desk */}
+      <CategoryDigest sections={homeSections} articles={published} />
+
+      {/* 3 — Featured categories */}
       <section className="categories" id="categories">
         <div className="section-heading">
           <p>COVERAGE</p>
@@ -113,7 +117,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 3 — Latest insights */}
+      {/* 4 — Latest insights */}
       <section className="reviews" id="latest">
         <div className="section-heading">
           <p>LATEST INSIGHTS</p>
@@ -136,7 +140,7 @@ export default async function Home() {
         />
       ))}
 
-      {/* 4 — Resource center */}
+      {/* 5 — Resource center */}
       <section className="resource-strip" id="resources">
         <div className="section-heading">
           <p>{settings.resourcesEyebrow}</p>
@@ -162,7 +166,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 5 — Trending topics / editor's picks */}
+      {/* 6 — Trending topics / editor's picks */}
       {featureStory && (
         <section className="feature-layout" id="trending">
           <article className="feature-story">
@@ -190,7 +194,7 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 6 — Why Tech News Pro */}
+      {/* 7 — Why Tech News Pro */}
       <section className="why" id="why">
         <div className="why-intro">
           <p className="eyebrow">{settings.whyEyebrow}</p>
@@ -209,7 +213,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 7 — Contact / lead generation */}
+      {/* 8 — Contact / lead generation */}
       <section className="lead-section" id="contact">
         <div className="lead-copy">
           <p className="eyebrow">{settings.contactEyebrow}</p>
