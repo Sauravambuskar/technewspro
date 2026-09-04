@@ -376,3 +376,12 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 .ad-article { margin:36px 0 4px; padding:18px 20px; border:1px solid #e1e0d9; border-bottom:1px solid #e1e0d9; border-radius:5px; background:#faf9f5; }
 .ad-footer { border-bottom:0; border-top:1px solid #e1e0d9; }
 @media (max-width: 620px) { .ad-slot { padding:14px 20px; } }
+
+/* A single unbroken string — a long URL, a pasted token, a language without
+   spaces — must never widen the page. `anywhere` also feeds min-content sizing,
+   so grid and flex tracks can't be blown out by one long word either. */
+body { overflow-wrap: anywhere; }
+/* Grid/flex children default to min-width:auto, which is the giant word's own
+   width; zero lets them shrink so the wrap above can take effect. */
+.review-grid > *, .brief-grid > *, .resource-grid > *, .cat-rest > *, .cat-layout > *,
+.search-page-list > *, .side-story > * { min-width: 0; }

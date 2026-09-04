@@ -1,5 +1,8 @@
 /* Newsroom control panel. Scoped with .adm- prefixes so it never leaks into the public site. */
 
+/* Same guard as the public site: a pasted token must not widen the panel. */
+.adm-shell, .adm-login { overflow-wrap: anywhere; }
+
 .adm-shell { --adm-ink:#11131a; --adm-paper:#f5f5f1; --adm-card:#ffffff; --adm-line:#e2e2db; --adm-acid:#d8ff35; --adm-electric:#5548ff; --adm-muted:#71737b; --adm-danger:#c1372c; --adm-ok:#1f7a4d;
   display:grid; grid-template-columns:238px 1fr; min-height:100vh; background:var(--adm-paper); color:var(--adm-ink); font-family:"DM Sans",Arial,sans-serif; }
 
