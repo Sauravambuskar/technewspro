@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
-import ArticleCard from "../../components/ArticleCard";
+import ArticleRow from "../../components/ArticleRow";
 import ResourceCard from "../../components/ResourceCard";
 import JsonLd from "../../components/JsonLd";
 import { listArticles } from "@/lib/articles";
@@ -112,8 +112,15 @@ export default async function SectionPage({ params }: { params: { section: strin
         {articles.length === 0 ? (
           <p className="resource-empty">Nothing published in this section yet.</p>
         ) : (
-          <div className="review-grid">
-            {articles.map((article) => <ArticleCard key={article.id} article={article} showDate />)}
+          <div className="article-list">
+            {articles.map((article) => (
+              <ArticleRow
+                key={article.id}
+                article={article}
+                sectionLabel={section.label}
+                subcategoryLabel={section.subcategories.find((s) => s.id === article.subcategory)?.label}
+              />
+            ))}
           </div>
         )}
       </section>

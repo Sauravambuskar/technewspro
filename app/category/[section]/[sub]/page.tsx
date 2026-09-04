@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import SiteHeader from "../../../components/SiteHeader";
 import SiteFooter from "../../../components/SiteFooter";
-import ArticleCard from "../../../components/ArticleCard";
+import ArticleRow from "../../../components/ArticleRow";
 import JsonLd from "../../../components/JsonLd";
 import { listArticles } from "@/lib/articles";
 import { getSection, getSubcategory } from "@/lib/sections";
@@ -109,8 +109,15 @@ export default async function SubcategoryPage({ params }: Params) {
             No articles here yet. <Link href={`/category/${section.id}`}>Browse all {section.label}</Link>.
           </p>
         ) : (
-          <div className="review-grid">
-            {articles.map((article) => <ArticleCard key={article.id} article={article} showDate />)}
+          <div className="article-list">
+            {articles.map((article) => (
+              <ArticleRow
+                key={article.id}
+                article={article}
+                sectionLabel={section.label}
+                subcategoryLabel={sub.label}
+              />
+            ))}
           </div>
         )}
       </section>

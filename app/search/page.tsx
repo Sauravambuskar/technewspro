@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
-import ArticleCard from "../components/ArticleCard";
+import ArticleRow from "../components/ArticleRow";
 import ResourceCard from "../components/ResourceCard";
 import { listArticles } from "@/lib/articles";
+import { sectionLabels } from "@/lib/sections";
 import { listPages } from "@/lib/pages";
 import { listResources } from "@/lib/resources";
 import { getSettings } from "@/lib/settings";
@@ -33,11 +34,12 @@ export async function generateMetadata({
 export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
   const query = searchParams.q?.trim() ?? "";
 
-  const [{ settings, nav, menu, footerPages, ads }, articles, resources, pages] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, articles, resources, pages, labels] = await Promise.all([
     getSiteChrome(),
     query ? listArticles({ search: query, status: "published" }) : Promise.resolve([]),
     query ? listResources({ search: query, status: "published" }) : Promise.resolve([]),
-    query ? listPages("published") : Promise.resolve([])
+    query ? listPages("published") : Promise.resolve([]),
+    sectionLabels()
   ]);
 
   // Pages have no search in their repository, so match them here.
@@ -86,8 +88,10 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
             <p>ARTICLES</p>
             <h2>{articles.length} {articles.length === 1 ? "story" : "stories"}.</h2>
           </div>
-          <div className="review-grid">
-            {articles.map((article) => <ArticleCard key={article.id} article={article} showDate />)}
+          <div className="article-list">
+            {articles.map((article) => (
+              <ArticleRow key={article.id} article={article} sectionLabel={labels[article.section]} />
+            ))}
           </div>
         </section>
       )}
