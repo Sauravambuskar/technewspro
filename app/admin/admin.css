@@ -209,6 +209,19 @@
 .adm-fb-key { margin:2px 0 12px; font-size:11.5px; color:var(--adm-muted); }
 .adm-fb-key code { font:500 11px "DM Mono",monospace; background:#eeeee8; padding:2px 6px; border-radius:3px; }
 
+/* ------------------------------------------------------------------- ads */
+.adm-ad-steps { margin:0 0 18px; padding-left:20px; display:flex; flex-direction:column; gap:7px; font-size:13px; line-height:1.55; color:#33353c; }
+.adm-ad-steps b { font-weight:700; }
+.adm-ad-status { padding:11px 14px; border-radius:4px; background:#f3f3ed; color:#54565d; font-size:12.5px; margin-bottom:12px; }
+.adm-ad-status.adm-ad-on { background:#e4f7ec; color:var(--adm-ok); }
+.adm-ad-sizes { margin:0 0 16px; font-size:12px; color:var(--adm-muted); line-height:1.55; }
+.adm-ad-why { margin:0; padding:9px 14px 11px; font-size:12px; color:#8a5d0b; background:#fdf3dd; border-top:1px solid var(--adm-line); }
+.adm-ad-preview { margin:4px 0 18px; }
+.adm-ad-preview-frame { background:#f2f1ec; border:1px solid var(--adm-line); border-radius:5px; padding:14px; text-align:center; }
+.adm-ad-preview-label { display:block; margin-bottom:9px; font:500 9px "DM Mono",monospace; letter-spacing:.14em; color:#9a9b9f; text-transform:uppercase; }
+.adm-ad-preview-frame img { max-width:100%; max-height:140px; width:auto; height:auto; object-fit:contain; display:inline-block; }
+.adm-ad-preview-frame em { font-size:12.5px; color:var(--adm-muted); font-style:normal; }
+
 /* ------------------------------------------------- guided tour (Driver.js) */
 .adm-help-fab {
   position:fixed; right:22px; bottom:22px; z-index:900;

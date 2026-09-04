@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, send, uploadFile } from "../../apiClient";
 import {
   AD_PLACEMENTS,
   AD_PLACEMENT_LABELS,
   AD_TYPES,
+  adBlockedReason,
   adIsLive,
   formatDate,
   type Ad,
@@ -26,6 +27,10 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
+
+  // The server component re-renders after every save; without this the list on
+  // screen would keep showing whatever was in state when the page first loaded.
+  useEffect(() => setDrafts(ads), [ads]);
 
   function edit(id: string, patch: Partial<Ad>) {
     setDrafts((prev) => prev.map((ad) => (ad.id === id ? { ...ad, ...patch } : ad)));
@@ -51,11 +56,11 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
     run(async () => {
       const created = await api<Ad>("/api/ads", {
         method: "POST",
-        body: JSON.stringify({ name: `${AD_PLACEMENT_LABELS[placement].label} ad`, placement })
+        body: JSON.stringify({ name: "New ad", placement })
       });
       setDrafts((prev) => [created, ...prev]);
       setOpenId(created.id);
-    }, "Ad created — it stays off until you switch it on.");
+    }, "Ad added. Fill it in below, switch it on, then save.");
   }
 
   function save(ad: Ad) {
@@ -89,26 +94,66 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
       {error && <p className="adm-note adm-note-error" role="alert">{error}</p>}
       {note && <p className="adm-note adm-note-ok" role="status">{note}</p>}
 
+      <div className="adm-card" data-tour="ad-how">
+        <h2>How ads work here</h2>
+        <p className="adm-card-note">
+          Three slots on the public site. Each one shows a single ad at a time — the newest that is switched
+          on and inside its dates. A slot with nothing running renders nothing at all: no gap, no placeholder.
+        </p>
+
+        <ol className="adm-ad-steps">
+          <li>
+            <b>Add an ad</b> to a slot below.
+          </li>
+          <li>
+            <b>Give it a creative</b> — upload a banner image and the link it should open, or paste the code
+            your ad network gave you.
+          </li>
+          <li>
+            <b>Switch it on</b> and save. Dates are optional; without them it runs until you turn it off.
+          </li>
+        </ol>
+
+        <p className="adm-card-note" style={{ margin: 0 }}>
+          Every ad shows its own impressions, clicks and click-through rate. Clicks are counted on the way out,
+          so the reader still lands on the advertiser&rsquo;s page. Impressions count once per visitor per
+          visit, not per page view.
+        </p>
+      </div>
+
       {AD_PLACEMENTS.map((placement) => {
+        const meta = AD_PLACEMENT_LABELS[placement];
         const inSlot = drafts.filter((ad) => ad.placement === placement);
         const live = inSlot.find((ad) => adIsLive(ad));
 
         return (
           <div className="adm-card" key={placement} data-tour={`ad-${placement}`}>
-            <h2>{AD_PLACEMENT_LABELS[placement].label}</h2>
-            <p className="adm-card-note">
-              {AD_PLACEMENT_LABELS[placement].hint}
-              {" "}
+            <h2>{meta.label}</h2>
+            <p className="adm-card-note">{meta.hint}</p>
+
+            <div className={`adm-ad-status ${live ? "adm-ad-on" : ""}`}>
               {live ? (
-                <b style={{ color: "#1f7a4d" }}>Showing “{live.name}” right now.</b>
+                <>
+                  <b>On air:</b> “{live.name}” is showing in this slot right now.
+                </>
               ) : (
-                <b style={{ color: "#71737b" }}>Empty — this slot renders nothing at all.</b>
+                <>
+                  <b>Empty:</b> nothing is running here, so the slot renders nothing on the site.
+                </>
               )}
+            </div>
+
+            <p className="adm-ad-sizes">
+              <b>Best size</b> — {meta.sizes}
             </p>
 
             {inSlot.map((ad) => {
               const open = openId === ad.id;
               const running = adIsLive(ad);
+              // Either something about the ad itself keeps it off, or it is
+              // complete and in-window but another ad already claimed the slot.
+              const blocked = adBlockedReason(ad);
+
               return (
                 <div className={`adm-fb-field${open ? " adm-fb-open" : ""}`} key={ad.id}>
                   <div className="adm-fb-head">
@@ -126,12 +171,18 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                       </span>
                     </button>
                     <span className={`adm-tag ${running ? "adm-tag-live" : "adm-tag-draft"}`}>
-                      {running ? "live" : ad.enabled ? "scheduled" : "off"}
+                      {running ? "on air" : "off air"}
                     </span>
                     <button type="button" className="adm-btn adm-btn-danger adm-btn-sm" onClick={() => remove(ad)}>
                       Delete
                     </button>
                   </div>
+
+                  {!running && (
+                    <p className="adm-ad-why">
+                      Not on the site: {blocked || `“${live?.name}” is ahead of it in this slot.`}
+                    </p>
+                  )}
 
                   {open && (
                     <div className="adm-fb-body">
@@ -143,7 +194,7 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                             value={ad.name}
                             onChange={(e) => edit(ad.id, { name: e.target.value })}
                           />
-                          <small>Only you see this — name it after the advertiser.</small>
+                          <small>Only you see this — name it after the advertiser or the campaign.</small>
                         </label>
 
                         <label className="adm-field">
@@ -156,6 +207,11 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                               <option key={type} value={type}>{TYPE_LABELS[type]}</option>
                             ))}
                           </select>
+                          <small>
+                            {ad.type === "image"
+                              ? "A banner you were sent, linking to the advertiser."
+                              : "A snippet from AdSense, Ad Manager or a partner."}
+                          </small>
                         </label>
                       </div>
 
@@ -185,6 +241,7 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                                 />
                               </label>
                             </div>
+                            <small>{meta.sizes}</small>
                           </label>
 
                           <div className="adm-grid-2">
@@ -196,7 +253,11 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                                 onChange={(e) => edit(ad.id, { href: e.target.value })}
                                 placeholder="https://advertiser.com/landing"
                               />
-                              <small>Clicks are counted before the reader is forwarded.</small>
+                              <small>
+                                {ad.href && !/^https?:\/\//i.test(ad.href)
+                                  ? "Needs to start with https:// or the click won't go anywhere."
+                                  : "Counted on the way out, then the reader is forwarded."}
+                              </small>
                             </label>
 
                             <label className="adm-field">
@@ -207,16 +268,9 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                                 onChange={(e) => edit(ad.id, { imageAlt: e.target.value })}
                                 placeholder="e.g. Acme Cloud — free 30-day trial"
                               />
+                              <small>Read aloud by screen readers.</small>
                             </label>
                           </div>
-
-                          {ad.image && (
-                            <img
-                              src={ad.image}
-                              alt={ad.imageAlt}
-                              style={{ maxWidth: "100%", borderRadius: 4, marginBottom: 16, display: "block" }}
-                            />
-                          )}
                         </>
                       ) : (
                         <label className="adm-field">
@@ -225,7 +279,7 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                             rows={7}
                             value={ad.html}
                             onChange={(e) => edit(ad.id, { html: e.target.value })}
-                            placeholder="Paste the snippet from AdSense, Ad Manager or your ad partner."
+                            placeholder='Paste the whole snippet, e.g. <ins class="adsbygoogle" …></ins><script>…</script>'
                             style={{ fontFamily: '"DM Mono", monospace', fontSize: 12.5 }}
                           />
                           <small>
@@ -234,6 +288,20 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                           </small>
                         </label>
                       )}
+
+                      <div className="adm-ad-preview">
+                        <p className="adm-subs-label">HOW IT WILL LOOK</p>
+                        <div className="adm-ad-preview-frame">
+                          <span className="adm-ad-preview-label">Advertisement</span>
+                          {ad.type === "image" && ad.image ? (
+                            <img src={ad.image} alt={ad.imageAlt} />
+                          ) : ad.type === "html" && ad.html ? (
+                            <em>Network code renders here on the live site — it can&rsquo;t be previewed safely.</em>
+                          ) : (
+                            <em>Nothing yet. Add {ad.type === "image" ? "a banner image" : "the ad code"} above.</em>
+                          )}
+                        </div>
+                      </div>
 
                       <div className="adm-grid-2">
                         <label className="adm-field">
@@ -265,7 +333,7 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                       </label>
 
                       <p className="adm-fb-key">
-                        Created {formatDate(ad.createdAt.slice(0, 10))} · {ad.impressions.toLocaleString()}{" "}
+                        Added {formatDate(ad.createdAt.slice(0, 10))} · {ad.impressions.toLocaleString()}{" "}
                         impressions · {ad.clicks.toLocaleString()} clicks
                       </p>
 
@@ -278,6 +346,9 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
                         >
                           {busy ? "Saving…" : "Save this ad"}
                         </button>
+                        <small style={{ color: "#71737b", fontSize: 11.5 }}>
+                          Nothing above is stored until you press this.
+                        </small>
                       </div>
                     </div>
                   )}
@@ -296,8 +367,8 @@ export default function AdManager({ ads }: { ads: Ad[] }) {
             </button>
             {inSlot.length > 1 && (
               <small style={{ display: "block", marginTop: 10, color: "#71737b", fontSize: 11.5 }}>
-                With several in one slot, the newest live one wins — use the dates to hand over between
-                advertisers.
+                Several in one slot: the newest one that is on air wins. Use the dates to hand over between
+                advertisers without touching anything on the day.
               </small>
             )}
           </div>

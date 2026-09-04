@@ -767,6 +767,11 @@ export default function HelpTour() {
   const pathname = usePathname();
   const [ready, setReady] = useState(false);
   const autoStarted = useRef(false);
+  // Driver.js paints a full-screen overlay that swallows every click. If a tour
+  // is still open when the route changes, that overlay would sit on top of the
+  // next screen and make the panel unusable, so the instance is tracked and
+  // destroyed on navigation.
+  const active = useRef<ReturnType<typeof driver> | null>(null);
 
   const run = useCallback(
     (steps: DriveStep[]) => {
@@ -775,7 +780,9 @@ export default function HelpTour() {
       const usable = steps.filter((step) => !step.element || document.querySelector(step.element as string));
       if (usable.length === 0) return;
 
-      driver({
+      active.current?.destroy();
+
+      const tour = driver({
         showProgress: true,
         allowClose: true,
         overlayColor: "#11131a",
@@ -787,8 +794,14 @@ export default function HelpTour() {
         prevBtnText: "← Back",
         doneBtnText: "Got it",
         steps: usable,
-        onDestroyed: markSeen
-      }).drive();
+        onDestroyed: () => {
+          markSeen();
+          active.current = null;
+        }
+      });
+
+      active.current = tour;
+      tour.drive();
     },
     []
   );
@@ -797,12 +810,22 @@ export default function HelpTour() {
     run([WELCOME, SIDEBAR, ...stepsForPath(pathname), HELP]);
   }, [pathname, run]);
 
+  // Any navigation closes whatever is open, overlay included.
+  useEffect(() => {
+    return () => {
+      active.current?.destroy();
+      active.current = null;
+    };
+  }, [pathname]);
+
   useEffect(() => {
     setReady(true);
 
     // First sign-in: introduce the whole panel without waiting to be asked.
     // Only ever once — finishing or dismissing it is enough to stop it coming back.
-    if (seen()) return;
+    // Only on the dashboard: the product tour is written for that screen, and
+    // opening it over a screen the author navigated to on purpose is an ambush.
+    if (seen() || pathname !== "/admin") return;
 
     // Let the screen settle first, so nothing is highlighted mid-layout. The ref
     // is set inside the callback, not before it: in StrictMode this effect is
@@ -814,7 +837,7 @@ export default function HelpTour() {
       run(PRODUCT_TOUR);
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [run]);
+  }, [run, pathname]);
 
   return (
     <button

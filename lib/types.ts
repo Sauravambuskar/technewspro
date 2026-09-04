@@ -278,20 +278,39 @@ export function isReservedSlug(slug: string) {
 export const AD_PLACEMENTS = ["header", "article", "footer"] as const;
 export type AdPlacement = (typeof AD_PLACEMENTS)[number];
 
-export const AD_PLACEMENT_LABELS: Record<AdPlacement, { label: string; hint: string }> = {
+export const AD_PLACEMENT_LABELS: Record<
+  AdPlacement,
+  { label: string; hint: string; sizes: string; ratio: number }
+> = {
   header: {
     label: "Header banner",
-    hint: "A strip directly under the navigation, on every page. The most valuable slot — 970×90 or 728×90."
+    hint: "A strip directly under the navigation, on every page — your most valuable inventory.",
+    sizes: "970×90 (billboard) or 728×90 (leaderboard). On phones it scales down, so keep any text large.",
+    ratio: 970 / 90
   },
   article: {
     label: "In-article",
-    hint: "Between the body and the tags on an article page. Reads as part of the story, so it earns attention."
+    hint: "Between the story and its tags. Readers are already reading, so this earns the most attention per view.",
+    sizes: "580×400 or 300×250 (medium rectangle). Anything roughly square works.",
+    ratio: 580 / 400
   },
   footer: {
     label: "Above the footer",
-    hint: "The last thing before the footer, on every page. Cheap inventory for house ads or partners."
+    hint: "The last thing before the footer, on every page. Good for house ads, partners and swaps.",
+    sizes: "970×90 or 728×90, same as the header.",
+    ratio: 970 / 90
   }
 };
+
+/** Why an ad is not on the site right now — "" when it is showing. */
+export function adBlockedReason(ad: Ad, today = new Date().toISOString().slice(0, 10)): string {
+  if (ad.type === "image" && !ad.image) return "No banner image yet.";
+  if (ad.type === "html" && !ad.html) return "No ad code yet.";
+  if (!ad.enabled) return "Switched off.";
+  if (ad.startsAt && today < ad.startsAt) return `Scheduled — starts ${ad.startsAt}.`;
+  if (ad.endsAt && today > ad.endsAt) return `Finished — ended ${ad.endsAt}.`;
+  return "";
+}
 
 /** An image creative we host, or a snippet from an ad network. */
 export const AD_TYPES = ["image", "html"] as const;
@@ -335,6 +354,9 @@ export function isAdType(value: unknown): value is AdType {
 /** True when today falls inside the ad's optional start/end window. */
 export function adIsLive(ad: Ad, today = new Date().toISOString().slice(0, 10)) {
   if (!ad.enabled) return false;
+  // An ad with nothing to show must not claim the slot — it would beat a
+  // perfectly good ad behind it and then render an empty box.
+  if (ad.type === "image" ? !ad.image : !ad.html) return false;
   if (ad.startsAt && today < ad.startsAt) return false;
   if (ad.endsAt && today > ad.endsAt) return false;
   return true;
