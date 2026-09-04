@@ -42,7 +42,7 @@ export default async function SubcategoryPage({ params }: Params) {
   ]);
   if (!section || !sub) notFound();
 
-  const [{ settings, nav, menu, footerPages }, articles] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, articles] = await Promise.all([
     getSiteChrome(),
     listArticles({ section: section.id, subcategory: sub.id, status: "published" })
   ]);
@@ -73,7 +73,7 @@ export default async function SubcategoryPage({ params }: Params) {
   return (
     <main>
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
       <JsonLd data={jsonLd} />
 
       <nav className="breadcrumb" aria-label="Breadcrumb">
@@ -115,7 +115,7 @@ export default async function SubcategoryPage({ params }: Params) {
         )}
       </section>
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

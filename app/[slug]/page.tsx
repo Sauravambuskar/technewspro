@@ -35,7 +35,7 @@ export default async function CustomPage({ params }: { params: { slug: string } 
   const page = await getPageBySlug(params.slug);
   if (!page) notFound();
 
-  const [{ settings, nav, menu, footerPages }, attachedForm] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, attachedForm] = await Promise.all([
     getSiteChrome(),
     page.formId ? getFormById(page.formId) : Promise.resolve(undefined)
   ]);
@@ -64,7 +64,7 @@ export default async function CustomPage({ params }: { params: { slug: string } 
       {!canvas && (
         <>
           <div className="topline" />
-          <SiteHeader menu={menu} siteName={settings.siteName} />
+          <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
         </>
       )}
 
@@ -102,7 +102,7 @@ export default async function CustomPage({ params }: { params: { slug: string } 
         )}
       </article>
 
-      {!canvas && <SiteFooter nav={nav} settings={settings} pages={footerPages} />}
+      {!canvas && <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />}
     </main>
   );
 }

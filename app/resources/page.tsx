@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ResourceCenter() {
-  const [{ settings, nav, menu, footerPages }, sections, resources] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, sections, resources] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listResources({ status: "published" })
@@ -31,7 +31,7 @@ export default async function ResourceCenter() {
   return (
     <main>
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
 
       <nav className="breadcrumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link> <span>/</span> <b>Resources</b>
@@ -57,7 +57,7 @@ export default async function ResourceCenter() {
         <ResourceBrowser resources={resources} sections={sections} />
       </section>
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

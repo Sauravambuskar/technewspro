@@ -1,18 +1,24 @@
 import Link from "next/link";
 import type { NavItem } from "@/lib/site";
-import type { Settings } from "@/lib/types";
+import type { Ad, Settings } from "@/lib/types";
+import AdSlot from "./AdSlot";
 
 export default function SiteFooter({
   nav,
   settings,
-  pages = []
+  pages = [],
+  ad
 }: {
   nav: NavItem[];
   settings: Settings;
   /** Custom pages that opted into the footer. */
   pages?: NavItem[];
+  /** The live above-the-footer banner, when one is running. */
+  ad?: Ad;
 }) {
   return (
+    <>
+      <AdSlot ad={ad} />
     <footer id="about">
       <Link className="brand footer-brand" href="/">
         <img className="brand-logo" src="/logo.png" alt={settings.siteName} />
@@ -36,5 +42,6 @@ export default function SiteFooter({
       </div>
       <small>{settings.footerCopyright}</small>
     </footer>
+    </>
   );
 }

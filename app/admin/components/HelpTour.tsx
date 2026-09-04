@@ -119,9 +119,18 @@ const PRODUCT_TOUR: DriveStep[] = [
     }
   },
   {
+    element: '[data-tour="nav-ads"]',
+    popover: {
+      title: "6. Ads",
+      description:
+        "Three slots — a header banner, one inside articles, one above the footer. Upload a banner or paste an ad network's code, set dates, and watch impressions and clicks. An empty slot renders nothing at all.",
+      side: "right"
+    }
+  },
+  {
     element: '[data-tour="nav-sections"]',
     popover: {
-      title: "6. Sections",
+      title: "7. Sections",
       description:
         "Your categories and sub-categories. Renaming one here updates it everywhere — navigation, category pages, breadcrumbs and the sitemap.",
       side: "right"
@@ -130,7 +139,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-ticker"]',
     popover: {
-      title: "7. News ticker",
+      title: "8. News ticker",
       description:
         "The scrolling headline bar at the top of the public site. Add lines, reorder them, or switch the whole thing off.",
       side: "right"
@@ -139,7 +148,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-leads"]',
     popover: {
-      title: "8. Leads",
+      title: "9. Leads",
       description:
         "Everyone who filled in a gated download or a partnership form, and which resource they wanted. Exportable as CSV.",
       side: "right"
@@ -148,7 +157,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-subscribers"]',
     popover: {
-      title: "9. Subscribers",
+      title: "10. Subscribers",
       description:
         "Your newsletter list, with the page each sign-up came from. You can unsubscribe someone by hand and export the list.",
       side: "right"
@@ -157,7 +166,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-messages"]',
     popover: {
-      title: "10. Inbox",
+      title: "11. Inbox",
       description:
         "Messages sent through the contact form. The badge counts unread ones, and clears as you open them.",
       side: "right"
@@ -166,7 +175,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-settings"]',
     popover: {
-      title: "11. Site settings",
+      title: "12. Site settings",
       description:
         "The words around the content: site name, homepage hero, About and Contact copy, footer and social links. Every field is live text on the public site.",
       side: "right"
@@ -175,7 +184,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="nav-team"]',
     popover: {
-      title: "12. Team",
+      title: "13. Team",
       description:
         "Add editors or admins, change a password, remove an account. If you're still on the default password, change it here first.",
       side: "right"
@@ -184,7 +193,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="stats"]',
     popover: {
-      title: "13. Your numbers at a glance",
+      title: "14. Your numbers at a glance",
       description:
         "Refreshed on every visit. “Drafts waiting” is the useful one — it's how much is written but not yet live.",
       side: "bottom"
@@ -193,7 +202,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="dash-tables"]',
     popover: {
-      title: "14. What's working",
+      title: "15. What's working",
       description:
         "Your best-read stories, how coverage splits across categories, and anything still in draft. Click any title to open it.",
       side: "top"
@@ -202,7 +211,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="page-actions"]',
     popover: {
-      title: "15. Write something",
+      title: "16. Write something",
       description: "The quickest way into a blank story or resource. These buttons sit at the top of most screens.",
       side: "bottom",
       align: "end"
@@ -211,7 +220,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="view-site"]',
     popover: {
-      title: "16. See it as a reader does",
+      title: "17. See it as a reader does",
       description: "Opens the public site in a new tab, so you can check your work without losing your place here.",
       side: "right"
     }
@@ -219,7 +228,7 @@ const PRODUCT_TOUR: DriveStep[] = [
   {
     element: '[data-tour="account"]',
     popover: {
-      title: "17. You, and the way out",
+      title: "18. You, and the way out",
       description: "Who you're signed in as and what you're allowed to do, with the sign-out button underneath.",
       side: "right"
     }
@@ -577,6 +586,37 @@ function stepsForPath(pathname: string): DriveStep[] {
       return tableSteps("resources");
     case "/admin/pages":
       return tableSteps("pages");
+    case "/admin/ads":
+      return [
+        {
+          element: '[data-tour="ad-header"]',
+          popover: {
+            title: "1. The header banner",
+            description:
+              "The strip under the navigation, on every page — the slot worth the most. Each card here tells you what's showing right now, or that the slot is empty.",
+            side: "top"
+          }
+        },
+        {
+          element: '[data-tour="ad-article"]',
+          popover: {
+            title: "2. The other two slots",
+            description:
+              "In-article sits between the story and its tags; the third runs above the footer. Same controls in each, so you can sell them separately.",
+            side: "top"
+          }
+        },
+        {
+          element: '[data-tour="ad-header"] .adm-fb-field, [data-tour="ad-header"] .adm-btn-ghost',
+          popover: {
+            title: "3. Adding one",
+            description:
+              "An ad is either a banner image with a click-through, or a snippet from a network like AdSense. Set optional start and end dates, switch it on, and save. Impressions and clicks are counted for you.",
+            side: "bottom"
+          }
+        }
+      ];
+
     case "/admin/forms":
       return [
         {

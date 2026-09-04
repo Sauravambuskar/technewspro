@@ -28,7 +28,7 @@ export default async function ResourceTypePage({ params }: { params: { type: str
   if (!isResourceType(params.type)) notFound();
   const type = params.type;
 
-  const [{ settings, nav, menu, footerPages }, sections, resources] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, sections, resources] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listResources({ type, status: "published" })
@@ -39,7 +39,7 @@ export default async function ResourceTypePage({ params }: { params: { type: str
   return (
     <main>
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
 
       <nav className="breadcrumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link> <span>/</span> <Link href="/resources">Resources</Link> <span>/</span>{" "}
@@ -69,7 +69,7 @@ export default async function ResourceTypePage({ params }: { params: { type: str
         <ResourceBrowser resources={resources} sections={sections} lockedType={type} />
       </section>
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

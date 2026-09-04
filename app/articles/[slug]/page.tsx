@@ -11,6 +11,7 @@ import { getSiteChrome } from "@/lib/site";
 import { formatDate } from "@/lib/types";
 import { buildMetadata, siteUrl } from "@/lib/seo";
 import JsonLd from "../../components/JsonLd";
+import AdSlot from "../../components/AdSlot";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   const article = await getArticleBySlug(params.slug);
   if (!article) notFound();
 
-  const [{ settings, nav, menu, footerPages }, labels, sectionArticles, subcategory] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, labels, sectionArticles, subcategory] = await Promise.all([
     getSiteChrome(),
     sectionLabels(),
     listArticles({ section: article.section, status: "published" }),
@@ -65,7 +66,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       />
 
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
       <ViewBeacon slug={article.slug} />
 
       <article className="article-page">
@@ -91,6 +92,8 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         <div className="article-body">
           {article.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
         </div>
+
+        <AdSlot ad={ads.article} />
 
         {article.tags.length > 0 && (
           <div className="chip-row" aria-label="Tags">
@@ -125,7 +128,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </section>
       )}
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

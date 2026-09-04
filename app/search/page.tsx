@@ -33,7 +33,7 @@ export async function generateMetadata({
 export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
   const query = searchParams.q?.trim() ?? "";
 
-  const [{ settings, nav, menu, footerPages }, articles, resources, pages] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, articles, resources, pages] = await Promise.all([
     getSiteChrome(),
     query ? listArticles({ search: query, status: "published" }) : Promise.resolve([]),
     query ? listResources({ search: query, status: "published" }) : Promise.resolve([]),
@@ -51,7 +51,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
   return (
     <main>
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
 
       <nav className="breadcrumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link> <span>/</span> <b>Search</b>
@@ -131,7 +131,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
         </section>
       )}
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

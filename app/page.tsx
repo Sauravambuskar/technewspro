@@ -19,7 +19,7 @@ import { siteUrl } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [{ settings, nav, menu, footerPages }, sections, published, resources, ticker] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, sections, published, resources, ticker] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listArticles({ status: "published" }),
@@ -53,7 +53,7 @@ export default async function Home() {
       />
 
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
 
       {settings.tickerEnabled && ticker.length > 0 && (
         <section className="ticker" aria-label="Latest updates">
@@ -232,7 +232,7 @@ export default async function Home() {
         <NewsletterForm blurb={settings.newsletterBlurb} />
       </section>
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

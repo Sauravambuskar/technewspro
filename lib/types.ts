@@ -273,6 +273,73 @@ export function isReservedSlug(slug: string) {
   return RESERVED_SLUGS.includes(slug.trim().toLowerCase());
 }
 
+/* --------------------------------------------------------------------- ads */
+
+export const AD_PLACEMENTS = ["header", "article", "footer"] as const;
+export type AdPlacement = (typeof AD_PLACEMENTS)[number];
+
+export const AD_PLACEMENT_LABELS: Record<AdPlacement, { label: string; hint: string }> = {
+  header: {
+    label: "Header banner",
+    hint: "A strip directly under the navigation, on every page. The most valuable slot — 970×90 or 728×90."
+  },
+  article: {
+    label: "In-article",
+    hint: "Between the body and the tags on an article page. Reads as part of the story, so it earns attention."
+  },
+  footer: {
+    label: "Above the footer",
+    hint: "The last thing before the footer, on every page. Cheap inventory for house ads or partners."
+  }
+};
+
+/** An image creative we host, or a snippet from an ad network. */
+export const AD_TYPES = ["image", "html"] as const;
+export type AdType = (typeof AD_TYPES)[number];
+
+export type Ad = {
+  id: string;
+  /** Internal name — readers never see it. */
+  name: string;
+  placement: AdPlacement;
+  type: AdType;
+
+  // type: "image"
+  image: string;
+  imageAlt: string;
+  /** Where a click goes. Clicks are counted through /api/ads/:id/click. */
+  href: string;
+
+  // type: "html" — an AdSense/GAM snippet, or any markup
+  html: string;
+
+  enabled: boolean;
+  /** YYYY-MM-DD, or "" for no bound. */
+  startsAt: string;
+  endsAt: string;
+
+  impressions: number;
+  clicks: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export function isAdPlacement(value: unknown): value is AdPlacement {
+  return typeof value === "string" && (AD_PLACEMENTS as readonly string[]).includes(value);
+}
+
+export function isAdType(value: unknown): value is AdType {
+  return typeof value === "string" && (AD_TYPES as readonly string[]).includes(value);
+}
+
+/** True when today falls inside the ad's optional start/end window. */
+export function adIsLive(ad: Ad, today = new Date().toISOString().slice(0, 10)) {
+  if (!ad.enabled) return false;
+  if (ad.startsAt && today < ad.startsAt) return false;
+  if (ad.endsAt && today > ad.endsAt) return false;
+  return true;
+}
+
 /* ------------------------------------------------------------------- forms */
 
 export const FIELD_TYPES = [

@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [{ settings, nav, menu, footerPages }, sections] = await Promise.all([getSiteChrome(), listSections()]);
+  const [{ settings, nav, menu, footerPages, ads }, sections] = await Promise.all([getSiteChrome(), listSections()]);
 
   return (
     <main>
@@ -35,7 +35,7 @@ export default async function AboutPage() {
       />
 
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
 
       <section className="page-hero">
         <p className="eyebrow">ABOUT US</p>
@@ -96,7 +96,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

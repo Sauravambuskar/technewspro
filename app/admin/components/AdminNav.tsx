@@ -8,6 +8,7 @@ export type NavBadge = {
   resources?: number;
   pages?: number;
   forms?: number;
+  ads?: number;
   messages?: number;
   leads?: number;
   subscribers?: number;
@@ -20,6 +21,7 @@ const LINKS = [
   { href: "/admin/resources", label: "Resources", badge: "resources" as const, tour: "resources" },
   { href: "/admin/pages", label: "Pages", badge: "pages" as const, tour: "pages" },
   { href: "/admin/forms", label: "Forms", badge: "forms" as const, tour: "forms" },
+  { href: "/admin/ads", label: "Ads", badge: "ads" as const, tour: "ads" },
   { href: "/admin/sections", label: "Sections", tour: "sections" },
   { href: "/admin/ticker", label: "News ticker", tour: "ticker" },
   { href: "/admin/leads", label: "Leads", badge: "leads" as const, tour: "leads" },

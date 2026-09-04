@@ -29,7 +29,7 @@ export default async function SectionPage({ params }: { params: { section: strin
   const section = await getSection(params.section);
   if (!section) notFound();
 
-  const [{ settings, nav, menu, footerPages }, sections, articles, resources] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, sections, articles, resources] = await Promise.all([
     getSiteChrome(),
     listSections(),
     listArticles({ section: section.id, status: "published" }),
@@ -66,7 +66,7 @@ export default async function SectionPage({ params }: { params: { section: strin
   return (
     <main>
       <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} />
+      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
       <JsonLd data={jsonLd} />
 
       <nav className="breadcrumb" aria-label="Breadcrumb">
@@ -131,7 +131,7 @@ export default async function SectionPage({ params }: { params: { section: strin
         </section>
       )}
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} />
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

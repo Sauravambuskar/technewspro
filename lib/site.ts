@@ -1,3 +1,4 @@
+import { activeAds } from "./ads";
 import { listArticles } from "./articles";
 import { listPages } from "./pages";
 import { listResources } from "./resources";
@@ -17,12 +18,13 @@ const DROPDOWN_LIMIT = 5;
 
 /** Everything the header and footer need, resolved once per request. */
 export async function getSiteChrome() {
-  const [settings, sections, articles, resources, pages] = await Promise.all([
+  const [settings, sections, articles, resources, pages, ads] = await Promise.all([
     getSettings(),
     navSections(),
     listArticles({ status: "published" }),
     listResources({ status: "published" }),
-    listPages("published")
+    listPages("published"),
+    activeAds()
   ]);
 
   // Dropdowns list the section's sub-categories that actually have published
@@ -74,5 +76,5 @@ export async function getSiteChrome() {
   // Footer columns
   const nav: NavItem[] = categories.map(({ label, href }) => ({ label, href }));
 
-  return { settings, nav, menu, resourceLinks, footerPages };
+  return { settings, nav, menu, resourceLinks, footerPages, ads };
 }

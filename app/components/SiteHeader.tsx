@@ -4,10 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { NavEntry } from "@/lib/site";
+import type { Ad } from "@/lib/types";
+import AdSlot from "./AdSlot";
 
 type SearchHit = { href: string; title: string; tag: string };
 
-export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteName: string }) {
+export default function SiteHeader({
+  menu,
+  siteName,
+  ad
+}: {
+  menu: NavEntry[];
+  siteName: string;
+  /** The live header banner, when one is running. */
+  ad?: Ad;
+}) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -150,6 +161,8 @@ export default function SiteHeader({ menu, siteName }: { menu: NavEntry[]; siteN
 
         </ul>
       </nav>
+
+      <AdSlot ad={ad} />
 
       {drawerOpen && (
         <div className="nav-drawer">
