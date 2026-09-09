@@ -30,6 +30,7 @@ export default function SiteFooter({
         <Link href="/resources">Resources</Link>
         <Link href="/about">About us</Link>
         <Link href="/contact">Contact us</Link>
+        <Link href="/write-for-us">Write for us</Link>
         <Link href="/#newsletter">Newsletter</Link>
         {pages.map((page) => <Link href={page.href} key={page.href}>{page.label}</Link>)}
       </div>

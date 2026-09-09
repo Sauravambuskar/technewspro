@@ -70,6 +70,7 @@ export async function getSiteChrome() {
     { id: "resources", label: "Resources", href: "/resources", links: resourceLinks },
     { id: "about", label: "About Us", href: "/about", links: [] },
     { id: "contact", label: "Contact Us", href: "/contact", links: [] },
+    { id: "write-for-us", label: "Write For Us", href: "/write-for-us", links: [] },
     ...navPages
   ];
 

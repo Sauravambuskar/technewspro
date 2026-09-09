@@ -190,6 +190,7 @@ export default function SiteHeader({
             <Link href="/resources" onClick={closeAll}>Resource center</Link>
             <Link href="/about" onClick={closeAll}>About us</Link>
             <Link href="/contact" onClick={closeAll}>Contact us</Link>
+            <Link href="/write-for-us" onClick={closeAll}>Write for us</Link>
           </div>
         </div>
       )}
