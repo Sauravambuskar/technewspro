@@ -3,10 +3,16 @@ import { formatDate, type Article } from "@/lib/types";
 import Thumb from "./Thumb";
 
 /**
- * A dense horizontal listing row: thumbnail, category chips, headline, byline
- * and read time. Used on the pages whose job is "scan a lot of stories" —
- * category, sub-category and search — where a card grid wastes vertical space
- * and buries the metadata.
+ * A horizontal listing row: thumbnail, category labels, headline and byline.
+ * Used on the pages whose job is "scan a lot of stories" — category,
+ * sub-category and search — where a card grid wastes vertical space and
+ * buries the metadata.
+ *
+ * The labels and the byline use the same quiet treatment as the rest of the
+ * site (small electric-blue caps, dot separators). They were solid filled
+ * blocks, which made a page of rows read as a wall of colour and pulled the
+ * eye away from the headline — the one thing a scanner is actually looking
+ * for.
  */
 export default function ArticleRow({
   article,
@@ -14,7 +20,7 @@ export default function ArticleRow({
   subcategoryLabel
 }: {
   article: Article;
-  /** e.g. "Finance & FinTech" — the chip that leads the row. */
+  /** e.g. "Finance & FinTech" — the label that leads the row. */
   sectionLabel?: string;
   subcategoryLabel?: string;
 }) {
@@ -27,29 +33,24 @@ export default function ArticleRow({
       </Link>
 
       <div className="article-row-body">
-        <div className="article-row-chips">
+        <p className="article-row-chips">
           {sectionLabel && <span className="row-chip row-chip-primary">{sectionLabel}</span>}
           {subcategoryLabel && <span className="row-chip">{subcategoryLabel}</span>}
           {!sectionLabel && !subcategoryLabel && <span className="row-chip">{article.tag}</span>}
-        </div>
+        </p>
 
         <h3>
           <Link href={href}>{article.title}</Link>
         </h3>
 
+        {/* Date, author and read time on one line. Splitting the read time onto
+            its own row gave a three-word fact a full line of its own. */}
         <p className="article-row-meta">
           <span>{formatDate(article.date)}</span>
           <i />
           <span className="article-row-author">{article.author}</span>
-        </p>
-
-        <p className="article-row-time">
-          {/* A clock, drawn inline so the row costs no extra request. */}
-          <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
-            <circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" strokeWidth="1.3" />
-            <path d="M8 4.4V8l2.5 1.6" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-          </svg>
-          {article.minutes} min read
+          <i />
+          <span>{article.minutes} min read</span>
         </p>
       </div>
     </article>
