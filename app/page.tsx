@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import NewsletterForm from "./components/NewsletterForm";
@@ -10,6 +11,7 @@ import CategorySlider from "./components/CategorySlider";
 import HeroLatest from "./components/HeroLatest";
 import CategoryDigest from "./components/CategoryDigest";
 import JsonLd from "./components/JsonLd";
+import MainCategoriesLanding from "./components/MainCategoriesLanding";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
 import { listSections } from "@/lib/sections";
@@ -21,6 +23,9 @@ import { siteUrl } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  const host = headers().get("host")?.split(":")[0].toLowerCase();
+  if (host === "salesinfopro-main.vercel.app") return <MainCategoriesLanding />;
+
   const [{ settings, nav, menu, footerPages, ads }, sections, published, resources, ticker] = await Promise.all([
     getSiteChrome(),
     listSections(),
