@@ -475,3 +475,9 @@ body { overflow-wrap: anywhere; }
 @media (max-width: 520px)  { .digest-grid { grid-template-columns:1fr; } .digest-lead-image { height:180px; } }
 
 @media (max-width: 620px) { .brand-logo { height:43px; max-width:38vw; } }
+
+/* Clear editorial type: strong headline, readable body copy. */
+body { font-family:Arial,Helvetica,sans-serif; }
+.hero h1,.manifesto h2,.newsletter h2 { font-family:Arial,Helvetica,sans-serif; font-weight:800; letter-spacing:-.075em; }
+.hero h1 em,.manifesto em { font-family:Arial,Helvetica,sans-serif; font-style:italic; font-weight:800; }
+.hero-description { font-size:16px; line-height:1.5; }
