@@ -27,8 +27,11 @@ export default async function MainCategoriesLanding() {
 
       <section className="categories main-categories-version">
         <div className="section-heading">
-          <p>MAIN CATEGORIES</p>
-          <h1>Choose a desk.<br />Start reading.</h1>
+          <p>EXPLORE COVERAGE</p>
+          <div className="main-categories-heading">
+            <h1>Main categories.</h1>
+            <p>Choose a desk and start reading the latest analysis.</p>
+          </div>
           <a href="https://salesinfopro.vercel.app/">Full homepage <span>&rarr;</span></a>
         </div>
 
