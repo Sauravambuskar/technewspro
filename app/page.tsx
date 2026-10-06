@@ -95,7 +95,7 @@ export default async function Home() {
       <section className="categories" id="categories">
         <div className="section-heading">
           <p>COVERAGE</p>
-          <h2>Featured categories.</h2>
+          <h2>Every desk.<br />One clear view.</h2>
           <Link href="/category">All categories <span>&rarr;</span></Link>
         </div>
         <CategorySlider>
