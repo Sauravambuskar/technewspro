@@ -35,7 +35,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     <div className="adm-shell">
       <aside className="adm-sidebar">
         <div className="adm-logo">
-          <img src="/logo.png" alt="Tech News Pro" />
+          <img src="/logo.png" alt="Sales Info Pro" />
           <span>
             <small>CONTROL PANEL</small>
           </span>

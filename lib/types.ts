@@ -487,7 +487,7 @@ export type Settings = {
   resourcesTitle: string;
   resourcesBlurb: string;
 
-  // "Why Tech News Pro"
+  // "Why Sales Info Pro"
   whyEyebrow: string;
   whyTitle: string;
   whyBlurb: string;

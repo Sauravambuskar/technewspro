@@ -112,7 +112,7 @@ export async function createResource(input: ResourceInput & { title: string }): 
     gated: input.gated ?? true,
     status: input.status === "published" ? "published" : "draft",
     featured: Boolean(input.featured),
-    author: input.author?.trim() || "Tech News Pro Research",
+    author: input.author?.trim() || "Sales Info Pro Research",
     date: input.date || stamp.slice(0, 10),
     seo: normaliseSeo(input.seo),
     views: 0,

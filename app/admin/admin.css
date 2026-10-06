@@ -9,7 +9,7 @@
 /* ---------------------------------------------------------------- sidebar */
 .adm-sidebar { background:var(--adm-ink); color:#fff; padding:26px 20px; display:flex; flex-direction:column; gap:26px; position:sticky; top:0; height:100vh; }
 .adm-logo { display:flex; align-items:center; gap:8px; font-size:17px; font-weight:700; letter-spacing:-1.1px; }
-.adm-logo img { height:26px; width:auto; display:block; }
+.adm-logo img { display:block; width:auto; height:38px; max-width:172px; object-fit:contain; }
 .adm-logo small { display:block; font:500 9px/1 "DM Mono",monospace; color:var(--adm-acid); letter-spacing:.14em; margin-top:4px; }
 .adm-nav { display:flex; flex-direction:column; gap:2px; }
 .adm-nav a { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; font-size:13px; font-weight:600; color:#b9bac2; border-radius:4px; }
@@ -117,6 +117,7 @@
 }
 .adm-login-card { position:relative; width:100%; max-width:394px; background:#fff; border-radius:8px; padding:34px 32px; color:var(--adm-ink); box-shadow:0 24px 60px rgba(0,0,0,.35); }
 .adm-login-card .adm-logo { color:var(--adm-ink); margin-bottom:22px; }
+.adm-login-card .adm-logo img { height:48px; max-width:210px; }
 .adm-login-card h1 { margin:0 0 6px; font-size:26px; letter-spacing:-.04em; }
 .adm-login-card > p { margin:0 0 24px; font-size:13px; color:var(--adm-muted); line-height:1.5; }
 .adm-login-card .adm-btn { width:100%; justify-content:center; padding:12px; }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Page not found | Tech News Pro",
+  title: "Page not found | Sales Info Pro",
   robots: { index: false, follow: true }
 };
 
@@ -32,7 +32,7 @@ export default function NotFound() {
           <ul>
             <li><Link href="/category">All categories</Link></li>
             <li><Link href="/resources">Whitepapers, ebooks, case studies and press releases</Link></li>
-            <li><Link href="/about">About Tech News Pro</Link></li>
+            <li><Link href="/about">About Sales Info Pro</Link></li>
             <li><Link href="/contact">Contact the team</Link></li>
           </ul>
         </div>

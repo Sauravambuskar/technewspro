@@ -52,7 +52,7 @@ function toDraft(page: Page | undefined): Draft {
       slug: "",
       summary: "",
       body: "",
-      author: "Tech News Pro",
+      author: "Sales Info Pro",
       status: "draft",
       layout: "default",
       hideTitle: false,
@@ -321,7 +321,7 @@ export default function PageEditor({ page, forms = [] }: { page?: Page; forms?: 
           description: draft.summary || draft.title,
           image: "",
           path: `/${effectiveSlug || "…"}`,
-          siteName: "Tech News Pro",
+          siteName: "Sales Info Pro",
           body: draft.body
         }}
       />

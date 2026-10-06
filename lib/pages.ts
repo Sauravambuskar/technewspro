@@ -87,7 +87,7 @@ export async function createPage(input: PageInput & { title: string }): Promise<
     showInFooter: input.showInFooter ?? true,
     order: input.order ?? existing.length + 1,
     seo: normaliseSeo(input.seo),
-    author: input.author?.trim() || "Tech News Pro",
+    author: input.author?.trim() || "Sales Info Pro",
     views: 0,
     createdAt: stamp,
     updatedAt: stamp

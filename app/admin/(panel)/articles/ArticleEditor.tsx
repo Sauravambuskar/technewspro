@@ -38,7 +38,7 @@ function toDraft(article: Article | undefined, sections: Section[]): Draft {
       dek: "",
       image: "",
       imageAlt: "",
-      author: "Tech News Pro Editorial",
+      author: "Sales Info Pro Editorial",
       date: new Date().toISOString().slice(0, 10),
       minutes: "",
       body: "",
@@ -375,7 +375,7 @@ export default function ArticleEditor({
           description: draft.dek || draft.title,
           image: draft.image,
           path: `/articles/${draft.slug || slugify(draft.title) || "…"}`,
-          siteName: "Tech News Pro",
+          siteName: "Sales Info Pro",
           body: draft.body
         }}
       />

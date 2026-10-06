@@ -47,7 +47,7 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
       summary: "",
       image: "",
       imageAlt: "",
-      author: "Tech News Pro Research",
+      author: "Sales Info Pro Research",
       date: new Date().toISOString().slice(0, 10),
       pages: "",
       fileUrl: "",
@@ -356,7 +356,7 @@ export default function ResourceEditor({
           description: draft.summary || draft.title,
           image: draft.image,
           path: `/resources/${draft.type}/${draft.slug || slugify(draft.title) || "…"}`,
-          siteName: "Tech News Pro",
+          siteName: "Sales Info Pro",
           body: draft.body
         }}
       />
