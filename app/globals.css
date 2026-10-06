@@ -64,8 +64,13 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 
 /* ------------------------------------------------------------------ categories */
 .categories { padding:clamp(60px,8vw,110px) clamp(20px,8vw,150px); }
-.category-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:1px; background:#cfd0ca; border:1px solid #cfd0ca; margin-top:28px; }
-.category-card { background:var(--paper); padding:28px 24px 24px; display:flex; flex-direction:column; min-height:216px; transition:background .2s; }
+.category-slider { position:relative; margin-top:28px; }
+.category-slider-controls { display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px; }
+.category-slider-controls button { width:38px; height:34px; border:1px solid #cfd0ca; background:var(--paper); color:var(--ink); font-size:18px; cursor:pointer; transition:background .2s,color .2s; }
+.category-slider-controls button:hover { background:var(--ink); color:var(--acid); }
+.category-grid { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:1px 1px 8px; }
+.category-grid::-webkit-scrollbar { display:none; }
+.category-card { flex:0 0 calc((100% - 42px) / 4); scroll-snap-align:start; background:var(--paper); padding:28px 24px 24px; display:flex; flex-direction:column; min-height:216px; transition:background .2s; border:1px solid #cfd0ca; }
 .category-card:hover { background:#fff; }
 .category-index { font:500 10px "DM Sans",Arial,sans-serif; color:var(--electric); }
 .category-card h3 { margin:16px 0 8px; font-size:23px; line-height:1.06; letter-spacing:-.05em; }
@@ -225,6 +230,9 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 .category-card:hover .category-card-image img { transform:scale(1.05); }
 .category-card-image .category-index { position:absolute; top:10px; left:10px; background:var(--ink); color:var(--acid); padding:4px 7px; letter-spacing:.06em; }
 .category-card { min-height:288px; }
+@media (max-width: 1100px) { .category-card { flex-basis:calc((100% - 28px) / 3); } }
+@media (max-width: 760px) { .category-card { flex-basis:calc((100% - 14px) / 2); } }
+@media (max-width: 480px) { .category-card { flex-basis:86%; } }
 
 @media (max-width: 900px) {
   .hero-latest { padding:26px 20px 30px; }

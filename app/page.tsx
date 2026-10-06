@@ -6,6 +6,7 @@ import LeadCaptureForm from "./components/LeadCaptureForm";
 import ArticleCard from "./components/ArticleCard";
 import ResourceCard from "./components/ResourceCard";
 import CategoryBlock from "./components/CategoryBlock";
+import CategorySlider from "./components/CategorySlider";
 import HeroLatest from "./components/HeroLatest";
 import CategoryDigest from "./components/CategoryDigest";
 import JsonLd from "./components/JsonLd";
@@ -97,7 +98,7 @@ export default async function Home() {
           <h2>Featured categories.</h2>
           <Link href="/category">All categories <span>&rarr;</span></Link>
         </div>
-        <div className="category-grid">
+        <CategorySlider>
           {sections.map((section, i) => {
             const inSection = published.filter((a) => a.section === section.id);
             const count = inSection.length;
@@ -114,7 +115,7 @@ export default async function Home() {
               </Link>
             );
           })}
-        </div>
+        </CategorySlider>
       </section>
 
       {/* 4 — Latest insights */}
