@@ -8,7 +8,7 @@ import ResourceCard from "../../components/ResourceCard";
 import JsonLd from "../../components/JsonLd";
 import { listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
-import { getSection, listSections } from "@/lib/sections";
+import { getSection } from "@/lib/sections";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
 import { siteUrl } from "@/lib/seo";
@@ -29,19 +29,11 @@ export default async function SectionPage({ params }: { params: { section: strin
   const section = await getSection(params.section);
   if (!section) notFound();
 
-  const [{ settings, nav, menu, footerPages, ads }, sections, articles, resources] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, articles, resources] = await Promise.all([
     getSiteChrome(),
-    listSections(),
     listArticles({ section: section.id, status: "published" }),
     listResources({ category: section.id, status: "published", limit: 3 })
   ]);
-
-  // A sub-category only earns a place in the nav/internal-linking once it has
-  // real content behind it, so thin, empty archive pages never get promoted.
-  const liveSubcategories = [...section.subcategories]
-    .sort((a, b) => a.order - b.order)
-    .map((sub) => ({ ...sub, count: articles.filter((a) => a.subcategory === sub.id).length }))
-    .filter((sub) => sub.count > 0);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -78,37 +70,16 @@ export default async function SectionPage({ params }: { params: { section: strin
         <p className="eyebrow">{section.eyebrow}</p>
         <h1>{section.label}.</h1>
         {section.intro && <p className="page-hero-lede">{section.intro}</p>}
-        <p className="page-hero-lede">
+        <p className="category-story-count">
           {articles.length} published {articles.length === 1 ? "analysis" : "analyses"} from this desk.
         </p>
-        <div className="chip-row">
-          {sections.map((other) => (
-            <Link
-              className={`chip${other.id === section.id ? " chip-active" : ""}`}
-              href={`/category/${other.id}`}
-              key={other.id}
-            >
-              {other.label}
-            </Link>
-          ))}
-        </div>
-
-        {liveSubcategories.length > 0 && (
-          <div className="subcat-row">
-            <p>SUB-CATEGORIES</p>
-            <div className="chip-row">
-              {liveSubcategories.map((sub) => (
-                <Link className="chip chip-sub" href={`/category/${section.id}/${sub.id}`} key={sub.id}>
-                  {sub.label}
-                  <b>{sub.count}</b>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </section>
 
-      <section className="reviews">
+      <section className="reviews category-posts">
+        <div className="section-heading category-posts-heading">
+          <p>LATEST FROM THIS DESK</p>
+          <h2>All posts.</h2>
+        </div>
         {articles.length === 0 ? (
           <p className="resource-empty">Nothing published in this section yet.</p>
         ) : (

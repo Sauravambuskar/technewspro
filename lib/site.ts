@@ -1,5 +1,4 @@
 import { activeAds } from "./ads";
-import { listArticles } from "./articles";
 import { listPages } from "./pages";
 import { listResources } from "./resources";
 import { navSections } from "./sections";
@@ -14,14 +13,11 @@ export type NavEntry = NavItem & {
   links: NavItem[];
 };
 
-const DROPDOWN_LIMIT = 5;
-
 /** Everything the header and footer need, resolved once per request. */
 export async function getSiteChrome() {
-  const [settings, sections, articles, resources, pages, ads] = await Promise.all([
+  const [settings, sections, resources, pages, ads] = await Promise.all([
     getSettings(),
     navSections(),
-    listArticles({ status: "published" }),
     listResources({ status: "published" }),
     listPages("published"),
     activeAds()
@@ -31,23 +27,12 @@ export async function getSiteChrome() {
   // content — an empty sub-category is a thin page and doesn't earn a nav slot.
   // Sections with no qualifying sub-category fall back to recent headlines so
   // the menu is never empty.
-  const categories: NavEntry[] = sections.map((section) => {
-    const liveSubcategories = [...section.subcategories]
-      .sort((a, b) => a.order - b.order)
-      .filter((sub) => articles.some((a) => a.section === section.id && a.subcategory === sub.id));
-
-    return {
-      id: section.id,
-      label: section.label,
-      href: `/category/${section.id}`,
-      links: liveSubcategories.length
-        ? liveSubcategories.map((sub) => ({ label: sub.label, href: `/category/${section.id}/${sub.id}` }))
-        : articles
-            .filter((article) => article.section === section.id)
-            .slice(0, DROPDOWN_LIMIT)
-            .map((article) => ({ label: article.title, href: `/articles/${article.slug}` }))
-    };
-  });
+  const categories: NavEntry[] = sections.map((section) => ({
+    id: section.id,
+    label: section.label,
+    href: `/category/${section.id}`,
+    links: []
+  }));
 
   const resourceLinks: NavItem[] = RESOURCE_TYPES.filter((type) =>
     resources.some((resource) => resource.type === type)
@@ -67,7 +52,7 @@ export async function getSiteChrome() {
 
   const menu: NavEntry[] = [
     ...categories,
-    { id: "resources", label: "Resources", href: "/resources", links: resourceLinks },
+    { id: "resources", label: "Resources", href: "/resources", links: [] },
     { id: "about", label: "About Us", href: "/about", links: [] },
     { id: "contact", label: "Contact Us", href: "/contact", links: [] },
     { id: "write-for-us", label: "Write For Us", href: "/write-for-us", links: [] },
