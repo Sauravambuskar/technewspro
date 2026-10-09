@@ -1,248 +1,70 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import NewsletterForm from "./components/NewsletterForm";
-import LeadCaptureForm from "./components/LeadCaptureForm";
-import ArticleCard from "./components/ArticleCard";
-import ResourceCard from "./components/ResourceCard";
-import CategoryBlock from "./components/CategoryBlock";
-import CategorySlider from "./components/CategorySlider";
-import HeroLatest from "./components/HeroLatest";
-import CategoryDigest from "./components/CategoryDigest";
+import AdSlot from "./components/AdSlot";
 import JsonLd from "./components/JsonLd";
-import MainCategoriesLanding from "./components/MainCategoriesLanding";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
-import { listSections } from "@/lib/sections";
 import { getSiteChrome } from "@/lib/site";
 import { listTicker } from "@/lib/ticker";
-import { RESOURCE_TYPES, RESOURCE_TYPE_LABELS, formatDate } from "@/lib/types";
+import { Article, formatDate } from "@/lib/types";
+import { currentBrandText } from "@/lib/brand";
 import { siteUrl } from "@/lib/seo";
+import "./news-home.css";
 
 export const dynamic = "force-dynamic";
 
+function Heading({ title, href }: { title: string; href: string }) {
+  return <div className="news-heading"><h2>{title}</h2><Link href={href}>View All <span aria-hidden="true">↗</span></Link></div>;
+}
+function Story({ article, variant = "", description = false }: { article: Article; variant?: string; description?: boolean }) {
+  return <article className={`news-story ${variant}`}>
+    {!variant.includes("text-only") && <Link className="news-image" href={`/articles/${article.slug}`} tabIndex={-1} aria-hidden="true">{article.image && <img src={article.image} alt="" loading={variant === "lead-story" ? "eager" : "lazy"} />}</Link>}
+    <div className="news-story-copy"><div className="news-tags"><Link href={`/category/${article.section}`}>{article.tag || "Insights"}</Link></div>
+      <h3><Link href={`/articles/${article.slug}`}>{article.title}</Link></h3>
+      {description && <p className="news-dek">{article.dek}</p>}
+      <p className="news-meta">{formatDate(article.date)} <span> | {currentBrandText(article.author)}</span></p>
+      <p className="news-time">◷ {article.minutes} min read</p>
+    </div>
+  </article>;
+}
+function Promotion({ wide = false }: { wide?: boolean }) {
+  return <aside className={`news-promotion ${wide ? "promotion-wide" : ""}`}>
+    <div><span className="promotion-brand">SalesInfo<b>Pro</b> / RESEARCH</span><h2>Make your next<br />move an informed one.</h2><p>Expert insights. Practical research.<br />A clearer view of what comes next.</p><Link href="/resources">Explore the research <span>↗</span></Link></div>
+    <div className="report-art" aria-hidden="true"><span>THE INTELLIGENCE REPORT</span><strong>Ideas that<br />move business<br /><em>forward.</em></strong><div className="report-bars"><i /><i /><i /><i /><i /></div><small>SalesInfoPro / 2026</small></div>
+  </aside>;
+}
 export default async function Home() {
-  const host = headers().get("host")?.split(":")[0].toLowerCase();
-  if (host === "salesinfopro-main.vercel.app") return <MainCategoriesLanding />;
-
-  const [{ settings, nav, menu, footerPages, ads }, sections, published, resources, ticker] = await Promise.all([
-    getSiteChrome(),
-    listSections(),
-    listArticles({ status: "published" }),
-    listResources({ status: "published" }),
-    listTicker(true)
-  ]);
-
-  const featureStory = await getFeaturedArticle(settings.featuredSlug);
-  const latest = published.slice(0, 6);
-  const homeSections = sections.filter((section) => section.showOnHome);
-  const trending = [...published]
-    .filter((article) => article.slug !== featureStory?.slug)
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 4);
-  const featuredResources = resources.slice(0, 3);
-
-  return (
-    <main>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: settings.siteName,
-          url: siteUrl(),
-          description: settings.metaDescription,
-          email: settings.contactEmail,
-          telephone: settings.contactPhone,
-          address: { "@type": "PostalAddress", streetAddress: settings.contactAddress },
-          sameAs: settings.socials.map((social) => social.href).filter((href) => href.startsWith("http"))
-        }}
-      />
-
-      <div className="topline" />
-      <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
-
-      {settings.tickerEnabled && ticker.length > 0 && (
-        <section className="ticker" aria-label="Latest updates">
-          <span>NOW</span>
-          <div className="ticker-track">
-            <div className="ticker-viewport">
-              {ticker.map((item) => <span className="ticker-item" key={`a-${item.id}`}>{item.text}</span>)}
-              {ticker.map((item) => <span className="ticker-item" key={`b-${item.id}`} aria-hidden="true">{item.text}</span>)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 1 — Hero */}
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">{settings.heroEyebrow}</p>
-          <h1>{settings.heroTitle}<br /><em>{settings.heroTitleAccent}</em></h1>
-          <p className="hero-description">{settings.heroDescription}</p>
-          <div className="hero-actions">
-            <Link href={settings.heroCtaHref || "/resources"} className="btn-primary">
-              {settings.heroCta} <span>&rarr;</span>
-            </Link>
-            <Link href={settings.heroCtaSecondaryHref || "/contact"} className="btn-secondary">
-              {settings.heroCtaSecondary}
-            </Link>
-          </div>
-          <div className="hero-meta"><span>{settings.heroFootnote}</span><b>EST. 2026</b></div>
-        </div>
-        <HeroLatest articles={published.slice(0, 5)} sections={sections} />
+  const [{ settings, nav, menu, footerPages, ads }, published, resources, ticker] = await Promise.all([getSiteChrome(), listArticles({ status: "published" }), listResources({ status: "published" }), listTicker(true)]);
+  const lead = await getFeaturedArticle(settings.featuredSlug) || published[0];
+  const rest = published.filter(article => article.id !== lead?.id);
+  const picks = [...published].sort((a,b) => b.views-a.views).slice(0,3);
+  const whitepapers = resources.filter(resource => resource.type === "whitepaper").slice(0,3);
+  const events = published.filter(article => /^(webinar|event|summit|conference)s?$/i.test(article.tag.trim())).slice(0,3);
+  const videos = published.filter(article => /^(video|watch|ted talk)s?$/i.test(article.tag.trim())).slice(0,3);
+  const blogs = rest.slice(9,14);
+  return <main className="news-home" id="top">
+    <h1 className="news-sr-only">SalesInfoPro: Business and technology intelligence</h1>
+    <JsonLd data={{ "@context": "https://schema.org", "@type": "Organization", name: settings.siteName, url: siteUrl(), description: settings.metaDescription }} />
+    <div className="news-top-ad">{ads.header ? <AdSlot ad={ads.header} /> : <Promotion wide />}</div>
+    {settings.tickerEnabled && ticker.length > 0 && <section className="ticker news-ticker" aria-label="Latest updates"><span>LATEST</span><div className="ticker-track"><div className="ticker-viewport">{[...ticker,...ticker].map((item,index) => <span className="ticker-item" key={`${item.id}-${index}`} aria-hidden={index >= ticker.length || undefined}>{item.text}</span>)}</div></div></section>}
+    <SiteHeader menu={menu} siteName={settings.siteName} />
+    <div className="news-container">
+      <section className="news-opening" aria-label="Top stories">
+        <div className="news-opening-main"><div className="news-lead-grid">{lead && <Story article={lead} variant="lead-story" description />}<div className="news-headlines">{rest.slice(0,3).map(article => <Story article={article} variant="text-only" key={article.id} />)}</div></div><div className="news-three">{rest.slice(3,6).map(article => <Story article={article} key={article.id} />)}</div></div>
+        <aside className="news-sidebar"><div className="news-picks"><h2>Top Picks</h2><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
       </section>
-
-      {/* 2 — Latest by category: a text-only scan of every desk */}
-      <CategoryDigest sections={homeSections} articles={published} />
-
-      {/* 3 — Featured categories */}
-      <section className="categories" id="categories">
-        <div className="section-heading">
-          <p>COVERAGE</p>
-          <h2>Every desk.<br />One clear view.</h2>
-          <Link href="/category">All categories <span>&rarr;</span></Link>
-        </div>
-        <CategorySlider>
-          {sections.map((section, i) => {
-            const inSection = published.filter((a) => a.section === section.id);
-            const count = inSection.length;
-            const cover = inSection[0];
-            return (
-              <Link className="category-card" href={`/category/${section.id}`} key={section.id}>
-                <div className="category-card-image">
-                  {cover?.image && <img src={cover.image} alt={cover.imageAlt} loading="lazy" />}
-                  <span className="category-index">0{i + 1}</span>
-                </div>
-                <h3>{section.label}</h3>
-                <p>{section.eyebrow}</p>
-                <b>{count} article{count === 1 ? "" : "s"} <i>&#8599;</i></b>
-              </Link>
-            );
-          })}
-        </CategorySlider>
-      </section>
-
-      {/* 4 — Latest insights */}
-      <section className="reviews" id="latest">
-        <div className="section-heading">
-          <p>LATEST INSIGHTS</p>
-          <h2>Recent analysis.</h2>
-          <Link href="/category">View all <span>&rarr;</span></Link>
-        </div>
-        <div className="review-grid">
-          {latest.map((article) => <ArticleCard key={article.id} article={article} showDate />)}
-        </div>
-      </section>
-
-      {/* 3b — Every category, in full */}
-      {homeSections.map((section, i) => (
-        <CategoryBlock
-          key={section.id}
-          section={section}
-          tone={i % 2 === 0 ? "light" : "tint"}
-          articles={published.filter((article) => article.section === section.id).slice(0, 5)}
-          resources={resources.filter((resource) => resource.category === section.id)}
-        />
-      ))}
-
-      {/* 5 — Resource center */}
-      <section className="resource-strip" id="resources">
-        <div className="section-heading">
-          <p>{settings.resourcesEyebrow}</p>
-          <h2>{settings.resourcesTitle}</h2>
-          <Link href="/resources">Resource center <span>&rarr;</span></Link>
-        </div>
-        <p className="strip-blurb">{settings.resourcesBlurb}</p>
-
-        <div className="resource-type-row">
-          {RESOURCE_TYPES.map((type) => {
-            const count = resources.filter((r) => r.type === type).length;
-            return (
-              <Link className="resource-type-pill" href={`/resources/${type}`} key={type}>
-                {RESOURCE_TYPE_LABELS[type].plural}
-                <b>{count}</b>
-              </Link>
-            );
-          })}
-        </div>
-
-        <div className="resource-grid">
-          {featuredResources.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
-        </div>
-      </section>
-
-      {/* 6 — Trending topics / editor's picks */}
-      {featureStory && (
-        <section className="feature-layout" id="trending">
-          <article className="feature-story">
-            <div className="feature-visual"><div className="feature-word">EDITOR&rsquo;S<br />PICK</div></div>
-            <p className="eyebrow">{featureStory.tag} / {featureStory.minutes} MIN READ</p>
-            <h2>{featureStory.title}</h2>
-            <p className="dek">{featureStory.dek}</p>
-            <Link href={`/articles/${featureStory.slug}`} className="read-link dark-link">
-              Read the analysis <span>&rarr;</span>
-            </Link>
-          </article>
-          <aside className="side-stories">
-            <div className="section-label">TRENDING TOPICS</div>
-            {trending.map((article, i) => (
-              <Link className="side-story" key={article.id} href={`/articles/${article.slug}`}>
-                {article.image && <img src={article.image} alt={article.imageAlt} loading="lazy" />}
-                <div>
-                  <span>0{i + 1} / {article.tag}</span>
-                  <h3>{article.title}</h3>
-                  <p>{formatDate(article.date)}</p>
-                </div>
-              </Link>
-            ))}
-          </aside>
-        </section>
-      )}
-
-      {/* 7 — Why Sales Info Pro */}
-      <section className="why" id="why">
-        <div className="why-intro">
-          <p className="eyebrow">{settings.whyEyebrow}</p>
-          <h2>{settings.whyTitle.split("\n").map((line, i) => <span key={i}>{i > 0 && <br />}{line}</span>)}</h2>
-          <p>{settings.whyBlurb}</p>
-          <Link href="/about" className="read-link">More about us <span>&rarr;</span></Link>
-        </div>
-        <div className="why-grid">
-          {settings.whyPoints.map((point, i) => (
-            <div className="why-card" key={point.id}>
-              <span>0{i + 1}</span>
-              <h3>{point.title}</h3>
-              <p>{point.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 8 — Contact / lead generation */}
-      <section className="lead-section" id="contact">
-        <div className="lead-copy">
-          <p className="eyebrow">{settings.contactEyebrow}</p>
-          <h2>{settings.contactTitle}</h2>
-          <p>{settings.contactBlurb}</p>
-          <dl className="lead-details">
-            <div><dt>Email</dt><dd><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></dd></div>
-            <div><dt>Phone</dt><dd><a href={`tel:${settings.contactPhone.replace(/[^+\d]/g, "")}`}>{settings.contactPhone}</a></dd></div>
-            <div><dt>Office</dt><dd>{settings.contactAddress}</dd></div>
-          </dl>
-        </div>
-        <LeadCaptureForm intent="syndication" submitLabel="Send enquiry" showMessage />
-      </section>
-
-      <section className="newsletter" id="newsletter">
-        <div>
-          <p className="eyebrow">{settings.newsletterEyebrow}</p>
-          <h2>{settings.newsletterTitle.split("\n").map((line, i) => <span key={i}>{i > 0 && <br />}{line}</span>)}</h2>
-        </div>
-        <NewsletterForm blurb={settings.newsletterBlurb} />
-      </section>
-
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
-    </main>
-  );
+      <section className="news-section"><Heading title="Latest News" href="/category" /><div className="news-with-sidebar"><div className="news-rows">{rest.slice(6,9).map(article => <Story article={article} variant="row-story" key={article.id} />)}</div><aside className="news-sidebar"><Promotion /><div className="news-follow"><span className="follow-symbol">↗</span><h3>Your daily dose<br />of intelligence.</h3><p>Stay ahead with SalesInfoPro.</p><Link href="#newsletter">Follow the briefing</Link></div></aside></div></section>
+    </div>
+    <section className="news-events"><div className="news-container"><Heading title="Events & Webinars" href="/search?q=webinar" />{events.length ? <div className="news-three">{events.map(article => <Story article={article} key={article.id} />)}</div> : <div className="news-event-empty"><div><span>CONNECT. LEARN. GROW.</span><h3>A front-row seat to what’s next.</h3><p>New events and expert conversations will appear here as they are announced.</p></div><Link href="#newsletter">Get event updates ↗</Link></div>}</div></section>
+    <section className="news-papers"><div className="news-container"><Heading title="Whitepapers" href="/resources/whitepaper" /><div className="news-with-sidebar"><div className="news-rows">{whitepapers.map(resource => <article className="news-story row-story" key={resource.id}><Link className="news-image" href={`/resources/${resource.type}/${resource.slug}`}><img src={resource.image} alt={resource.imageAlt || resource.title} loading="lazy" /></Link><div className="news-story-copy"><div className="news-tags"><span>WHITEPAPER</span><span>{resource.gated ? "MEMBER RESEARCH" : "RESEARCH"}</span></div><h3><Link href={`/resources/${resource.type}/${resource.slug}`}>{resource.title}</Link></h3><p className="news-meta">{resource.pages} pages · {formatDate(resource.date)}</p><Link className="news-download" href={`/resources/${resource.type}/${resource.slug}`}>Read the report ↗</Link></div></article>)}</div><aside className="news-research-note"><span>THE INTELLIGENCE DESK</span><h3>Better questions.<br />Better decisions.</h3><p>Explore in-depth research for the people shaping business and technology.</p><Link href="/resources">Visit the resource center ↗</Link></aside></div></div></section>
+    <div className="news-container"><section className="news-section"><Heading title="Latest Blogs" href="/category" /><div className="news-blog-grid">{blogs[0] && <Story article={blogs[0]} variant="lead-story" description />}<div className="news-blog-stack">{blogs.slice(1,3).map(article => <Story article={article} key={article.id} />)}</div><aside className="news-sidebar">{blogs.slice(3,5).map(article => <Story article={article} variant="text-only" key={article.id} />)}<Promotion /></aside></div></section>
+      <section className="news-newsletter" id="newsletter"><div><span className="newsletter-kicker">THE SALESINFOPRO BRIEFING</span><h2>The Briefing That<br />Busy Tech Leaders Trust</h2><NewsletterForm blurb="Trusted by founders, analysts, and decision-makers across the industry." /></div><div className="newsletter-phone" aria-hidden="true"><i /><b>SalesInfo<span>Pro</span></b><small>YOUR DAILY INTELLIGENCE</small><h3>Good morning.<br />Get ahead of what’s next.</h3><div className="phone-chart"><span /><span /><span /><span /></div><strong>Ideas. Insights. Impact.</strong><p>The stories shaping tomorrow, in one essential briefing.</p></div></section>
+      <section className="news-section news-videos"><Heading title="Videos" href="/search?q=video" />{videos.length ? <div className="news-three">{videos.map(article => <Story article={article} key={article.id} />)}</div> : <div className="news-video-empty"><span aria-hidden="true">▷</span><div><h3>A new perspective. Coming soon.</h3><p>Our latest video stories will appear here when published.</p></div><Link href="/category">Explore the latest stories ↗</Link></div>}</section>
+      {!ads.footer && <div className="news-bottom-ad"><Promotion wide /></div>}
+    </div>
+    <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
+    <a className="news-back-top" href="#top" aria-label="Back to top">↑</a>
+  </main>;
 }

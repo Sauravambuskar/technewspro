@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { NavEntry } from "@/lib/site";
 import type { Ad } from "@/lib/types";
 import AdSlot from "./AdSlot";
+import BrandMark from "./BrandMark";
 
 type SearchHit = { href: string; title: string; tag: string };
 
@@ -74,7 +75,7 @@ export default function SiteHeader({
     };
   }, [query]);
 
-  const brand = <img className="brand-logo" src="/logo.png" alt={siteName} />;
+  const brand = <BrandMark />;
 
   return (
     <header className="site-header">
@@ -97,6 +98,19 @@ export default function SiteHeader({
         </Link>
 
         <div className="header-actions">
+          <Link
+            href="/notifications"
+            className="notification-link"
+            aria-label="Open notification styles demo"
+            title="Notifications demo"
+            onClick={closeAll}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+              <path d="M10 21h4" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+            </svg>
+            <span className="notification-link-dot" />
+          </Link>
           <button
             className="search"
             aria-label={searchOpen ? "Close search" : "Open search"}
@@ -191,6 +205,7 @@ export default function SiteHeader({
             <Link href="/about" onClick={closeAll}>About us</Link>
             <Link href="/contact" onClick={closeAll}>Contact us</Link>
             <Link href="/write-for-us" onClick={closeAll}>Write for us</Link>
+            <Link href="/#newsletter" onClick={closeAll}>Subscribe</Link>
           </div>
         </div>
       )}

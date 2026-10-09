@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { NavItem } from "@/lib/site";
 import type { Ad, Settings } from "@/lib/types";
 import AdSlot from "./AdSlot";
+import BrandMark from "./BrandMark";
 
 export default function SiteFooter({
   nav,
@@ -21,7 +22,7 @@ export default function SiteFooter({
       <AdSlot ad={ad} />
     <footer id="about">
       <Link className="brand footer-brand" href="/">
-        <img className="brand-logo" src="/logo.png" alt={settings.siteName} />
+        <BrandMark />
       </Link>
       <p>{settings.footerTagline}</p>
       <div className="footer-links">
@@ -31,6 +32,7 @@ export default function SiteFooter({
         <Link href="/about">About us</Link>
         <Link href="/contact">Contact us</Link>
         <Link href="/write-for-us">Write for us</Link>
+        <Link href="/notifications">Notifications demo</Link>
         <Link href="/#newsletter">Newsletter</Link>
         {pages.map((page) => <Link href={page.href} key={page.href}>{page.label}</Link>)}
       </div>

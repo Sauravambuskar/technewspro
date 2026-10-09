@@ -27,6 +27,7 @@ const LINKS = [
   { href: "/admin/leads", label: "Leads", badge: "leads" as const, tour: "leads" },
   { href: "/admin/subscribers", label: "Subscribers", badge: "subscribers" as const, tour: "subscribers" },
   { href: "/admin/messages", label: "Inbox", badge: "messages" as const, tour: "messages" },
+  { href: "/notifications", label: "Notifications demo", tour: "notifications" },
   { href: "/admin/settings", label: "Site settings", tour: "settings" },
   { href: "/admin/team", label: "Team", tour: "team" }
 ];

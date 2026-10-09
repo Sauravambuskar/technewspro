@@ -1,0 +1,7 @@
+.agents
+.claude
+.codex
+.env*
+!.env.example
+*.tsbuildinfo
+BACKEND.md
