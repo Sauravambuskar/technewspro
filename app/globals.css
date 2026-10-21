@@ -504,6 +504,30 @@ body { font-family:Arial,Helvetica,sans-serif; }
 .sales-brand{display:inline-flex;align-items:center;gap:8px;font-family:Arial,Helvetica,sans-serif;font-size:27px;font-weight:750;letter-spacing:-1px;color:inherit;line-height:1}.sales-brand svg{height:35px;width:39px;flex:none}.sales-brand b{color:#ff0000}.sales-brand small{display:block;font-size:7px;letter-spacing:1.8px;margin-top:5px;font-weight:400}.footer-brand .sales-brand{font-size:25px}.footer-brand .sales-brand small{font-size:6px}
 @media(max-width:700px){.sales-brand{font-size:20px;gap:4px;letter-spacing:-.7px}.sales-brand svg{height:27px;width:29px}.sales-brand small{font-size:5px;letter-spacing:1px}.footer-brand .sales-brand{font-size:25px}}
 
+/* Article reading view on a phone. The desktop rhythm — 60px of air above the
+   kicker, a 52px section heading, 270px related thumbnails — eats most of a
+   small screen before any copy appears. */
+@media (max-width: 620px) {
+  .article-page { padding:26px 18px 34px; }
+  .article-head .eyebrow { font-size:11px; line-height:1.7; }
+  .article-head .eyebrow a { padding-bottom:3px; }
+  .article-page h1 { margin-top:14px; font-size:clamp(27px,7.8vw,34px); line-height:1.08; letter-spacing:-.03em; }
+  .article-dek { margin-top:16px; font-size:16px; line-height:1.6; }
+  .article-meta { margin-top:18px; gap:10px; row-gap:7px; flex-wrap:wrap; font-size:11px; }
+  /* Full-bleed artwork: the 18px gutters make a boxed photo look like a stamp. */
+  .article-hero-image { height:auto; aspect-ratio:16/10; margin:24px -18px; }
+  .article-body p { font-size:16.5px; line-height:1.7; margin-bottom:20px; }
+  .ad-article { margin:26px 0 4px; }
+  .article-back { margin-top:28px; padding-top:18px; }
+
+  .reviews .section-heading h2 { font-size:clamp(28px,8.4vw,36px); margin-top:8px; }
+  .article-page + .reviews { padding:34px 20px 54px; }
+  .review-grid { gap:30px; padding-top:20px; }
+  .review-image { height:200px; }
+  .review-card h3 { font-size:22px; margin:13px 0 8px; }
+  .review-card p { font-size:13px; }
+}
+
 /* Notification demo entry point in the global header. */
 .notification-link { position:relative; display:grid; place-items:center; width:34px; height:34px; color:var(--ink); }
 .notification-link svg { display:block; width:21px; height:21px; }
