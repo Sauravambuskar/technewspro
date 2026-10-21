@@ -73,6 +73,15 @@ export default async function SectionPage({ params }: { params: { section: strin
         <p className="category-story-count">
           {articles.length} published {articles.length === 1 ? "analysis" : "analyses"} from this desk.
         </p>
+        {section.subcategories.length > 0 && (
+          <ul className="category-subnav">
+            {section.subcategories.map((sub) => (
+              <li key={sub.id}>
+                <Link href={`/category/${section.id}/${sub.id}`}>{sub.label}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="reviews category-posts">

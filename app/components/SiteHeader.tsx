@@ -133,45 +133,11 @@ export default function SiteHeader({
 
       <nav className="main-nav" aria-label="Sections">
         <ul>
-          {menu.map((section) => {
-            const hasDropdown = section.links.length > 0;
-            const open = openMenu === section.id;
-
-            return (
-              <li
-                className={`nav-item${open ? " nav-open" : ""}`}
-                key={section.id}
-                onMouseEnter={() => hasDropdown && setOpenMenu(section.id)}
-                onMouseLeave={() => hasDropdown && setOpenMenu(null)}
-              >
-                {hasDropdown ? (
-                  <button
-                    aria-expanded={open}
-                    aria-haspopup="true"
-                    onClick={() => setOpenMenu(open ? null : section.id)}
-                  >
-                    {section.label}
-                    <i className="nav-caret" aria-hidden="true" />
-                  </button>
-                ) : (
-                  <Link href={section.href}>{section.label}</Link>
-                )}
-
-                {hasDropdown && open && (
-                  <div className="nav-dropdown">
-                    {section.links.map((link) => (
-                      <Link href={link.href} key={link.href} onClick={closeAll}>
-                        {link.label}
-                      </Link>
-                    ))}
-                    <Link className="nav-dropdown-all" href={section.href} onClick={closeAll}>
-                      All {section.label} <span>→</span>
-                    </Link>
-                  </div>
-                )}
-              </li>
-            );
-          })}
+          {menu.map((section) => (
+            <li className="nav-item" key={section.id}>
+              <Link href={section.href} onClick={closeAll}>{section.label}</Link>
+            </li>
+          ))}
 
         </ul>
       </nav>
