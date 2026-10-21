@@ -42,6 +42,9 @@ export async function saveImage(file: File): Promise<{ id: string; url: string }
   if (file.size > MAX_UPLOAD_BYTES) {
     throw new Error(`Image is too large (max ${MAX_UPLOAD_BYTES / (1024 * 1024)}MB).`);
   }
+  if (file.size === 0) {
+    throw new Error("The image file is empty.");
+  }
 
   await ensureSchema();
   const id = newId();
