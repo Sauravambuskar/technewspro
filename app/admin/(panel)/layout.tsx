@@ -12,6 +12,7 @@ import { listSubscribers } from "@/lib/subscribers";
 import AdminNav from "../components/AdminNav";
 import HelpTour from "../components/HelpTour";
 import SignOutButton from "../components/SignOutButton";
+import BrandMark from "@/app/components/BrandMark";
 
 export const dynamic = "force-dynamic";
 
@@ -35,10 +36,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     <div className="adm-shell">
       <aside className="adm-sidebar">
         <div className="adm-logo">
-          <img src="/logo.png" alt="Sales Info Pro" />
-          <span>
-            <small>CONTROL PANEL</small>
-          </span>
+          <BrandMark />
+          <small>NEWSROOM</small>
         </div>
 
         <AdminNav

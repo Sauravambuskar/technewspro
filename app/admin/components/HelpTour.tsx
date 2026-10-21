@@ -785,7 +785,7 @@ export default function HelpTour() {
       const tour = driver({
         showProgress: true,
         allowClose: true,
-        overlayColor: "#11131a",
+        overlayColor: "#090909",
         overlayOpacity: 0.7,
         stagePadding: 6,
         stageRadius: 6,

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASSWORD, getCurrentUser, usingDefaultPassword } from "@/lib/auth";
 import LoginForm from "./LoginForm";
+import BrandMark from "@/app/components/BrandMark";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +17,8 @@ export default async function LoginPage() {
     <div className="adm-login">
       <div className="adm-login-card">
         <div className="adm-logo">
-          <img src="/logo.png" alt="Sales Info Pro" />
-          <span>
-            <small>CONTROL PANEL</small>
-          </span>
+          <BrandMark />
+          <small>NEWSROOM</small>
         </div>
 
         <h1>Sign in</h1>
