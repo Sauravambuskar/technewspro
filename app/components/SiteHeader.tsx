@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { NavEntry } from "@/lib/site";
 import type { Ad } from "@/lib/types";
-import AdSlot from "./AdSlot";
 import BrandMark from "./BrandMark";
 
 type SearchHit = { href: string; title: string; tag: string };
@@ -141,8 +140,6 @@ export default function SiteHeader({
 
         </ul>
       </nav>
-
-      <AdSlot ad={ad} />
 
       {drawerOpen && (
         <div className="nav-drawer">

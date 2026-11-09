@@ -574,6 +574,135 @@ body { font-family:Arial,Helvetica,sans-serif; }
   .site-footer .footer-links { grid-template-columns:1fr; padding:22px; }
 }
 
+/* Shared public header. Match the homepage's black editorial header on every
+   public route; admin screens use their own shell and are unaffected. */
+.site-header {
+  position:relative;
+  background:#000;
+  border-color:#2b2b2b;
+  color:#fff;
+}
+.site-header .header-top {
+  max-width:1244px;
+  height:72px;
+  margin:auto;
+  padding:0 32px;
+  position:relative;
+}
+.site-header .brand {
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff;
+}
+.site-header .brand-logo { height:42px; }
+.site-header .header-actions {
+  flex:0 0 auto;
+  margin-left:auto;
+  justify-content:flex-end;
+}
+.site-header .menu-toggle { width:20px; margin-right:2px; }
+.site-header .menu-toggle span { height:2px; background:#fff; }
+.site-header .notification-link,
+.site-header .search { color:#fff; }
+.site-header .notification-link:hover,
+.site-header .search:hover { color:#ff4d4d; }
+.site-header .notification-link-dot { border-color:#000; }
+.site-header .search { width:28px; }
+.site-header .subscribe {
+  border-radius:22px;
+  background:#bc0202;
+  padding:10px 20px;
+}
+.site-header .subscribe:hover { background:#f00; }
+.site-header .main-nav { background:#000; border-top:1px solid #2b2b2b; }
+.site-header .main-nav>ul { padding:10px 24px; gap:12px; }
+.site-header .nav-item>a,
+.site-header .nav-item>button {
+  padding:12px 8px;
+  color:#b3b3b3;
+  font-size:11px;
+}
+.site-header .nav-item>a:hover,
+.site-header .nav-item>button:hover { color:#ff4d4d; }
+.site-header .nav-drawer {
+  background:#1a1a1a;
+  color:#fff;
+  border-color:#2b2b2b;
+}
+.site-header .drawer-col h4 { border-color:#3a3a3a; color:#ff4d4d; }
+.site-header .drawer-empty { color:#b3b3b3; }
+.site-header .drawer-links { border-color:#3a3a3a; }
+.site-header .search-panel { padding-top:0; }
+.site-header .search-panel-inner {
+  margin:0;
+  padding:18px max(24px,calc((100% - 1180px)/2));
+  background:#111;
+  border-top:1px solid #2b2b2b;
+  box-shadow:0 18px 40px #0009;
+}
+.site-header .search-panel input { color:#fff; border-bottom-color:#555; }
+.site-header .search-panel input::placeholder,
+.site-header .search-empty { color:#aaa; }
+.site-header .search-results a { color:#fff; border-bottom-color:#333; }
+@media(min-width:1500px) {
+  .site-header .header-top { max-width:1484px; }
+  .site-header .main-nav>ul { gap:24px; }
+}
+@media(max-width:1100px) {
+  .site-header .main-nav { display:none; }
+  .site-header .header-top { max-width:none; }
+  .site-header .nav-drawer {
+    top:100%;
+    max-height:calc(100dvh - 68px);
+    overscroll-behavior:contain;
+  }
+}
+@media(max-width:700px) {
+  .site-header { position:sticky; top:0; z-index:50; }
+  .site-header .header-top {
+    display:grid;
+    grid-template-columns:36px minmax(0,1fr) auto;
+    width:100%;
+    height:68px;
+    padding:0 20px;
+    gap:10px;
+  }
+  .site-header .brand {
+    position:static;
+    transform:none;
+    justify-self:center;
+    min-width:0;
+  }
+  .site-header .sales-brand { font-size:18px; gap:5px; }
+  .site-header .sales-brand svg { width:27px; height:29px; }
+  .site-header .sales-brand small { font-size:4.5px; letter-spacing:.8px; margin-top:4px; }
+  .site-header .header-actions {
+    display:flex;
+    flex:0 0 auto;
+    justify-content:flex-end;
+    gap:7px;
+    min-width:0;
+  }
+  .site-header .notification-link { display:none; }
+  .site-header .menu-toggle { width:24px; min-width:24px; margin:0; }
+  .site-header .drawer-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 20px; }
+  .site-header .drawer-links { gap:10px 22px; }
+}
+@media(max-width:540px) {
+  .site-header .header-top {
+    height:62px;
+    padding:0 14px;
+    grid-template-columns:32px minmax(0,1fr) 32px;
+  }
+  .site-header .header-actions { width:32px; }
+  .site-header .subscribe { display:none; }
+  .site-header .search { width:32px; height:40px; }
+  .site-header .search-panel-inner { padding:16px 14px; }
+  .site-header .nav-drawer { padding:22px 16px 28px; max-height:calc(100dvh - 62px); }
+  .site-header .drawer-grid { grid-template-columns:1fr; gap:19px; }
+}
+
 /* Article reading view on a phone. The desktop rhythm — 60px of air above the
    kicker, a 52px section heading, 270px related thumbnails — eats most of a
    small screen before any copy appears. */
