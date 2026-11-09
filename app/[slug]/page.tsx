@@ -43,7 +43,8 @@ export default async function CustomPage({ params }: { params: { slug: string } 
   // A form still in draft shouldn't appear to readers.
   const form = attachedForm?.status === "published" ? attachedForm : undefined;
 
-  // Canvas is a deliberately blank page: no header, footer or breadcrumb.
+  // Canvas keeps its blank content area and omits the header and breadcrumb,
+  // while the shared site footer remains available on every public page.
   const canvas = page.layout === "canvas";
   const fullWidth = page.layout === "full-width";
 
@@ -102,7 +103,7 @@ export default async function CustomPage({ params }: { params: { slug: string } 
         )}
       </article>
 
-      {!canvas && <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />}
+      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
     </main>
   );
 }

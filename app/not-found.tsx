@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import SiteFooter from "./components/SiteFooter";
+import { seedSections, seedSettings } from "@/lib/seed";
 
 export const metadata: Metadata = {
   title: "Page not found | Sales Info Pro",
@@ -9,6 +11,11 @@ export const metadata: Metadata = {
 // Deliberately static: the global not-found is prerendered at build time, before
 // DATABASE_URL exists, so it must not read from the database.
 export default function NotFound() {
+  const settings = seedSettings();
+  const nav = seedSections()
+    .filter((section) => section.showInNav)
+    .map((section) => ({ label: section.label, href: `/category/${section.id}` }));
+
   return (
     <main>
       <div className="topline" />
@@ -37,6 +44,8 @@ export default function NotFound() {
           </ul>
         </div>
       </section>
+
+      <SiteFooter nav={nav} settings={settings} />
     </main>
   );
 }
