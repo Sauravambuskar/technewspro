@@ -2,7 +2,6 @@ import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import NewsletterForm from "./components/NewsletterForm";
-import AdSlot from "./components/AdSlot";
 import JsonLd from "./components/JsonLd";
 import { getFeaturedArticle, listArticles } from "@/lib/articles";
 import { listResources } from "@/lib/resources";
@@ -47,7 +46,6 @@ export default async function Home() {
   return <main className="news-home" id="top">
     <h1 className="news-sr-only">SalesInfoPro: Business and technology intelligence</h1>
     <JsonLd data={{ "@context": "https://schema.org", "@type": "Organization", name: settings.siteName, url: siteUrl(), description: settings.metaDescription }} />
-    <div className="news-top-ad">{ads.header ? <AdSlot ad={ads.header} /> : <Promotion wide />}</div>
     {settings.tickerEnabled && ticker.length > 0 && <section className="ticker news-ticker" aria-label="Latest updates"><span>LATEST</span><div className="ticker-track"><div className="ticker-viewport">{[...ticker,...ticker].map((item,index) => <span className="ticker-item" key={`${item.id}-${index}`} aria-hidden={index >= ticker.length || undefined}>{item.text}</span>)}</div></div></section>}
     <SiteHeader menu={menu} siteName={settings.siteName} />
     <div className="news-container">
