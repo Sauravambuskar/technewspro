@@ -34,6 +34,40 @@ function Promotion({ wide = false }: { wide?: boolean }) {
     <div className="report-art" aria-hidden="true"><span>THE INTELLIGENCE REPORT</span><strong>Ideas that<br />move business<br /><em>forward.</em></strong><div className="report-bars"><i /><i /><i /><i /><i /></div><small>SalesInfoPro / 2026</small></div>
   </aside>;
 }
+const HOME_CATEGORY_SPOTLIGHTS = [
+  { id: "ai-and-automation", label: "AI & Automation" },
+  { id: "finance-and-fintech", label: "Finance & FinTech" },
+  { id: "technology-and-it", label: "Technology & IT" },
+  { id: "sales-and-revenue", label: "Sales & Revenue" }
+] as const;
+
+function CategorySpotlight({
+  id,
+  label,
+  articles
+}: {
+  id: string;
+  label: string;
+  articles: Article[];
+}) {
+  const [lead, visual, ...briefs] = articles;
+  if (!lead) return null;
+
+  return <section className="news-category-spotlight" aria-labelledby={`home-${id}`}>
+    <div className="news-category-heading">
+      <h2 id={`home-${id}`}>{label}</h2>
+      <Link href={`/category/${id}`}>View All <span aria-hidden="true">↗</span></Link>
+    </div>
+    <div className="news-category-grid">
+      <Story article={lead} variant="category-lead" description />
+      {visual && <Story article={visual} variant="category-visual" />}
+      {briefs.length > 0 && <div className="news-category-briefs">
+        {briefs.slice(0, 2).map((article) => <Story article={article} variant="text-only category-brief" key={article.id} />)}
+      </div>}
+    </div>
+  </section>;
+}
+
 export default async function Home() {
   const [{ settings, nav, menu, footerPages, ads }, published, resources, ticker] = await Promise.all([getSiteChrome(), listArticles({ status: "published" }), listResources({ status: "published" }), listTicker(true)]);
   const lead = await getFeaturedArticle(settings.featuredSlug) || published[0];
@@ -43,6 +77,10 @@ export default async function Home() {
   const events = published.filter(article => /^(webinar|event|summit|conference)s?$/i.test(article.tag.trim())).slice(0,3);
   const videos = published.filter(article => /^(video|watch|ted talk)s?$/i.test(article.tag.trim())).slice(0,3);
   const blogs = rest.slice(9,14);
+  const categorySpotlights = HOME_CATEGORY_SPOTLIGHTS.map((section) => ({
+    ...section,
+    articles: published.filter((article) => article.section === section.id).slice(0, 4)
+  }));
   return <main className="news-home" id="top">
     <h1 className="news-sr-only">SalesInfoPro: Business and technology intelligence</h1>
     <JsonLd data={{ "@context": "https://schema.org", "@type": "Organization", name: settings.siteName, url: siteUrl(), description: settings.metaDescription }} />
@@ -54,6 +92,7 @@ export default async function Home() {
         <aside className="news-sidebar"><div className="news-picks"><h2>Top Picks</h2><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
       </section>
     </div>
+    <section className="news-category-run" aria-label="Coverage by category"><div className="news-container">{categorySpotlights.map((section) => <CategorySpotlight {...section} key={section.id} />)}</div></section>
     <section className="news-events"><div className="news-container"><Heading title="Events & Webinars" href="/search?q=webinar" />{events.length ? <div className="news-three">{events.map(article => <Story article={article} key={article.id} />)}</div> : <div className="news-event-empty"><div><span>CONNECT. LEARN. GROW.</span><h3>A front-row seat to what’s next.</h3><p>New events and expert conversations will appear here as they are announced.</p></div><Link href="#newsletter">Get event updates ↗</Link></div>}</div></section>
     <section className="news-papers"><div className="news-container"><Heading title="Whitepapers" href="/resources/whitepaper" /><div className="news-with-sidebar"><div className="news-rows">{whitepapers.map(resource => <article className="news-story row-story" key={resource.id}><Link className="news-image" href={`/resources/${resource.type}/${resource.slug}`}><img src={resource.image} alt={resource.imageAlt || resource.title} loading="lazy" /></Link><div className="news-story-copy"><div className="news-tags"><span>WHITEPAPER</span><span>{resource.gated ? "MEMBER RESEARCH" : "RESEARCH"}</span></div><h3><Link href={`/resources/${resource.type}/${resource.slug}`}>{resource.title}</Link></h3><p className="news-meta">{resource.pages} pages · {formatDate(resource.date)}</p><Link className="news-download" href={`/resources/${resource.type}/${resource.slug}`}>Read the report ↗</Link></div></article>)}</div><aside className="news-research-note"><span>THE INTELLIGENCE DESK</span><h3>Better questions.<br />Better decisions.</h3><p>Explore in-depth research for the people shaping business and technology.</p><Link href="/resources">Visit the resource center ↗</Link></aside></div></div></section>
     <div className="news-container"><section className="news-section"><Heading title="Latest Blogs" href="/category" /><div className="news-blog-grid">{blogs[0] && <Story article={blogs[0]} variant="lead-story" description />}<div className="news-blog-stack">{blogs.slice(1,3).map(article => <Story article={article} key={article.id} />)}</div><aside className="news-sidebar">{blogs.slice(3,5).map(article => <Story article={article} variant="text-only" key={article.id} />)}<Promotion /></aside></div></section>
