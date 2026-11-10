@@ -178,7 +178,7 @@ export function seedSettings(): Settings {
     socials: [
       { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com", glyph: "in" },
       { id: "x", label: "X (Twitter)", href: "https://x.com", glyph: "𝕏" },
-      { id: "rss", label: "RSS", href: "/api/rss", glyph: "◎" }
+      { id: "instagram", label: "Instagram", href: "https://instagram.com", glyph: "📷" }
     ],
     tickerEnabled: true,
 
