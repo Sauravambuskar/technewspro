@@ -103,7 +103,7 @@ export default async function Home() {
       {!ads.footer && <div className="news-bottom-ad"><Promotion wide /></div>}
     </div>
     <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
-    <a className="news-back-top" href="#top" aria-label="Back to top">â†‘</a>
-  </main>;
+    </main>;
 }
+
 
