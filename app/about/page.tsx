@@ -1,8 +1,9 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { Metadata } from "next";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import JsonLd from "../components/JsonLd";
+import { IconArrowUpRight, IconArrowRight } from "../components/Icons";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
 import { listSections } from "@/lib/sections";
@@ -65,7 +66,7 @@ export default async function AboutPage() {
             <Link className="about-desk" href={`/category/${section.id}`} key={section.id}>
               <h3>{section.label}</h3>
               <p>{section.eyebrow}</p>
-              <span>View coverage &#8599;</span>
+              <span>View coverage <IconArrowUpRight /></span>
             </Link>
           ))}
         </div>
@@ -83,7 +84,7 @@ export default async function AboutPage() {
           <p className="eyebrow">{settings.whyEyebrow}</p>
           <h2>Why choose<br /><em>{settings.siteName}.</em></h2>
           <p>{settings.whyBlurb}</p>
-          <Link href="/contact" className="read-link">Talk to the team <span>&rarr;</span></Link>
+          <Link href="/contact" className="read-link">Talk to the team <span><IconArrowRight /></span></Link>
         </div>
         <div className="why-grid">
           {settings.whyPoints.map((point, i) => (
@@ -100,3 +101,4 @@ export default async function AboutPage() {
     </main>
   );
 }
+
