@@ -237,14 +237,14 @@ export function seedSettings(): Settings {
     contactTitle: "Start a conversation.",
     contactBlurb:
       "Editorial enquiries, content syndication, research partnerships and speaking requests all reach the same desk — and a person reads every one.",
-    contactEmail: "hello@salesinfopro.com",
+    contactEmail: "marketing@salesinfopro.com",
 
     notifyEmail: "",
     notifyOnMessage: true,
     notifyOnLead: true,
     notifyOnSubscriber: false,
     notifyOnFormSubmission: true,
-    contactPhone: "+1 (415) 555-0142",
-    contactAddress: "One Market Street, Suite 3600, San Francisco, CA 94105"
+    contactPhone: "",
+    contactAddress: "433 Plaza Real, Suite 275, Boca Raton, FL 33432"
   };
 }

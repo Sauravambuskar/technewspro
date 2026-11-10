@@ -48,12 +48,6 @@ export default async function ContactPage() {
               <dd><a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a></dd>
             </div>
             <div>
-              <dt>Phone</dt>
-              <dd>
-                <a href={`tel:${settings.contactPhone.replace(/[^+\d]/g, "")}`}>{settings.contactPhone}</a>
-              </dd>
-            </div>
-            <div>
               <dt>Office</dt>
               <dd>{settings.contactAddress}</dd>
             </div>

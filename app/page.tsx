@@ -38,7 +38,8 @@ const HOME_CATEGORY_SPOTLIGHTS = [
   { id: "ai-and-automation", label: "AI & Automation" },
   { id: "finance-and-fintech", label: "Finance & FinTech" },
   { id: "technology-and-it", label: "Technology & IT" },
-  { id: "sales-and-revenue", label: "Sales & Revenue" }
+  { id: "sales-and-revenue", label: "Sales & Revenue" },
+  { id: "marketing-and-growth", label: "Marketing & Growth" }
 ] as const;
 
 function CategorySpotlight({
