@@ -176,9 +176,9 @@ export function seedSettings(): Settings {
     footerTagline: "Research-driven intelligence for a global business audience.",
     footerCopyright: "© 2026 Sales Info Pro. All rights reserved.",
     socials: [
-      { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com", glyph: "in" },
       { id: "x", label: "X (Twitter)", href: "https://x.com", glyph: "𝕏" },
-      { id: "instagram", label: "Instagram", href: "https://instagram.com", glyph: "📷" }
+      { id: "instagram", label: "Instagram", href: "https://instagram.com", glyph: "📷" },
+      { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com", glyph: "in" }
     ],
     tickerEnabled: true,
 
