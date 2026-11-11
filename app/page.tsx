@@ -84,12 +84,12 @@ export default async function Home() {
     articles: published.filter((article) => article.section === section.id).slice(0, 4)
   }));
   return <main className="news-home" id="top">
-    <h1 className="news-sr-only">SalesInfoPro: Business and technology intelligence</h1>
     <JsonLd data={{ "@context": "https://schema.org", "@type": "Organization", name: settings.siteName, url: siteUrl(), description: settings.metaDescription }} />
     {settings.tickerEnabled && ticker.length > 0 && <section className="ticker news-ticker" aria-label="Latest updates"><span>LATEST</span><div className="ticker-track"><div className="ticker-viewport">{[...ticker,...ticker].map((item,index) => <span className="ticker-item" key={`${item.id}-${index}`} aria-hidden={index >= ticker.length || undefined}>{item.text}</span>)}</div></div></section>}
     <SiteHeader menu={menu} siteName={settings.siteName} />
     <div className="news-container">
-      <section className="news-opening" aria-label="Top stories">
+      <section className="news-opening" aria-labelledby="home-hero-title">
+        <h1 className="news-opening-title" id="home-hero-title">{settings.heroTitle} <span>{settings.heroTitleAccent}</span></h1>
         <div className="news-opening-main"><div className="news-lead-grid">{lead && <Story article={lead} variant="lead-story" description />}<div className="news-headlines">{rest.slice(0,3).map(article => <Story article={article} variant="text-only" key={article.id} />)}</div></div><div className="news-three">{rest.slice(3,6).map(article => <Story article={article} key={article.id} />)}</div></div>
         <aside className="news-sidebar"><div className="news-picks"><h2>Top Picks</h2><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
       </section>
