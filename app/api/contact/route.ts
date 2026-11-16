@@ -22,6 +22,7 @@ export const POST = handler(async (request: Request) => {
   const message = await createMessage({
     name,
     email,
+    phone: typeof payload.phone === "string" ? payload.phone.slice(0, 40) : undefined,
     body,
     subject: typeof payload.subject === "string" ? payload.subject : undefined
   });
@@ -32,7 +33,7 @@ export const POST = handler(async (request: Request) => {
       to: settings.notifyEmail,
       replyTo: message.email,
       subject: `New message: ${message.subject || "(no subject)"}`,
-      text: `${message.name} <${message.email}> wrote:\n\n${message.body}\n\nRead it in the panel: /admin/messages`
+      text: `${message.name} <${message.email}>${message.phone ? `\nPhone: ${message.phone}` : ""} wrote:\n\n${message.body}\n\nRead it in the panel: /admin/messages`
     });
   }
 

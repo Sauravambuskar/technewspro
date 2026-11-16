@@ -24,6 +24,9 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
 
   const form = await updateForm(params.id, {
     name: typeof payload.name === "string" ? payload.name : undefined,
+    campaignName: typeof payload.campaignName === "string" ? payload.campaignName : undefined,
+    campaignVariant: typeof payload.campaignVariant === "string" ? payload.campaignVariant : undefined,
+    notificationEmails: Array.isArray(payload.notificationEmails) ? payload.notificationEmails : undefined,
     description: typeof payload.description === "string" ? payload.description : undefined,
     fields: payload.fields,
     submitLabel: typeof payload.submitLabel === "string" ? payload.submitLabel : undefined,

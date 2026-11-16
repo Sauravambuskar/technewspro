@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const EMPTY = { name: "", email: "", subject: "", body: "" };
+const EMPTY = { name: "", email: "", phone: "", subject: "", body: "" };
 
 export default function ContactForm() {
   const [form, setForm] = useState(EMPTY);
@@ -54,6 +54,10 @@ export default function ContactForm() {
       <label>
         <span>Email</span>
         <input type="email" required maxLength={200} {...field("email")} />
+      </label>
+      <label>
+        <span>Contact number</span>
+        <input type="tel" maxLength={40} autoComplete="tel" placeholder="Include country code" {...field("phone")} />
       </label>
       <label>
         <span>Subject</span>

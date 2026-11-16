@@ -6,7 +6,9 @@ const seed = (): Lead[] => [];
 
 export async function listLeads(): Promise<Lead[]> {
   const leads = await read<Lead[]>(COLLECTION, seed);
-  return [...leads].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  return leads
+    .map((lead) => ({ ...lead, interest: lead.interest ?? "" }))
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 export type LeadInput = {
@@ -15,6 +17,7 @@ export type LeadInput = {
   company?: string;
   jobTitle?: string;
   phone?: string;
+  interest?: string;
   intent?: Lead["intent"];
   resourceId?: string | null;
   resourceTitle?: string;
@@ -29,6 +32,7 @@ export async function createLead(input: LeadInput): Promise<Lead> {
     company: input.company?.trim() || "",
     jobTitle: input.jobTitle?.trim() || "",
     phone: input.phone?.trim() || "",
+    interest: input.interest?.trim() || "",
     intent: input.intent ?? "download",
     resourceId: input.resourceId ?? null,
     resourceTitle: input.resourceTitle?.trim() || "",
@@ -55,9 +59,9 @@ export async function deleteLead(id: string): Promise<boolean> {
 export function leadsToCsv(leads: Lead[]) {
   const escape = (value: string) => `"${value.replaceAll('"', '""')}"`;
   const rows = leads.map((lead) =>
-    [lead.name, lead.email, lead.company, lead.jobTitle, lead.phone, lead.intent, lead.resourceTitle, lead.createdAt]
+    [lead.name, lead.email, lead.company, lead.jobTitle, lead.phone, lead.interest, lead.intent, lead.resourceTitle, lead.createdAt]
       .map(escape)
       .join(",")
   );
-  return ["name,email,company,job_title,phone,intent,resource,captured_at", ...rows].join("\n");
+  return ["name,email,company,job_title,phone,interest,intent,resource,captured_at", ...rows].join("\n");
 }

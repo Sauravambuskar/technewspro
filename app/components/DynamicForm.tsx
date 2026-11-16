@@ -24,7 +24,10 @@ export default function DynamicForm({ form }: { form: FormDefinition }) {
       const response = await fetch(`/api/forms/${form.id}/submit`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(values)
+        body: JSON.stringify({
+          ...values,
+          _landingPage: typeof window === "undefined" ? "" : window.location.href
+        })
       });
       const payload = await response.json();
       if (!response.ok || !payload.ok) throw new Error(payload.error || "Something went wrong.");
@@ -113,6 +116,35 @@ function Field({
         ))}
         {field.help && <small>{field.help}</small>}
       </fieldset>
+    );
+  }
+
+  if (field.type === "location") {
+    function useLocation() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => onChange(field.name, `${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`),
+        () => undefined,
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+      );
+    }
+
+    return (
+      <label className={`dyn-field dyn-${field.width}`}>
+        {label}
+        <div className="dyn-location-row">
+          <input
+            type="text"
+            value={value}
+            placeholder={field.placeholder || "City, region, or coordinates"}
+            required={field.required}
+            autoComplete="address-level2"
+            onChange={(e) => onChange(field.name, e.target.value)}
+          />
+          <button type="button" className="dyn-location-button" onClick={useLocation}>Use my location</button>
+        </div>
+        {field.help && <small>{field.help}</small>}
+      </label>
     );
   }
 

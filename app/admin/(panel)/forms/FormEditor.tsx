@@ -16,6 +16,9 @@ import {
 
 type Draft = {
   name: string;
+  campaignName: string;
+  campaignVariant: string;
+  notificationEmails: string[];
   description: string;
   submitLabel: string;
   successMessage: string;
@@ -42,6 +45,9 @@ function toDraft(form: FormDefinition | undefined): Draft {
   if (!form) {
     return {
       name: "",
+      campaignName: "",
+      campaignVariant: "",
+      notificationEmails: ["", ""],
       description: "",
       submitLabel: "Submit",
       successMessage: "Thanks — we've got it.",
@@ -55,6 +61,9 @@ function toDraft(form: FormDefinition | undefined): Draft {
   }
   return {
     name: form.name,
+    campaignName: form.campaignName,
+    campaignVariant: form.campaignVariant,
+    notificationEmails: [...form.notificationEmails, "", ""].slice(0, 2),
     description: form.description,
     submitLabel: form.submitLabel,
     successMessage: form.successMessage,
@@ -190,6 +199,53 @@ export default function FormEditor({ form }: { form?: FormDefinition }) {
           />
           <small>Replaces the form once it has been sent.</small>
         </label>
+      </div>
+
+      <div className="adm-card">
+        <h2>Campaign routing</h2>
+        <p className="adm-card-note">
+          Attribute every response to a campaign and variation. Add up to two campaign contacts; when left empty,
+          the site-wide notification address is used.
+        </p>
+        <div className="adm-grid-2">
+          <label className="adm-field">
+            <span>CAMPAIGN NAME</span>
+            <input
+              type="text"
+              value={draft.campaignName}
+              onChange={(e) => set("campaignName", e.target.value)}
+              placeholder="Universal — Q1 demand generation"
+            />
+          </label>
+          <label className="adm-field">
+            <span>VARIATION</span>
+            <input
+              type="text"
+              value={draft.campaignVariant}
+              onChange={(e) => set("campaignVariant", e.target.value)}
+              placeholder="A — India landing page"
+            />
+          </label>
+          {[0, 1].map((index) => (
+            <label className="adm-field" key={index}>
+              <span>CAMPAIGN CONTACT {index + 1}</span>
+              <input
+                type="email"
+                value={draft.notificationEmails[index] ?? ""}
+                onChange={(e) => {
+                  const next = [...draft.notificationEmails];
+                  next[index] = e.target.value;
+                  set("notificationEmails", next);
+                }}
+                placeholder={index === 0 ? "campaign.owner@universal.com" : "sales.owner@universal.com"}
+              />
+            </label>
+          ))}
+        </div>
+        <p className="adm-card-note">
+          For location targeting, add a Location / geolocation field below. For fixed regions, use a dropdown with
+          your approved locations.
+        </p>
       </div>
 
       <div className="adm-card" data-tour="form-fields">

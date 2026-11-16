@@ -49,6 +49,7 @@ export default function SubmissionTable({
           <thead>
             <tr>
               <th>Received</th>
+              {(form.campaignName || form.campaignVariant) && <th>Campaign</th>}
               {form.fields.map((field) => <th key={field.id}>{field.label}</th>)}
               <th />
             </tr>
@@ -59,6 +60,13 @@ export default function SubmissionTable({
                 <td className="adm-table-sub" style={{ whiteSpace: "nowrap" }}>
                   {formatDate(submission.createdAt.slice(0, 10))}
                 </td>
+                {(form.campaignName || form.campaignVariant) && (
+                  <td>
+                    {submission.campaignName || "—"}
+                    {submission.campaignVariant && <span className="adm-table-sub">{submission.campaignVariant}</span>}
+                    {submission.landingPage && <a className="adm-table-sub" href={submission.landingPage} target="_blank" rel="noreferrer">Landing page</a>}
+                  </td>
+                )}
                 {form.fields.map((field) => (
                   <td key={field.id}>{submission.values[field.name] || <span className="adm-table-sub">—</span>}</td>
                 ))}

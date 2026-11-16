@@ -154,8 +154,9 @@ footer { padding:45px clamp(20px,5.6vw,104px) 25px; display:grid; grid-template-
 .lead-form .lead-grid { display:grid; grid-template-columns:1fr; gap:0 14px; }
 .lead-form label { display:block; margin-bottom:14px; }
 .lead-form label span { display:block; margin-bottom:6px; font:600 10px "DM Sans",Arial,sans-serif; letter-spacing:.07em; opacity:.75; }
-.lead-form input, .lead-form textarea { width:100%; border:0; border-bottom:1px solid rgba(255,255,255,.3); background:transparent; padding:10px 0; font-size:14px; font-family:inherit; color:inherit; outline:none; }
-.lead-form input:focus, .lead-form textarea:focus { border-bottom-color:var(--acid); }
+.lead-form input, .lead-form textarea, .lead-form select { width:100%; border:0; border-bottom:1px solid rgba(255,255,255,.3); background:transparent; padding:10px 0; font-size:14px; font-family:inherit; color:inherit; outline:none; }
+.lead-form select option { color:#111; background:#fff; }
+.lead-form input:focus, .lead-form textarea:focus, .lead-form select:focus { border-bottom-color:var(--acid); }
 .lead-form textarea { resize:vertical; line-height:1.6; }
 .lead-form button { margin-top:10px; width:100%; justify-content:center; display:inline-flex; align-items:center; gap:10px; border:0; background:var(--acid); color:var(--ink); padding:14px 20px; font-size:12.5px; font-weight:700; cursor:pointer; border-radius:3px; }
 .lead-form button:hover:not(:disabled) { background:#cbf122; }
@@ -749,3 +750,27 @@ body { font-family:Arial,Helvetica,sans-serif; }
 .notification-link svg { display:block; width:21px; height:21px; }
 .notification-link:hover { color:var(--electric); }
 .notification-link-dot { position:absolute; top:4px; right:3px; width:8px; height:8px; border:2px solid var(--paper); border-radius:50%; background:var(--acid); }
+
+/* Campaign forms: location may be typed or captured with browser permission. */
+.dyn-location-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:stretch; }
+.dyn-location-row .dyn-location-button { padding:0 14px; white-space:nowrap; background:#bc0202; color:#fff; font-size:11px; }
+.dyn-location-row .dyn-location-button:hover:not(:disabled) { background:#e00000; }
+
+/* Keep paid media crisp and legible instead of stretching small creatives. */
+.ad-slot { overflow:hidden; }
+.ad-slot img { image-rendering:auto; object-position:center; filter:contrast(1.03) saturate(1.03); }
+.ad-header img,.ad-footer img { width:min(970px,100%); max-height:none; aspect-ratio:auto; object-fit:contain; }
+.ad-article img { width:min(580px,100%); max-height:none; object-fit:contain; }
+
+/* Whitepapers get a recognisable research landing treatment. */
+.resource-whitepaper { background:linear-gradient(180deg,#f7f7f2 0,#fff 42%); }
+.resource-whitepaper .resource-detail-main { border-top:4px solid #bc0202; padding-top:24px; }
+.whitepaper-ribbon { display:flex; align-items:center; justify-content:space-between; gap:18px; margin:0 0 24px; padding:14px 18px; background:#160000; color:#fff; }
+.whitepaper-ribbon strong { font-size:13px; }
+.whitepaper-ribbon span { color:#ff7474; font-size:11px; }
+
+/* Social icons use the requested brand red across every public layout. */
+.site-footer .socials a,.socials a { background:#bc0202; color:#fff; }
+.site-footer .socials a:hover,.socials a:hover { background:#ff0000; }
+
+@media(max-width:620px){.dyn-location-row{grid-template-columns:1fr}.dyn-location-row .dyn-location-button{min-height:40px}.whitepaper-ribbon{align-items:flex-start;flex-direction:column}}

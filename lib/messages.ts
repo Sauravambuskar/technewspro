@@ -6,12 +6,15 @@ const seed = (): Message[] => [];
 
 export async function listMessages(): Promise<Message[]> {
   const messages = await read<Message[]>(COLLECTION, seed);
-  return [...messages].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  return messages
+    .map((message) => ({ ...message, phone: message.phone ?? "" }))
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 export async function createMessage(input: {
   name: string;
   email: string;
+  phone?: string;
   subject?: string;
   body: string;
 }): Promise<Message> {
@@ -19,6 +22,7 @@ export async function createMessage(input: {
     id: newId(),
     name: input.name.trim(),
     email: input.email.trim().toLowerCase(),
+    phone: input.phone?.trim() || "",
     subject: input.subject?.trim() || "Website enquiry",
     body: input.body.trim(),
     read: false,

@@ -79,8 +79,14 @@ export default async function ResourceDetail({ params }: Params) {
         <Link href={`/resources/${resource.type}`}>{label.plural}</Link> <span>/</span> <b>{resource.title}</b>
       </nav>
 
-      <article className="resource-detail">
+      <article className={`resource-detail${resource.type === "whitepaper" ? " resource-whitepaper" : ""}`}>
         <div className="resource-detail-main">
+          {resource.type === "whitepaper" && (
+            <div className="whitepaper-ribbon">
+              <strong>SalesInfoPro research briefing</strong>
+              <span>{resource.pages > 0 ? `${resource.pages} pages of practical analysis` : "Practical analysis for decision-makers"}</span>
+            </div>
+          )}
           <p className="eyebrow">
             <Link href={`/resources/${resource.type}`}>{label.singular}</Link> /{" "}
             <Link href={`/category/${resource.category}`}>{categoryLabel}</Link>

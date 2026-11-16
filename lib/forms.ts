@@ -16,6 +16,14 @@ const SUBMISSIONS = "formSubmissions";
 const seedForms = (): FormDefinition[] => [];
 const seedSubmissions = (): FormSubmission[] => [];
 
+function normaliseEmails(input: unknown): string[] {
+  if (!Array.isArray(input)) return [];
+  return input
+    .map((value) => String(value).trim().toLowerCase())
+    .filter((value, index, list) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) && list.indexOf(value) === index)
+    .slice(0, 2);
+}
+
 /* ------------------------------------------------------------ definitions */
 
 /** Fills in anything a hand-written or older payload left out. */
@@ -58,7 +66,13 @@ function normaliseFields(input: unknown): FormField[] {
 export async function allForms(): Promise<FormDefinition[]> {
   const forms = await read<FormDefinition[]>(FORMS, seedForms);
   return forms
-    .map((f) => ({ ...f, fields: normaliseFields(f.fields) }))
+    .map((f) => ({
+      ...f,
+      campaignName: f.campaignName ?? "",
+      campaignVariant: f.campaignVariant ?? "",
+      notificationEmails: normaliseEmails(f.notificationEmails),
+      fields: normaliseFields(f.fields)
+    }))
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
@@ -80,6 +94,9 @@ export async function createForm(input: FormInput & { name: string }): Promise<F
   const form: FormDefinition = {
     id: newId(),
     name: input.name.trim(),
+    campaignName: input.campaignName?.trim() || "",
+    campaignVariant: input.campaignVariant?.trim() || "",
+    notificationEmails: normaliseEmails(input.notificationEmails),
     description: input.description?.trim() || "",
     fields: normaliseFields(input.fields),
     submitLabel: input.submitLabel?.trim() || "Submit",
@@ -102,6 +119,11 @@ export async function updateForm(id: string, input: FormInput): Promise<FormDefi
       saved = {
         ...form,
         name: input.name?.trim() ?? form.name,
+        campaignName: input.campaignName?.trim() ?? form.campaignName,
+        campaignVariant: input.campaignVariant?.trim() ?? form.campaignVariant,
+        notificationEmails: input.notificationEmails !== undefined
+          ? normaliseEmails(input.notificationEmails)
+          : normaliseEmails(form.notificationEmails),
         description: input.description?.trim() ?? form.description,
         fields: input.fields !== undefined ? normaliseFields(input.fields) : normaliseFields(form.fields),
         submitLabel: input.submitLabel?.trim() || form.submitLabel,
@@ -138,7 +160,14 @@ export async function deleteForm(id: string): Promise<boolean> {
 
 export async function allSubmissions(): Promise<FormSubmission[]> {
   const rows = await read<FormSubmission[]>(SUBMISSIONS, seedSubmissions);
-  return [...rows].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  return rows
+    .map((row) => ({
+      ...row,
+      campaignName: row.campaignName ?? "",
+      campaignVariant: row.campaignVariant ?? "",
+      landingPage: row.landingPage ?? ""
+    }))
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 export async function listSubmissions(formId?: string) {
@@ -159,7 +188,8 @@ export async function countSubmissions(): Promise<Record<string, number>> {
  */
 export async function recordSubmission(
   form: FormDefinition,
-  input: Record<string, unknown>
+  input: Record<string, unknown>,
+  attribution: { landingPage?: string } = {}
 ): Promise<{ submission?: FormSubmission; errors: string[] }> {
   const values: Record<string, string> = {};
   const errors: string[] = [];
@@ -197,6 +227,11 @@ export async function recordSubmission(
     id: newId(),
     formId: form.id,
     values,
+    campaignName: form.campaignName,
+    campaignVariant: form.campaignVariant,
+    landingPage: /^https?:\/\//i.test(attribution.landingPage?.trim() || "")
+      ? attribution.landingPage!.trim().slice(0, 500)
+      : "",
     createdAt: now()
   };
 
@@ -219,7 +254,13 @@ export async function deleteSubmission(id: string): Promise<boolean> {
 /** CSV of one form's answers, columns in the form's own field order. */
 export function submissionsToCsv(form: FormDefinition, rows: FormSubmission[]) {
   const escape = (value: string) => `"${value.replace(/"/g, '""')}"`;
-  const header = ["Submitted", ...form.fields.map((f) => f.label)];
-  const lines = rows.map((row) => [row.createdAt, ...form.fields.map((f) => row.values[f.name] ?? "")]);
+  const header = ["Submitted", "Campaign", "Variant", "Landing page", ...form.fields.map((f) => f.label)];
+  const lines = rows.map((row) => [
+    row.createdAt,
+    row.campaignName,
+    row.campaignVariant,
+    row.landingPage,
+    ...form.fields.map((f) => row.values[f.name] ?? "")
+  ]);
   return [header, ...lines].map((cells) => cells.map((c) => escape(String(c))).join(",")).join("\n");
 }

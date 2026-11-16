@@ -20,20 +20,33 @@ export const POST = handler(async (request: Request, { params }: Ctx) => {
   if (!form || form.status !== "published") return fail("Form not found.", 404);
 
   const payload = await readJson<Record<string, unknown>>(request);
-  const { submission, errors } = await recordSubmission(form, payload);
+  const { submission, errors } = await recordSubmission(form, payload, {
+    landingPage: typeof payload._landingPage === "string" ? payload._landingPage : undefined
+  });
   if (!submission) return fail(errors[0] ?? "Please check the form and try again.", 400, errors);
 
   const settings = await getSettings();
-  if (settings.notifyOnFormSubmission && settings.notifyEmail) {
+  const recipients = form.notificationEmails.length > 0
+    ? form.notificationEmails
+    : settings.notifyEmail
+      ? [settings.notifyEmail]
+      : [];
+  if (settings.notifyOnFormSubmission && recipients.length > 0) {
     const lines = form.fields
       .map((field) => `${field.label}: ${submission.values[field.name] || "—"}`)
       .join("\n");
 
-    notify({
-      to: settings.notifyEmail,
+    const attribution = [
+      form.campaignName && `Campaign: ${form.campaignName}`,
+      form.campaignVariant && `Variant: ${form.campaignVariant}`,
+      submission.landingPage && `Landing page: ${submission.landingPage}`
+    ].filter(Boolean).join("\n");
+
+    recipients.forEach((to) => notify({
+      to,
       subject: `New response: ${form.name}`,
-      text: `${lines}\n\nAll responses: /admin/forms/${form.id}/submissions`
-    });
+      text: `${attribution ? `${attribution}\n\n` : ""}${lines}\n\nAll responses: /admin/forms/${form.id}/submissions`
+    }));
   }
 
   return ok({ id: submission.id, message: form.successMessage }, { status: 201 });

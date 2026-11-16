@@ -72,6 +72,11 @@ export default function MessageList({ messages }: { messages: Message[] }) {
               <div className="adm-message-head">
                 <div>
                   <h3>{message.subject}</h3>
+                  {message.phone && (
+                    <span className="adm-message-meta">
+                      <a href={`tel:${message.phone}`}>{message.phone}</a>
+                    </span>
+                  )}
                   <span className="adm-message-meta">
                     {message.name} · <a href={`mailto:${message.email}`}>{message.email}</a>
                   </span>

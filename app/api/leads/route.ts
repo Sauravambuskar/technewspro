@@ -53,6 +53,7 @@ export const POST = handler(async (request: Request) => {
     company: typeof payload.company === "string" ? payload.company : undefined,
     jobTitle: typeof payload.jobTitle === "string" ? payload.jobTitle : undefined,
     phone: typeof payload.phone === "string" ? payload.phone : undefined,
+    interest: typeof payload.interest === "string" ? payload.interest.slice(0, 160) : undefined,
     intent,
     resourceId: resource?.id ?? null,
     resourceTitle: resource?.title ?? "",
@@ -72,6 +73,7 @@ export const POST = handler(async (request: Request) => {
         lead.company && `Company: ${lead.company}`,
         lead.jobTitle && `Role: ${lead.jobTitle}`,
         lead.phone && `Phone: ${lead.phone}`,
+        lead.interest && `Interest: ${lead.interest}`,
         lead.resourceTitle && `Wanted: ${lead.resourceTitle}`,
         lead.message && `\n${lead.message}`,
         "\nAll leads: /admin/leads"

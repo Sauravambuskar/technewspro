@@ -14,7 +14,7 @@ type Props = {
   showMessage?: boolean;
 };
 
-const EMPTY = { name: "", email: "", company: "", jobTitle: "", phone: "", message: "" };
+const EMPTY = { name: "", email: "", company: "", jobTitle: "", phone: "", interest: "", message: "" };
 
 export default function LeadCaptureForm({
   intent,
@@ -31,7 +31,7 @@ export default function LeadCaptureForm({
   function field(key: keyof typeof EMPTY) {
     return {
       value: form[key],
-      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setForm((prev) => ({ ...prev, [key]: e.target.value }));
         if (status === "error") setStatus("idle");
       }
@@ -116,6 +116,16 @@ export default function LeadCaptureForm({
         <label>
           <span>Phone</span>
           <input type="tel" maxLength={40} autoComplete="tel" {...field("phone")} />
+        </label>
+        <label>
+          <span>I&rsquo;m interested in</span>
+          <select {...field("interest")}>
+            <option value="">Choose an option</option>
+            <option value="This whitepaper only">This whitepaper only</option>
+            <option value="Related research">Related research</option>
+            <option value="Talk to the research team">Talk to the research team</option>
+            <option value="Content partnership">Content partnership</option>
+          </select>
         </label>
       </div>
 

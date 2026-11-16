@@ -101,7 +101,10 @@ export default function LeadTable({ leads }: { leads: Lead[] }) {
                     {lead.company || "—"}
                     {lead.jobTitle && <span className="adm-table-sub">{lead.jobTitle}</span>}
                   </td>
-                  <td><span className="adm-tag">{lead.intent}</span></td>
+                  <td>
+                    <span className="adm-tag">{lead.intent}</span>
+                    {lead.interest && <span className="adm-table-sub">{lead.interest}</span>}
+                  </td>
                   <td>{lead.resourceTitle || "—"}</td>
                   <td>{when(lead.createdAt)}</td>
                   <td>

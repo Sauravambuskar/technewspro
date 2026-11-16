@@ -151,6 +151,7 @@ export type Message = {
   id: string;
   name: string;
   email: string;
+  phone: string;
   subject: string;
   body: string;
   read: boolean;
@@ -368,6 +369,7 @@ export const FIELD_TYPES = [
   "text",
   "email",
   "tel",
+  "location",
   "number",
   "date",
   "textarea",
@@ -381,6 +383,7 @@ export const FIELD_TYPE_LABELS: Record<FieldType, string> = {
   text: "Single line text",
   email: "Email address",
   tel: "Phone number",
+  location: "Location / geolocation",
   number: "Number",
   date: "Date",
   textarea: "Paragraph text",
@@ -409,6 +412,12 @@ export type FormField = {
 export type FormDefinition = {
   id: string;
   name: string;
+  /** Internal campaign attribution shown with every response. */
+  campaignName: string;
+  /** Identifies the landing-page or creative variation (for example A or B). */
+  campaignVariant: string;
+  /** Up to two campaign owners who receive this form's notifications. */
+  notificationEmails: string[];
   /** Shown above the fields on the public page. */
   description: string;
   fields: FormField[];
@@ -424,6 +433,9 @@ export type FormSubmission = {
   formId: string;
   /** Answers keyed by field name, as submitted. */
   values: Record<string, string>;
+  campaignName: string;
+  campaignVariant: string;
+  landingPage: string;
   createdAt: string;
 };
 
@@ -449,6 +461,7 @@ export type Lead = {
   company: string;
   jobTitle: string;
   phone: string;
+  interest: string;
   intent: "download" | "syndication" | "partnership" | "general";
   resourceId: string | null;
   resourceTitle: string;

@@ -1,4 +1,5 @@
 ﻿import Link from "next/link";
+import type { Metadata } from "next";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import NewsletterForm from "./components/NewsletterForm";
@@ -15,14 +16,20 @@ import "./news-home.css";
 
 export const dynamic = "force-dynamic";
 
+export async function generateMetadata(): Promise<Metadata> {
+  return { alternates: { canonical: siteUrl("/") } };
+}
+
 function Heading({ title, href }: { title: string; href: string }) {
   return <div className="news-heading"><h2>{title}</h2><Link href={href}>View All <IconArrowUpRight /></Link></div>;
 }
-function Story({ article, variant = "", description = false }: { article: Article; variant?: string; description?: boolean }) {
+function Story({ article, variant = "", description = false, sidebar = false }: { article: Article; variant?: string; description?: boolean; sidebar?: boolean }) {
   return <article className={`news-story ${variant}`}>
     {!variant.includes("text-only") && <Link className="news-image" href={`/articles/${article.slug}`} tabIndex={-1} aria-hidden="true">{article.image && <img src={article.image} alt="" loading={variant === "lead-story" ? "eager" : "lazy"} />}</Link>}
     <div className="news-story-copy"><div className="news-tags"><Link href={`/category/${article.section}`}>{article.tag || "Insights"}</Link></div>
-      <h3><Link href={`/articles/${article.slug}`}>{article.title}</Link></h3>
+      {sidebar
+        ? <h3><Link href={`/articles/${article.slug}`}>{article.title}</Link></h3>
+        : <h2><Link href={`/articles/${article.slug}`}>{article.title}</Link></h2>}
       {description && <p className="news-dek">{article.dek}</p>}
       <p className="news-meta">{formatDate(article.date)} <span> | {currentBrandText(article.author)}</span></p>
       <p className="news-time"><IconClock /> {article.minutes} min read</p>
@@ -31,7 +38,7 @@ function Story({ article, variant = "", description = false }: { article: Articl
 }
 function Promotion({ wide = false }: { wide?: boolean }) {
   return <aside className={`news-promotion ${wide ? "promotion-wide" : ""}`}>
-    <div><span className="promotion-brand">SalesInfo<b>Pro</b> / RESEARCH</span><h2>Make your next<br />move an informed one.</h2><p>Expert insights. Practical research.<br />A clearer view of what comes next.</p><Link href="/resources">Explore the research <IconArrowUpRight /></Link></div>
+    <div><span className="promotion-brand">SalesInfo<b>Pro</b> / RESEARCH</span><h3>Make your next<br />move an informed one.</h3><p>Expert insights. Practical research.<br />A clearer view of what comes next.</p><Link href="/resources">Explore the research <IconArrowUpRight /></Link></div>
     <div className="report-art" aria-hidden="true"><span>THE INTELLIGENCE REPORT</span><strong>Ideas that<br />move business<br /><em>forward.</em></strong><div className="report-bars"><i /><i /><i /><i /><i /></div><small>SalesInfoPro / 2026</small></div>
   </aside>;
 }
@@ -89,15 +96,15 @@ export default async function Home() {
     <SiteHeader menu={menu} siteName={settings.siteName} />
     <div className="news-container">
       <section className="news-opening" aria-labelledby="home-hero-title">
-        <h1 className="news-opening-title" id="home-hero-title">{settings.heroTitle} <span>{settings.heroTitleAccent}</span></h1>
+        <h1 className="news-opening-title" id="home-hero-title">Recent <span>Posts</span></h1>
         <div className="news-opening-main"><div className="news-lead-grid">{lead && <Story article={lead} variant="lead-story" description />}<div className="news-headlines">{rest.slice(0,3).map(article => <Story article={article} variant="text-only" key={article.id} />)}</div></div><div className="news-three">{rest.slice(3,6).map(article => <Story article={article} key={article.id} />)}</div></div>
-        <aside className="news-sidebar"><div className="news-picks"><h2>Top Picks</h2><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
+        <aside className="news-sidebar"><div className="news-picks"><h3>Top Picks</h3><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
       </section>
     </div>
     <section className="news-category-run" aria-label="Coverage by category"><div className="news-container">{categorySpotlights.map((section) => <CategorySpotlight {...section} key={section.id} />)}</div></section>
     <section className="news-events"><div className="news-container"><Heading title="Events & Webinars" href="/search?q=webinar" />{events.length ? <div className="news-three">{events.map(article => <Story article={article} key={article.id} />)}</div> : <div className="news-event-empty"><div><span>CONNECT. LEARN. GROW.</span><h3>A front-row seat to whatâ€™s next.</h3><p>New events and expert conversations will appear here as they are announced.</p></div><Link href="#newsletter">Get event updates â†—</Link></div>}</div></section>
     <section className="news-papers"><div className="news-container"><Heading title="Whitepapers" href="/resources/whitepaper" /><div className="news-with-sidebar"><div className="news-rows">{whitepapers.map(resource => <article className="news-story row-story" key={resource.id}><Link className="news-image" href={`/resources/${resource.type}/${resource.slug}`}><img src={resource.image} alt={resource.imageAlt || resource.title} loading="lazy" /></Link><div className="news-story-copy"><div className="news-tags"><span>WHITEPAPER</span><span>{resource.gated ? "MEMBER RESEARCH" : "RESEARCH"}</span></div><h3><Link href={`/resources/${resource.type}/${resource.slug}`}>{resource.title}</Link></h3><p className="news-meta">{resource.pages} pages Â· {formatDate(resource.date)}</p><Link className="news-download" href={`/resources/${resource.type}/${resource.slug}`}>Read the report â†—</Link></div></article>)}</div><aside className="news-research-note"><span>THE INTELLIGENCE DESK</span><h3>Better questions.<br />Better decisions.</h3><p>Explore in-depth research for the people shaping business and technology.</p><Link href="/resources">Visit the resource center â†—</Link></aside></div></div></section>
-    <div className="news-container"><section className="news-section"><Heading title="Latest Blogs" href="/category" /><div className="news-blog-grid">{blogs[0] && <Story article={blogs[0]} variant="lead-story" description />}<div className="news-blog-stack">{blogs.slice(1,3).map(article => <Story article={article} key={article.id} />)}</div><aside className="news-sidebar">{blogs.slice(3,5).map(article => <Story article={article} variant="text-only" key={article.id} />)}<Promotion /></aside></div></section>
+    <div className="news-container"><section className="news-section"><Heading title="Latest Blogs" href="/category" /><div className="news-blog-grid">{blogs[0] && <Story article={blogs[0]} variant="lead-story" description />}<div className="news-blog-stack">{blogs.slice(1,3).map(article => <Story article={article} key={article.id} />)}</div><aside className="news-sidebar">{blogs.slice(3,5).map(article => <Story article={article} variant="text-only" sidebar key={article.id} />)}<Promotion /></aside></div></section>
       <section className="news-newsletter" id="newsletter"><div><span className="newsletter-kicker">THE SALESINFOPRO BRIEFING</span><h2>The Briefing That<br />Busy Tech Leaders Trust</h2><NewsletterForm blurb="Trusted by founders, analysts, and decision-makers across the industry." /></div><div className="newsletter-phone" aria-hidden="true"><i /><b>SalesInfo<span>Pro</span></b><small>YOUR DAILY INTELLIGENCE</small><h3>Good morning.<br />Get ahead of whatâ€™s next.</h3><div className="phone-chart"><span /><span /><span /><span /></div><strong>Ideas. Insights. Impact.</strong><p>The stories shaping tomorrow, in one essential briefing.</p></div></section>
       <section className="news-section news-videos"><Heading title="Videos" href="/search?q=video" />{videos.length ? <div className="news-three">{videos.map(article => <Story article={article} key={article.id} />)}</div> : <div className="news-video-empty"><span aria-hidden="true">â–·</span><div><h3>A new perspective. Coming soon.</h3><p>Our latest video stories will appear here when published.</p></div><Link href="/category">Explore the latest stories â†—</Link></div>}</section>
       {!ads.footer && <div className="news-bottom-ad"><Promotion wide /></div>}
