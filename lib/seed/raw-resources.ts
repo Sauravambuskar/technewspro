@@ -49,6 +49,29 @@ export const rawResources = [
       "Included are the gate criteria, the sensitivity templates, and the questions that most reliably surface an initiative that cannot be evaluated."
     ]
   },
+  {
+    slug: "revenue-intelligence-planning-guide-preview-edition",
+    type: "whitepaper",
+    category: "sales-and-revenue",
+    title: "Revenue Intelligence Planning Guide: Preview Edition",
+    summary:
+      "A practical sample guide to cleaner pipeline signals, better forecast conversations and a planning rhythm revenue teams can actually maintain.",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85",
+    pages: 24,
+    gated: false,
+    date: "2026-11-17",
+    highlights: [
+      "A simple operating rhythm for weekly revenue reviews",
+      "Five pipeline signals worth tracking before forecast day",
+      "A planning checklist for sales, marketing and finance",
+      "Sample questions for a more useful executive review"
+    ],
+    body: [
+      "Revenue planning becomes noisy when every team uses a different definition of progress. This preview guide starts with a shared set of signals that sales, marketing and finance can inspect together.",
+      "It outlines a lightweight weekly rhythm, the five indicators that deserve attention before forecast day, and the questions that help leaders separate activity from genuine buying movement.",
+      "This sample edition is open access while the full SalesInfoPro research programme is being expanded. Use it as a practical starting point and adapt the checklist to your own operating cadence."
+    ]
+  },
 
   /* ----------------------------------------------------------------- Ebooks */
   {

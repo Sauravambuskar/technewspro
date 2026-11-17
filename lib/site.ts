@@ -52,6 +52,7 @@ export async function getSiteChrome() {
 
   const menu: NavEntry[] = [
     ...categories,
+    { id: "whitepapers", label: "Whitepapers", href: "/resources/whitepaper", links: [] },
     { id: "resources", label: "Resources", href: "/resources", links: [] },
     { id: "about", label: "About Us", href: "/about", links: [] },
     { id: "contact", label: "Contact Us", href: "/contact", links: [] },
