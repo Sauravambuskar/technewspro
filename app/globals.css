@@ -522,6 +522,19 @@ body { font-family:Arial,Helvetica,sans-serif; }
 .sales-brand{display:inline-flex;align-items:center;gap:8px;font-family:Arial,Helvetica,sans-serif;font-size:27px;font-weight:750;letter-spacing:-1px;color:inherit;line-height:1}.sales-brand svg{height:35px;width:39px;flex:none}.sales-brand b{color:#ff0000}.sales-brand small{display:block;font-size:7px;letter-spacing:1.8px;margin-top:5px;font-weight:400}.footer-brand .sales-brand{font-size:25px}.footer-brand .sales-brand small{font-size:6px}
 @media(max-width:700px){.sales-brand{font-size:20px;gap:4px;letter-spacing:-.7px}.sales-brand svg{height:27px;width:29px}.sales-brand small{font-size:5px;letter-spacing:1px}.footer-brand .sales-brand{font-size:25px}}
 
+/* Official SalesInfoPro lockup: a crisp native rendering of the supplied logo. */
+.sales-brand{gap:7px;font-size:29px;font-weight:800;letter-spacing:-1.8px}
+.sales-brand .sales-brand-mark{width:42px;height:42px;overflow:visible}
+.sales-brand-arrow{stroke:#050505}
+.sales-brand-word{display:block;white-space:nowrap}
+.sales-brand-pro{color:#ef0000}
+.site-header .sales-brand,.site-footer .sales-brand{color:#fff}
+.site-header .sales-brand-pro,.site-footer .sales-brand-pro{color:inherit}
+.site-header .sales-brand-arrow,.site-footer .sales-brand-arrow,.adm-sidebar .sales-brand-arrow{stroke:#fff}
+.adm-sidebar .sales-brand-pro{color:inherit}
+.footer-brand .sales-brand{font-size:27px}
+@media(max-width:700px){.sales-brand{font-size:20px;gap:5px;letter-spacing:-1.1px}.sales-brand .sales-brand-mark{width:31px;height:31px}.footer-brand .sales-brand{font-size:25px}.footer-brand .sales-brand-mark{width:38px;height:38px}}
+
 /* Shared public footer. The homepage established this dark red treatment;
    keeping it on the component makes every public route visually consistent. */
 .site-footer {
