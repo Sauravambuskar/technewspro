@@ -17,7 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: settings.metaTitle,
-    description: settings.metaDescription
+    description: settings.metaDescription,
+    icons: { icon: "/salesinfopro-icon.png" }
   };
 }
 
