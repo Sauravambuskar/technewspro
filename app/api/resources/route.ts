@@ -49,6 +49,8 @@ export const POST = handler(async (request: Request) => {
     pages: typeof payload.pages === "number" ? payload.pages : undefined,
     fileUrl: typeof payload.fileUrl === "string" ? payload.fileUrl : undefined,
     gated: typeof payload.gated === "boolean" ? payload.gated : undefined,
+    primaryFormId: typeof payload.primaryFormId === "string" ? payload.primaryFormId : undefined,
+    secondaryFormId: typeof payload.secondaryFormId === "string" ? payload.secondaryFormId : undefined,
     status: payload.status as ArticleStatus | undefined,
     featured: Boolean(payload.featured),
     author: typeof payload.author === "string" ? payload.author : undefined,

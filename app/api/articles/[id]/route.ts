@@ -5,16 +5,18 @@ import type { ArticleStatus } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const GET = handler(async (_request: Request, { params }: Ctx) => {
+export const GET = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const article = await getArticleById(params.id);
   if (!article) return fail("Article not found.", 404);
   if (article.status !== "published") await requireUser();
   return ok(article);
 });
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<Record<string, unknown>>(request);
 
@@ -45,7 +47,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(article);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteArticle(params.id);
   if (!removed) return fail("Article not found.", 404);

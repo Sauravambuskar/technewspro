@@ -11,6 +11,7 @@ import {
   emptySeo,
   normaliseSeo,
   slugify,
+  type FormDefinition,
   type Resource,
   type ResourceType,
   type Section,
@@ -32,6 +33,8 @@ type Draft = {
   body: string;
   highlights: string;
   gated: boolean;
+  primaryFormId: string;
+  secondaryFormId: string;
   status: "draft" | "published";
   featured: boolean;
   seo: Seo;
@@ -54,6 +57,8 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
       body: "",
       highlights: "",
       gated: true,
+      primaryFormId: "",
+      secondaryFormId: "",
       status: "draft",
       featured: false,
       seo: emptySeo()
@@ -74,6 +79,8 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
     body: resource.body.join("\n\n"),
     highlights: resource.highlights.join("\n"),
     gated: resource.gated,
+    primaryFormId: resource.primaryFormId ?? "",
+    secondaryFormId: resource.secondaryFormId ?? "",
     status: resource.status,
     featured: resource.featured,
     seo: normaliseSeo(resource.seo)
@@ -82,10 +89,12 @@ function toDraft(resource: Resource | undefined, sections: Section[]): Draft {
 
 export default function ResourceEditor({
   resource,
-  sections
+  sections,
+  forms = []
 }: {
   resource?: Resource;
   sections: Section[];
+  forms?: FormDefinition[];
 }) {
   const router = useRouter();
   const [draft, setDraft] = useState<Draft>(() => toDraft(resource, sections));
@@ -133,6 +142,8 @@ export default function ResourceEditor({
       body: paragraphs,
       highlights,
       gated: draft.gated,
+      primaryFormId: draft.primaryFormId,
+      secondaryFormId: draft.secondaryFormId,
       status: draft.status,
       featured: draft.featured,
       seo: draft.seo
@@ -382,6 +393,18 @@ export default function ResourceEditor({
           <input type="checkbox" checked={draft.gated} onChange={(e) => set("gated", e.target.checked)} />
           Require the lead form before the download
         </label>
+
+        {draft.type === "whitepaper" && (
+          <div className="adm-card" style={{ margin: "18px 0", background: "#faf9f5" }}>
+            <h2>Whitepaper contact forms</h2>
+            <p className="adm-card-note">Choose two independently editable forms. The first replaces the download form; the second appears as a follow-up contact section.</p>
+            <div className="adm-grid-2">
+              <label className="adm-field"><span>PRIMARY DOWNLOAD FORM</span><select value={draft.primaryFormId} onChange={(e) => set("primaryFormId", e.target.value)}><option value="">Default whitepaper lead form</option>{forms.map((form) => <option value={form.id} key={form.id}>{form.name}{form.status === "draft" ? " (draft)" : ""}</option>)}</select><small>Displayed beside the whitepaper content.</small></label>
+              <label className="adm-field"><span>SECOND CONTACT FORM</span><select value={draft.secondaryFormId} onChange={(e) => set("secondaryFormId", e.target.value)}><option value="">None</option>{forms.map((form) => <option value={form.id} key={form.id}>{form.name}{form.status === "draft" ? " (draft)" : ""}</option>)}</select><small>Displayed in a separate “Speak with the team” section.</small></label>
+            </div>
+            {forms.length === 0 && <p className="adm-note adm-note-warn">Create reusable forms under <Link href="/admin/forms">Forms</Link>, then return here to assign them.</p>}
+          </div>
+        )}
 
         <label className="adm-check" data-tour="f-featured">
           <input type="checkbox" checked={draft.featured} onChange={(e) => set("featured", e.target.checked)} />

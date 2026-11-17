@@ -13,7 +13,7 @@ function byNewest(a: Resource, b: Resource) {
 export async function allResources(): Promise<Resource[]> {
   const resources = await read<Resource[]>(COLLECTION, seed);
   // Rows written before the SEO box existed have no object; fill in the defaults.
-  return resources.map((r) => ({ ...r, imageAlt: r.imageAlt ?? "", seo: normaliseSeo(r.seo) })).sort(byNewest);
+  return resources.map((r) => ({ ...r, imageAlt: r.imageAlt ?? "", primaryFormId: r.primaryFormId ?? "", secondaryFormId: r.secondaryFormId ?? "", seo: normaliseSeo(r.seo) })).sort(byNewest);
 }
 
 export type ResourceQuery = {
@@ -110,6 +110,8 @@ export async function createResource(input: ResourceInput & { title: string }): 
     pages: input.pages && input.pages > 0 ? input.pages : 0,
     fileUrl: input.fileUrl?.trim() || "",
     gated: input.gated ?? true,
+    primaryFormId: input.primaryFormId?.trim() || "",
+    secondaryFormId: input.secondaryFormId?.trim() || "",
     status: input.status === "published" ? "published" : "draft",
     featured: Boolean(input.featured),
     author: input.author?.trim() || "Sales Info Pro Research",
@@ -146,6 +148,8 @@ export async function updateResource(id: string, input: ResourceInput): Promise<
         pages: input.pages !== undefined && input.pages >= 0 ? input.pages : resource.pages,
         fileUrl: input.fileUrl?.trim() ?? resource.fileUrl,
         gated: input.gated ?? resource.gated,
+        primaryFormId: input.primaryFormId?.trim() ?? resource.primaryFormId ?? "",
+        secondaryFormId: input.secondaryFormId?.trim() ?? resource.secondaryFormId ?? "",
         status: input.status ?? resource.status,
         featured: input.featured ?? resource.featured,
         author: input.author?.trim() ?? resource.author,

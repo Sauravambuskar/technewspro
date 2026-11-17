@@ -5,16 +5,18 @@ import { isResourceType, type ArticleStatus } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const GET = handler(async (_request: Request, { params }: Ctx) => {
+export const GET = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const resource = await getResourceById(params.id);
   if (!resource) return fail("Resource not found.", 404);
   if (resource.status !== "published") await requireUser();
   return ok(resource);
 });
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<Record<string, unknown>>(request);
 
@@ -38,6 +40,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     pages: typeof payload.pages === "number" ? payload.pages : undefined,
     fileUrl: typeof payload.fileUrl === "string" ? payload.fileUrl : undefined,
     gated: typeof payload.gated === "boolean" ? payload.gated : undefined,
+    primaryFormId: typeof payload.primaryFormId === "string" ? payload.primaryFormId : undefined,
+    secondaryFormId: typeof payload.secondaryFormId === "string" ? payload.secondaryFormId : undefined,
     status: payload.status as ArticleStatus | undefined,
     featured: typeof payload.featured === "boolean" ? payload.featured : undefined,
     author: typeof payload.author === "string" ? payload.author : undefined,
@@ -49,7 +53,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(resource);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteResource(params.id);
   if (!removed) return fail("Resource not found.", 404);

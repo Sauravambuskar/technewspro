@@ -14,11 +14,12 @@ import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
-  searchParams
-}: {
-  searchParams: { q?: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    searchParams: Promise<{ q?: string }>;
+  }
+): Promise<Metadata> {
+  const searchParams = await props.searchParams;
   const settings = await getSettings();
   const query = searchParams.q?.trim() ?? "";
 
@@ -31,7 +32,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
+export default async function SearchPage(props: { searchParams: Promise<{ q?: string }> }) {
+  const searchParams = await props.searchParams;
   const query = searchParams.q?.trim() ?? "";
 
   const [{ settings, nav, menu, footerPages, ads }, articles, resources, pages, labels] = await Promise.all([

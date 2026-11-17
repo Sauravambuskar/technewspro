@@ -5,16 +5,18 @@ import { isPageLayout, type ArticleStatus } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const GET = handler(async (_request: Request, { params }: Ctx) => {
+export const GET = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const page = await getPageById(params.id);
   if (!page) return fail("Page not found.", 404);
   if (page.status !== "published") await requireUser();
   return ok(page);
 });
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<Record<string, unknown>>(request);
 
@@ -29,6 +31,10 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
     body: payload.body as string | string[] | undefined,
     status: payload.status as ArticleStatus | undefined,
     layout: isPageLayout(payload.layout) ? payload.layout : undefined,
+    builder: payload.builder,
+    headerVisible: typeof payload.headerVisible === "boolean" ? payload.headerVisible : undefined,
+    footerVisible: typeof payload.footerVisible === "boolean" ? payload.footerVisible : undefined,
+    breadcrumbVisible: typeof payload.breadcrumbVisible === "boolean" ? payload.breadcrumbVisible : undefined,
     hideTitle: typeof payload.hideTitle === "boolean" ? payload.hideTitle : undefined,
     formId: typeof payload.formId === "string" ? payload.formId : undefined,
     showInNav: typeof payload.showInNav === "boolean" ? payload.showInNav : undefined,
@@ -42,7 +48,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(page);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deletePage(params.id);
   if (!removed) return fail("Page not found.", 404);

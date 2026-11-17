@@ -6,6 +6,6 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const POST = handler(async () => {
-  cookies().delete(SESSION_COOKIE);
+  (await cookies()).delete(SESSION_COOKIE);
   return ok({ signedOut: true });
 });

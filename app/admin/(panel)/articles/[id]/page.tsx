@@ -6,7 +6,8 @@ import ArticleEditor from "../ArticleEditor";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditArticle({ params }: { params: { id: string } }) {
+export default async function EditArticle(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const [article, sections] = await Promise.all([getArticleById(params.id), listSections()]);
   if (!article) notFound();
 

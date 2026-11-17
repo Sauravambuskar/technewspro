@@ -4,11 +4,12 @@ import { deleteImage, getImage } from "@/lib/images";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
 // Public: images are embedded on public pages (articles, resources, …), so
 // this is served the same way any external image URL would be.
-export const GET = handler(async (_request: Request, { params }: Ctx) => {
+export const GET = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const image = await getImage(params.id);
   if (!image) return fail("Image not found.", 404);
 
@@ -26,7 +27,8 @@ export const GET = handler(async (_request: Request, { params }: Ctx) => {
   });
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteImage(params.id);
   if (!removed) return fail("Image not found.", 404);

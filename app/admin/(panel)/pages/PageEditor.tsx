@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, send } from "../../apiClient";
 import SeoBoxes from "../SeoBoxes";
+import VisualPageBuilder from "./VisualPageBuilder";
 import {
   PAGE_LAYOUTS,
   PAGE_LAYOUT_LABELS,
@@ -15,6 +16,7 @@ import {
   slugify,
   type FormDefinition,
   type Page,
+  type PageBuilder,
   type PageLayout,
   type Seo
 } from "@/lib/types";
@@ -27,6 +29,10 @@ type Draft = {
   author: string;
   status: "draft" | "published";
   layout: PageLayout;
+  builder: PageBuilder;
+  headerVisible: boolean;
+  footerVisible: boolean;
+  breadcrumbVisible: boolean;
   hideTitle: boolean;
   formId: string;
   showInNav: boolean;
@@ -55,6 +61,10 @@ function toDraft(page: Page | undefined): Draft {
       author: "Sales Info Pro",
       status: "draft",
       layout: "default",
+      builder: { version: 1, sections: [] },
+      headerVisible: true,
+      footerVisible: true,
+      breadcrumbVisible: false,
       hideTitle: false,
       formId: "",
       showInNav: false,
@@ -70,6 +80,10 @@ function toDraft(page: Page | undefined): Draft {
     author: page.author,
     status: page.status,
     layout: isPageLayout(page.layout) ? page.layout : "default",
+    builder: page.builder ?? { version: 1, sections: [] },
+    headerVisible: page.headerVisible ?? page.layout !== "canvas",
+    footerVisible: page.footerVisible ?? true,
+    breadcrumbVisible: page.breadcrumbVisible ?? page.layout === "default",
     hideTitle: page.hideTitle ?? false,
     formId: page.formId ?? "",
     showInNav: page.showInNav,
@@ -109,6 +123,10 @@ export default function PageEditor({ page, forms = [] }: { page?: Page; forms?: 
       author: draft.author,
       status: draft.status,
       layout: draft.layout,
+      builder: draft.builder,
+      headerVisible: draft.headerVisible,
+      footerVisible: draft.footerVisible,
+      breadcrumbVisible: draft.breadcrumbVisible,
       hideTitle: draft.hideTitle,
       formId: draft.formId,
       showInNav: draft.showInNav,
@@ -194,17 +212,15 @@ export default function PageEditor({ page, forms = [] }: { page?: Page; forms?: 
           <small>Shown under the heading, and used as the meta description if you don&rsquo;t write one.</small>
         </label>
 
-        <label className="adm-field" data-tour="f-body">
-          <span>BODY</span>
-          <textarea
-            rows={18}
-            value={draft.body}
-            onChange={(e) => set("body", e.target.value)}
-            placeholder={"One paragraph per block.\n\nSeparate paragraphs with a blank line."}
-          />
-          <small>{paragraphs.length} paragraph{paragraphs.length === 1 ? "" : "s"}</small>
-        </label>
       </div>
+
+      <VisualPageBuilder value={draft.builder} onChange={(builder) => set("builder", builder)} forms={forms} onError={setError} />
+
+      <details className="adm-card adm-legacy-content" open={draft.builder.sections.length === 0}>
+        <summary><b>Legacy text content</b><span>Used when the visual builder is empty</span></summary>
+        <p className="adm-card-note">Existing text-only pages remain compatible. Once visual sections are added, this content is kept safely but no longer displayed.</p>
+        <label className="adm-field" data-tour="f-body"><span>PARAGRAPHS</span><textarea rows={12} value={draft.body} onChange={(e) => set("body", e.target.value)} placeholder={"One paragraph per block.\n\nSeparate paragraphs with a blank line."} /><small>{paragraphs.length} paragraph{paragraphs.length === 1 ? "" : "s"}</small></label>
+      </details>
 
       <div className="adm-card" data-tour="editor-layout">
         <h2>Layout</h2>
@@ -238,13 +254,17 @@ export default function PageEditor({ page, forms = [] }: { page?: Page; forms?: 
           Useful when the body opens with its own headline. The title is still used for the tab, search results
           and menus.
         </small>
+        <div className="adm-chrome-options">
+          <label className="adm-check"><input type="checkbox" checked={draft.headerVisible} onChange={(e) => set("headerVisible", e.target.checked)} /> Show global header</label>
+          <label className="adm-check"><input type="checkbox" checked={draft.footerVisible} onChange={(e) => set("footerVisible", e.target.checked)} /> Show global footer</label>
+          <label className="adm-check"><input type="checkbox" checked={draft.breadcrumbVisible} onChange={(e) => set("breadcrumbVisible", e.target.checked)} /> Show breadcrumb</label>
+        </div>
       </div>
 
       <div className="adm-card" data-tour="editor-form">
         <h2>Form</h2>
         <p className="adm-card-note">
-          Drop a form built under <Link href="/admin/forms">Forms</Link> at the bottom of this page. Responses
-          land there, not in your inbox.
+          This is the legacy bottom form. For one or multiple forms anywhere on the page, add Form blocks in the visual builder. Build reusable forms under <Link href="/admin/forms">Forms</Link>.
         </p>
 
         <label className="adm-field" style={{ maxWidth: 420, marginBottom: 0 }}>

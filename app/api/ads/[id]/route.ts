@@ -5,16 +5,18 @@ import { isAdPlacement, isAdType } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const GET = handler(async (_request: Request, { params }: Ctx) => {
+export const GET = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const ad = await getAdById(params.id);
   if (!ad) return fail("Ad not found.", 404);
   return ok(ad);
 });
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<Record<string, unknown>>(request);
 
@@ -35,7 +37,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(ad);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteAd(params.id);
   if (!removed) return fail("Ad not found.", 404);

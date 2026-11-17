@@ -15,7 +15,8 @@ import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { section: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ section: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const [section, settings] = await Promise.all([getSection(params.section), getSettings()]);
   if (!section) return {};
   return {
@@ -25,7 +26,8 @@ export async function generateMetadata({ params }: { params: { section: string }
   };
 }
 
-export default async function SectionPage({ params }: { params: { section: string } }) {
+export default async function SectionPage(props: { params: Promise<{ section: string }> }) {
+  const params = await props.params;
   const section = await getSection(params.section);
   if (!section) notFound();
 

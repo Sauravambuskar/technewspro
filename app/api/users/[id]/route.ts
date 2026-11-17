@@ -4,9 +4,10 @@ import { changePassword, deleteUser } from "@/lib/auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const actor = await requireUser();
   if (actor.role !== "admin" && actor.id !== params.id) {
     throw new HttpError("You can only change your own password.", 403);
@@ -20,7 +21,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok({ id: params.id, updated: true });
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const actor = await requireUser();
   if (actor.role !== "admin") throw new HttpError("Only an admin can remove team members.", 403);
   if (actor.id === params.id) throw new HttpError("You cannot delete the account you're signed in with.", 409);

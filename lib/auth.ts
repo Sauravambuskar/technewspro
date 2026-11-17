@@ -181,7 +181,7 @@ export async function verifySessionToken(token: string | undefined): Promise<Ses
 }
 
 export async function getCurrentUser(): Promise<PublicUser | null> {
-  const payload = await verifySessionToken(cookies().get(SESSION_COOKIE)?.value);
+  const payload = await verifySessionToken((await cookies()).get(SESSION_COOKIE)?.value);
   if (!payload) return null;
   const user = await findUserById(payload.sub);
   return user ? toPublicUser(user) : null;

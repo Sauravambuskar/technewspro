@@ -6,9 +6,10 @@ import type { Section } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<Partial<Section>>(request);
   const section = await updateSection(params.id, payload);
@@ -16,7 +17,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(section);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
 
   const inUse = await listArticles({ section: params.id, status: "all" });

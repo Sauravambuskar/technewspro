@@ -133,6 +133,8 @@ export function seedResources(): Resource[] {
     pages: resource.pages,
     fileUrl: "",
     gated: resource.gated,
+    primaryFormId: "",
+    secondaryFormId: "",
     status: "published" as const,
     featured: resource.slug === "the-2026-ai-automation-readiness-benchmark",
     author: "Sales Info Pro Research",

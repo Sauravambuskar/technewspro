@@ -5,10 +5,11 @@ import { clientKey, rateLimit } from "@/lib/ratelimit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
 /** Public beacon. The client already de-dupes per session; this caps the rest. */
-export const POST = handler(async (request: Request, { params }: Ctx) => {
+export const POST = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   if (!rateLimit(clientKey(request, `ad:${params.id}`), { limit: 10, windowMs: 60_000 }).allowed) {
     return ok({ counted: false });
   }

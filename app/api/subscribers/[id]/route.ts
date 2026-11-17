@@ -4,9 +4,10 @@ import { deleteSubscriber, setSubscriberStatus } from "@/lib/subscribers";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<{ status?: string }>(request);
   if (payload.status !== "subscribed" && payload.status !== "unsubscribed") {
@@ -17,7 +18,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(subscriber);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteSubscriber(params.id);
   if (!removed) return fail("Subscriber not found.", 404);

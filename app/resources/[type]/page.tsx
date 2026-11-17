@@ -13,7 +13,8 @@ import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { type: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ type: string }> }): Promise<Metadata> {
+  const params = await props.params;
   if (!isResourceType(params.type)) return {};
   const settings = await getSettings();
   const label = RESOURCE_TYPE_LABELS[params.type].plural;
@@ -24,7 +25,8 @@ export async function generateMetadata({ params }: { params: { type: string } })
   };
 }
 
-export default async function ResourceTypePage({ params }: { params: { type: string } }) {
+export default async function ResourceTypePage(props: { params: Promise<{ type: string }> }) {
+  const params = await props.params;
   if (!isResourceType(params.type)) notFound();
   const type = params.type;
 

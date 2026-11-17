@@ -7,10 +7,11 @@ import { clientKey, rateLimit } from "@/lib/ratelimit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
 /** Public: anyone filling in a published form on the site. */
-export const POST = handler(async (request: Request, { params }: Ctx) => {
+export const POST = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   if (!rateLimit(clientKey(request, `form:${params.id}`), { limit: 5, windowMs: 60_000 }).allowed) {
     return fail("Too many submissions. Try again in a minute.", 429);
   }

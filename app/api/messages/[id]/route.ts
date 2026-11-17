@@ -4,9 +4,10 @@ import { deleteMessage, setMessageRead } from "@/lib/messages";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<{ read?: boolean }>(request);
   if (typeof payload.read !== "boolean") return fail('"read" must be true or false.');
@@ -15,7 +16,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(message);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteMessage(params.id);
   if (!removed) return fail("Message not found.", 404);

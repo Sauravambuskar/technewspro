@@ -189,6 +189,9 @@ export type Resource = {
   fileUrl: string;
   /** Gated resources require the lead form before the download is revealed. */
   gated: boolean;
+  /** Optional reusable forms selected in the resource editor. */
+  primaryFormId: string;
+  secondaryFormId: string;
   status: ArticleStatus;
   featured: boolean;
   author: string;
@@ -227,6 +230,51 @@ export function isPageLayout(value: unknown): value is PageLayout {
   return typeof value === "string" && (PAGE_LAYOUTS as readonly string[]).includes(value);
 }
 
+export const PAGE_BLOCK_TYPES = ["hero", "heading", "text", "image", "points", "cta", "form", "spacer"] as const;
+export type PageBlockType = (typeof PAGE_BLOCK_TYPES)[number];
+export type PageBlockAlign = "left" | "center" | "right";
+export type PageSectionWidth = "contained" | "wide" | "full";
+export type PageSectionPadding = "none" | "small" | "medium" | "large";
+
+/** A safe, structured content block. No arbitrary HTML is stored or rendered. */
+export type PageBlock = {
+  id: string;
+  type: PageBlockType;
+  column: 0 | 1;
+  eyebrow: string;
+  heading: string;
+  text: string;
+  level: "h2" | "h3";
+  align: PageBlockAlign;
+  image: string;
+  imageAlt: string;
+  caption: string;
+  items: string[];
+  buttonLabel: string;
+  buttonHref: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+  formId: string;
+  theme: "light" | "dark" | "accent";
+  height: number;
+};
+
+export type PageBuilderSection = {
+  id: string;
+  name: string;
+  columns: 1 | 2;
+  width: PageSectionWidth;
+  padding: PageSectionPadding;
+  background: string;
+  textColor: string;
+  blocks: PageBlock[];
+};
+
+export type PageBuilder = {
+  version: 1;
+  sections: PageBuilderSection[];
+};
+
 /**
  * A standalone page — privacy policy, terms, advertise-with-us and so on.
  * Lives at the site root (/privacy-policy), so its slug must not collide with a
@@ -241,6 +289,11 @@ export type Page = {
   body: string[];
   status: ArticleStatus;
   layout: PageLayout;
+  /** Visual section/block content. Empty sections preserve the legacy body renderer. */
+  builder: PageBuilder;
+  headerVisible: boolean;
+  footerVisible: boolean;
+  breadcrumbVisible: boolean;
   /** Lets the body supply its own opening heading instead. */
   hideTitle: boolean;
   /** Id of a form to render under the body; "" for none. */

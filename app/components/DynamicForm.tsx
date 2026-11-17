@@ -3,8 +3,20 @@
 import { useState } from "react";
 import { CHOICE_TYPES, type FormDefinition, type FormField } from "@/lib/types";
 
+type DynamicFormProps = {
+  form: FormDefinition;
+  successHref?: string;
+  successLabel?: string;
+};
+
+function safeLink(value?: string) {
+  if (!value) return "";
+  const href = value.trim();
+  return href.startsWith("/") || href.startsWith("#") || /^https?:/i.test(href) ? href : "";
+}
+
 /** Renders a form built in the admin panel, and posts it back. */
-export default function DynamicForm({ form }: { form: FormDefinition }) {
+export default function DynamicForm({ form, successHref, successLabel = "Continue" }: DynamicFormProps) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -41,9 +53,11 @@ export default function DynamicForm({ form }: { form: FormDefinition }) {
   }
 
   if (done) {
+    const continueHref = safeLink(successHref);
     return (
       <div className="dyn-form">
         <p className="dyn-form-done" role="status">{done}</p>
+        {continueHref && <a className="lead-download" href={continueHref} target="_blank" rel="noreferrer">{successLabel} <span>&#8599;</span></a>}
       </div>
     );
   }

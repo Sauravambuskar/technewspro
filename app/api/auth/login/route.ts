@@ -20,6 +20,6 @@ export const POST = handler(async (request: Request) => {
   const user = await authenticate(email, password);
   if (!user) return fail("That email and password combination doesn't match an account.", 401);
 
-  cookies().set(SESSION_COOKIE, await createSessionToken(user.id), sessionCookieOptions());
+  (await cookies()).set(SESSION_COOKIE, await createSessionToken(user.id), sessionCookieOptions());
   return ok(user);
 });

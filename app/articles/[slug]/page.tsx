@@ -15,7 +15,8 @@ import AdSlot from "../../components/AdSlot";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const [article, settings] = await Promise.all([getArticleBySlug(params.slug), getSettings()]);
   if (!article) return {};
 
@@ -32,7 +33,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   );
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
+export default async function ArticlePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const article = await getArticleBySlug(params.slug);
   if (!article) notFound();
 

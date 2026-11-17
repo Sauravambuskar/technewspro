@@ -4,9 +4,10 @@ import { getFormById, listSubmissions, submissionsToCsv } from "@/lib/forms";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const GET = handler(async (request: Request, { params }: Ctx) => {
+export const GET = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
 
   const form = await getFormById(params.id);

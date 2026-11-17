@@ -6,6 +6,7 @@ import SiteFooter from "../components/SiteFooter";
 import JsonLd from "../components/JsonLd";
 import ViewBeacon from "../components/ViewBeacon";
 import DynamicForm from "../components/DynamicForm";
+import PageBuilderRenderer from "../components/PageBuilderRenderer";
 import { getFormById } from "@/lib/forms";
 import { getPageBySlug } from "@/lib/pages";
 import { getSettings } from "@/lib/settings";
@@ -19,7 +20,8 @@ export const dynamic = "force-dynamic";
 // (/about, /category, /resources, …) before this one, so it only ever sees
 // paths the app doesn't already own.
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const [page, settings] = await Promise.all([getPageBySlug(params.slug), getSettings()]);
   if (!page) return {};
 
@@ -31,7 +33,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   });
 }
 
-export default async function CustomPage({ params }: { params: { slug: string } }) {
+export default async function CustomPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const page = await getPageBySlug(params.slug);
   if (!page) notFound();
 
@@ -47,6 +50,7 @@ export default async function CustomPage({ params }: { params: { slug: string } 
   // while the shared site footer remains available on every public page.
   const canvas = page.layout === "canvas";
   const fullWidth = page.layout === "full-width";
+  const hasBuilder = page.builder.sections.length > 0;
 
   return (
     <main>
@@ -62,7 +66,7 @@ export default async function CustomPage({ params }: { params: { slug: string } 
         }}
       />
 
-      {!canvas && (
+      {page.headerVisible && (
         <>
           <div className="topline" />
           <SiteHeader menu={menu} siteName={settings.siteName} ad={ads.header} />
@@ -71,13 +75,23 @@ export default async function CustomPage({ params }: { params: { slug: string } 
 
       <ViewBeacon slug={page.slug} kind="page" />
 
-      {!canvas && (
+      {page.breadcrumbVisible && (
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Home</Link> <span>/</span> <b>{page.title}</b>
         </nav>
       )}
 
-      <article className={`article-page${canvas || fullWidth ? " page-wide" : ""}`}>
+      {hasBuilder ? (
+        <>
+          {!page.hideTitle && (
+            <header className="builder-page-head">
+              <h1>{page.title}</h1>
+              {page.summary && <p>{page.summary}</p>}
+            </header>
+          )}
+          <PageBuilderRenderer builder={page.builder} />
+        </>
+      ) : <article className={`article-page${canvas || fullWidth ? " page-wide" : ""}`}>
         {!page.hideTitle && (
           <div className="article-head">
             <h1>{page.title}</h1>
@@ -101,9 +115,9 @@ export default async function CustomPage({ params }: { params: { slug: string } 
             <Link href="/">&larr; Back to the homepage</Link>
           </div>
         )}
-      </article>
+      </article>}
 
-      <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />
+      {page.footerVisible && <SiteFooter nav={nav} settings={settings} pages={footerPages} ad={ads.footer} />}
     </main>
   );
 }

@@ -6,7 +6,8 @@ import PageEditor from "../PageEditor";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditPage({ params }: { params: { id: string } }) {
+export default async function EditPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const [page, forms] = await Promise.all([getPageById(params.id), allForms()]);
   if (!page) notFound();
 

@@ -5,16 +5,18 @@ import type { ArticleStatus } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Ctx = { params: { id: string } };
+type Ctx = { params: Promise<{ id: string }> };
 
-export const GET = handler(async (_request: Request, { params }: Ctx) => {
+export const GET = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   const form = await getFormById(params.id);
   if (!form) return fail("Form not found.", 404);
   if (form.status !== "published") await requireUser();
   return ok(form);
 });
 
-export const PATCH = handler(async (request: Request, { params }: Ctx) => {
+export const PATCH = handler(async (request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const payload = await readJson<Record<string, unknown>>(request);
 
@@ -38,7 +40,8 @@ export const PATCH = handler(async (request: Request, { params }: Ctx) => {
   return ok(form);
 });
 
-export const DELETE = handler(async (_request: Request, { params }: Ctx) => {
+export const DELETE = handler(async (_request: Request, ctx: Ctx) => {
+  const params = await ctx.params;
   await requireUser();
   const removed = await deleteForm(params.id);
   if (!removed) return fail("Form not found.", 404);

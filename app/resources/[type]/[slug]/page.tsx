@@ -4,10 +4,12 @@ import type { Metadata } from "next";
 import SiteHeader from "../../../components/SiteHeader";
 import SiteFooter from "../../../components/SiteFooter";
 import LeadCaptureForm from "../../../components/LeadCaptureForm";
+import DynamicForm from "../../../components/DynamicForm";
 import ResourceCard from "../../../components/ResourceCard";
 import JsonLd from "../../../components/JsonLd";
 import ViewBeacon from "../../../components/ViewBeacon";
 import { getResourceBySlug, listResources } from "@/lib/resources";
+import { getFormById } from "@/lib/forms";
 import { sectionLabels } from "@/lib/sections";
 import { getSettings } from "@/lib/settings";
 import { getSiteChrome } from "@/lib/site";
@@ -16,9 +18,10 @@ import { buildMetadata, siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-type Params = { params: { type: string; slug: string } };
+type Params = { params: Promise<{ type: string; slug: string }> };
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata(props: Params): Promise<Metadata> {
+  const params = await props.params;
   const [resource, settings] = await Promise.all([getResourceBySlug(params.slug), getSettings()]);
   if (!resource) return {};
 
@@ -35,7 +38,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   );
 }
 
-export default async function ResourceDetail({ params }: Params) {
+export default async function ResourceDetail(props: Params) {
+  const params = await props.params;
   if (!isResourceType(params.type)) notFound();
 
   const resource = await getResourceBySlug(params.slug);
@@ -43,10 +47,12 @@ export default async function ResourceDetail({ params }: Params) {
   // Keep one canonical URL per resource even if the type in the path is stale.
   if (resource.type !== params.type) redirect(`/resources/${resource.type}/${resource.slug}`);
 
-  const [{ settings, nav, menu, footerPages, ads }, labels, related] = await Promise.all([
+  const [{ settings, nav, menu, footerPages, ads }, labels, related, primaryForm, secondaryForm] = await Promise.all([
     getSiteChrome(),
     sectionLabels(),
-    listResources({ type: resource.type, status: "published", limit: 4 })
+    listResources({ type: resource.type, status: "published", limit: 4 }),
+    resource.primaryFormId ? getFormById(resource.primaryFormId) : Promise.resolve(undefined),
+    resource.secondaryFormId ? getFormById(resource.secondaryFormId) : Promise.resolve(undefined)
   ]);
 
   const label = RESOURCE_TYPE_LABELS[resource.type];
@@ -131,12 +137,13 @@ export default async function ResourceDetail({ params }: Params) {
                   Tell us where to send it. One form, and you&rsquo;ll have the full {resource.pages > 0 ? `${resource.pages}-page ` : ""}
                   {label.singular.toLowerCase()}.
                 </p>
-                <LeadCaptureForm
-                  intent="download"
-                  resourceId={resource.id}
-                  submitLabel={`Get the ${label.singular.toLowerCase()}`}
-                  fallbackHref="#top"
-                />
+                {primaryForm?.status === "published" ? (
+                  <DynamicForm
+                    form={primaryForm}
+                    successHref={resource.fileUrl || "#top"}
+                    successLabel={`Open the ${label.singular.toLowerCase()}`}
+                  />
+                ) : <LeadCaptureForm intent="download" resourceId={resource.id} submitLabel={`Get the ${label.singular.toLowerCase()}`} fallbackHref="#top" />}
               </>
             ) : (
               <>
@@ -154,6 +161,13 @@ export default async function ResourceDetail({ params }: Params) {
           </div>
         </aside>
       </article>
+
+      {secondaryForm?.status === "published" && (
+        <section className="whitepaper-second-form">
+          <div><p className="eyebrow">SPEAK WITH THE TEAM</p><h2>Need help applying the research?</h2><p>Use this separate contact form for questions, partnerships or a conversation with the SalesInfoPro team.</p></div>
+          <DynamicForm form={secondaryForm} />
+        </section>
+      )}
 
       {others.length > 0 && (
         <section className="resource-strip">

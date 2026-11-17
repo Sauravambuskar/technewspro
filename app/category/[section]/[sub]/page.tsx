@@ -13,9 +13,10 @@ import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-type Params = { params: { section: string; sub: string } };
+type Params = { params: Promise<{ section: string; sub: string }> };
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata(props: Params): Promise<Metadata> {
+  const params = await props.params;
   const [section, sub, settings] = await Promise.all([
     getSection(params.section),
     getSubcategory(params.section, params.sub),
@@ -35,7 +36,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-export default async function SubcategoryPage({ params }: Params) {
+export default async function SubcategoryPage(props: Params) {
+  const params = await props.params;
   const [section, sub] = await Promise.all([
     getSection(params.section),
     getSubcategory(params.section, params.sub)

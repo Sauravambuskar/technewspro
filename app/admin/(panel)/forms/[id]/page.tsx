@@ -5,7 +5,8 @@ import FormEditor from "../FormEditor";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditForm({ params }: { params: { id: string } }) {
+export default async function EditForm(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const form = await getFormById(params.id);
   if (!form) notFound();
 
