@@ -6,7 +6,7 @@ import SiteFooter from "../components/SiteFooter";
 import JsonLd from "../components/JsonLd";
 import ViewBeacon from "../components/ViewBeacon";
 import DynamicForm from "../components/DynamicForm";
-import PageBuilderRenderer from "../components/PageBuilderRenderer";
+import PageBuilderRenderer from "../components/PageBuilderRendererStudio";
 import { getFormById } from "@/lib/forms";
 import { getPageBySlug } from "@/lib/pages";
 import { getSettings } from "@/lib/settings";

@@ -235,12 +235,16 @@ export type PageBlockType = (typeof PAGE_BLOCK_TYPES)[number];
 export type PageBlockAlign = "left" | "center" | "right";
 export type PageSectionWidth = "contained" | "wide" | "full";
 export type PageSectionPadding = "none" | "small" | "medium" | "large";
+export type PageColumn = 0 | 1 | 2 | 3;
+export type PageColumns = 1 | 2 | 3 | 4;
+export type PageColumnLayout = "equal" | "sidebar-left" | "sidebar-right" | "feature-left" | "feature-right";
+export type PageFontFamily = "inherit" | "sans" | "display" | "serif" | "mono";
 
 /** A safe, structured content block. No arbitrary HTML is stored or rendered. */
 export type PageBlock = {
   id: string;
   type: PageBlockType;
-  column: 0 | 1;
+  column: PageColumn;
   eyebrow: string;
   heading: string;
   text: string;
@@ -257,14 +261,34 @@ export type PageBlock = {
   formId: string;
   theme: "light" | "dark" | "accent";
   height: number;
+  backgroundColor: string;
+  textColor: string;
+  accentColor: string;
+  fontFamily: PageFontFamily;
+  fontSize: number;
+  fontWeight: number;
+  lineHeight: number;
+  padding: number;
+  marginTop: number;
+  marginBottom: number;
+  borderColor: string;
+  borderWidth: number;
+  borderRadius: number;
+  maxWidth: number;
+  shadow: boolean;
 };
 
 export type PageBuilderSection = {
   id: string;
   name: string;
-  columns: 1 | 2;
+  columns: PageColumns;
+  columnLayout: PageColumnLayout;
+  columnGap: number;
   width: PageSectionWidth;
   padding: PageSectionPadding;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingInline: number;
   background: string;
   textColor: string;
   blocks: PageBlock[];

@@ -21,6 +21,18 @@ const ALIGNS = new Set(["left", "center", "right"]);
 const WIDTHS = new Set(["contained", "wide", "full"]);
 const PADDINGS = new Set(["none", "small", "medium", "large"]);
 const THEMES = new Set(["light", "dark", "accent"]);
+const COLUMN_LAYOUTS = new Set(["equal", "sidebar-left", "sidebar-right", "feature-left", "feature-right"]);
+const FONT_FAMILIES = new Set(["inherit", "sans", "display", "serif", "mono"]);
+
+function cleanNumber(value: unknown, fallback: number, min: number, max: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
+}
+
+function cleanColor(value: unknown, fallback = "") {
+  const color = cleanText(value, 40);
+  return /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|transparent)$/i.test(color) ? color : fallback;
+}
 
 function cleanText(value: unknown, max = 5000) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -33,7 +45,7 @@ function normaliseBlock(value: unknown, index: number): PageBlock {
   return {
     id: cleanText(raw.id, 100) || `block-${index}-${Date.now()}`,
     type,
-    column: raw.column === 1 ? 1 : 0,
+    column: ([0, 1, 2, 3].includes(Number(raw.column)) ? Number(raw.column) : 0) as PageBlock["column"],
     eyebrow: cleanText(raw.eyebrow, 160),
     heading: cleanText(raw.heading, 500),
     text: cleanText(raw.text, 12000),
@@ -49,7 +61,22 @@ function normaliseBlock(value: unknown, index: number): PageBlock {
     secondaryHref: cleanText(raw.secondaryHref, 2000),
     formId: cleanText(raw.formId, 100),
     theme: THEMES.has(String(raw.theme)) ? raw.theme as PageBlock["theme"] : "light",
-    height: Number.isFinite(height) ? Math.min(400, Math.max(16, Math.round(height))) : 64
+    height: Number.isFinite(height) ? Math.min(400, Math.max(16, Math.round(height))) : 64,
+    backgroundColor: cleanColor(raw.backgroundColor),
+    textColor: cleanColor(raw.textColor),
+    accentColor: cleanColor(raw.accentColor),
+    fontFamily: FONT_FAMILIES.has(String(raw.fontFamily)) ? raw.fontFamily as PageBlock["fontFamily"] : "inherit",
+    fontSize: cleanNumber(raw.fontSize, 0, 0, 160),
+    fontWeight: cleanNumber(raw.fontWeight, 0, 0, 900),
+    lineHeight: cleanNumber(raw.lineHeight, 0, 0, 3),
+    padding: cleanNumber(raw.padding, 0, 0, 160),
+    marginTop: cleanNumber(raw.marginTop, 0, 0, 240),
+    marginBottom: cleanNumber(raw.marginBottom, 0, 0, 240),
+    borderColor: cleanColor(raw.borderColor),
+    borderWidth: cleanNumber(raw.borderWidth, 0, 0, 20),
+    borderRadius: cleanNumber(raw.borderRadius, 0, 0, 100),
+    maxWidth: cleanNumber(raw.maxWidth, 0, 0, 1800),
+    shadow: raw.shadow === true
   };
 }
 
@@ -58,11 +85,16 @@ function normaliseSection(value: unknown, index: number): PageBuilderSection {
   return {
     id: cleanText(raw.id, 100) || `section-${index}-${Date.now()}`,
     name: cleanText(raw.name, 160) || `Section ${index + 1}`,
-    columns: raw.columns === 2 ? 2 : 1,
+    columns: ([1, 2, 3, 4].includes(Number(raw.columns)) ? Number(raw.columns) : 1) as PageBuilderSection["columns"],
+    columnLayout: COLUMN_LAYOUTS.has(String(raw.columnLayout)) ? raw.columnLayout as PageBuilderSection["columnLayout"] : "equal",
+    columnGap: cleanNumber(raw.columnGap, 32, 0, 160),
     width: WIDTHS.has(String(raw.width)) ? raw.width as PageBuilderSection["width"] : "contained",
     padding: PADDINGS.has(String(raw.padding)) ? raw.padding as PageBuilderSection["padding"] : "medium",
-    background: cleanText(raw.background, 40) || "#ffffff",
-    textColor: cleanText(raw.textColor, 40) || "#17181d",
+    paddingTop: cleanNumber(raw.paddingTop, 0, 0, 240),
+    paddingBottom: cleanNumber(raw.paddingBottom, 0, 0, 240),
+    paddingInline: cleanNumber(raw.paddingInline, 0, 0, 200),
+    background: cleanColor(raw.background, "#ffffff"),
+    textColor: cleanColor(raw.textColor, "#17181d"),
     blocks: Array.isArray(raw.blocks) ? raw.blocks.slice(0, 100).map(normaliseBlock) : []
   };
 }

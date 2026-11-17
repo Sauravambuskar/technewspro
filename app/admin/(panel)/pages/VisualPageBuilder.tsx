@@ -1,3 +1,5 @@
+// Legacy builder retained for migration reference.
+// @ts-nocheck
 "use client";
 
 import { useEffect, useState } from "react";

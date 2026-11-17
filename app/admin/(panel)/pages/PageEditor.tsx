@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, send } from "../../apiClient";
 import SeoBoxes from "../SeoBoxes";
-import VisualPageBuilder from "./VisualPageBuilder";
+import VisualPageBuilder from "./VisualPageBuilderStudio";
 import {
   PAGE_LAYOUTS,
   PAGE_LAYOUT_LABELS,
