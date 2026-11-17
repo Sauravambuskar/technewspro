@@ -23,11 +23,13 @@ export async function generateMetadata(): Promise<Metadata> {
 function Heading({ title, href }: { title: string; href: string }) {
   return <div className="news-heading"><h2>{title}</h2><Link href={href}>View All <IconArrowUpRight /></Link></div>;
 }
-function Story({ article, variant = "", description = false, sidebar = false }: { article: Article; variant?: string; description?: boolean; sidebar?: boolean }) {
+function Story({ article, variant = "", description = false, sidebar = false, primary = false }: { article: Article; variant?: string; description?: boolean; sidebar?: boolean; primary?: boolean }) {
   return <article className={`news-story ${variant}`}>
     {!variant.includes("text-only") && <Link className="news-image" href={`/articles/${article.slug}`} tabIndex={-1} aria-hidden="true">{article.image && <img src={article.image} alt="" loading={variant === "lead-story" ? "eager" : "lazy"} />}</Link>}
     <div className="news-story-copy"><div className="news-tags"><Link href={`/category/${article.section}`}>{article.tag || "Insights"}</Link></div>
-      {sidebar
+      {primary
+        ? <h1><Link href={`/articles/${article.slug}`}>{article.title}</Link></h1>
+        : sidebar
         ? <h3><Link href={`/articles/${article.slug}`}>{article.title}</Link></h3>
         : <h2><Link href={`/articles/${article.slug}`}>{article.title}</Link></h2>}
       {description && <p className="news-dek">{article.dek}</p>}
@@ -79,7 +81,8 @@ function CategorySpotlight({
 
 export default async function Home() {
   const [{ settings, nav, menu, footerPages, ads }, published, resources, ticker] = await Promise.all([getSiteChrome(), listArticles({ status: "published" }), listResources({ status: "published" }), listTicker(true)]);
-  const lead = await getFeaturedArticle(settings.featuredSlug) || published[0];
+  const newest = published[0];
+  const lead = await getFeaturedArticle(settings.featuredSlug) || newest;
   const rest = published.filter(article => article.id !== lead?.id);
   const picks = [...published].sort((a,b) => b.views-a.views).slice(0,3);
   const whitepapers = resources.filter(resource => resource.type === "whitepaper").slice(0,3);
@@ -95,9 +98,9 @@ export default async function Home() {
     {settings.tickerEnabled && ticker.length > 0 && <section className="ticker news-ticker" aria-label="Latest updates"><span>LATEST</span><div className="ticker-track"><div className="ticker-viewport">{[...ticker,...ticker].map((item,index) => <span className="ticker-item" key={`${item.id}-${index}`} aria-hidden={index >= ticker.length || undefined}>{item.text}</span>)}</div></div></section>}
     <SiteHeader menu={menu} siteName={settings.siteName} />
     <div className="news-container">
-      <section className="news-opening" aria-labelledby="home-hero-title">
-        <h1 className="news-opening-title" id="home-hero-title">Recent <span>Posts</span></h1>
-        <div className="news-opening-main"><div className="news-lead-grid">{lead && <Story article={lead} variant="lead-story" description />}<div className="news-headlines">{rest.slice(0,3).map(article => <Story article={article} variant="text-only" key={article.id} />)}</div></div><div className="news-three">{rest.slice(3,6).map(article => <Story article={article} key={article.id} />)}</div></div>
+      <section className="news-opening" aria-labelledby="home-recent-label">
+        <p className="news-opening-title" id="home-recent-label">Recent <span>Posts</span></p>
+        <div className="news-opening-main"><div className="news-lead-grid">{lead && <Story article={lead} variant="lead-story" description primary={lead.id === newest?.id} />}<div className="news-headlines">{rest.slice(0,3).map(article => <Story article={article} variant="text-only" primary={article.id === newest?.id} key={article.id} />)}</div></div><div className="news-three">{rest.slice(3,6).map(article => <Story article={article} key={article.id} />)}</div></div>
         <aside className="news-sidebar"><div className="news-picks"><h3>Top Picks</h3><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
       </section>
     </div>
