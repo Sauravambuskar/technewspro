@@ -98,8 +98,7 @@ export default async function Home() {
     {settings.tickerEnabled && ticker.length > 0 && <section className="ticker news-ticker" aria-label="Latest updates"><span>LATEST</span><div className="ticker-track"><div className="ticker-viewport">{[...ticker,...ticker].map((item,index) => <span className="ticker-item" key={`${item.id}-${index}`} aria-hidden={index >= ticker.length || undefined}>{item.text}</span>)}</div></div></section>}
     <SiteHeader menu={menu} siteName={settings.siteName} />
     <div className="news-container">
-      <section className="news-opening" aria-labelledby="home-recent-label">
-        <p className="news-opening-title" id="home-recent-label">Recent <span>Posts</span></p>
+      <section className="news-opening" aria-label="Recent posts">
         <div className="news-opening-main"><div className="news-lead-grid">{lead && <Story article={lead} variant="lead-story" description primary={lead.id === newest?.id} />}<div className="news-headlines">{rest.slice(0,3).map(article => <Story article={article} variant="text-only" primary={article.id === newest?.id} key={article.id} />)}</div></div><div className="news-three">{rest.slice(3,6).map(article => <Story article={article} key={article.id} />)}</div></div>
         <aside className="news-sidebar"><div className="news-picks"><h3>Top Picks</h3><ol>{picks.map(article => <li key={article.id}><Link href={`/articles/${article.slug}`}>{article.title}</Link></li>)}</ol></div><Promotion /></aside>
       </section>
