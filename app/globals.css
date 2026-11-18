@@ -524,9 +524,9 @@ body { font-family:Arial,Helvetica,sans-serif; }
 
 /* Exact supplied raster logo. Never redraw the brand in HTML or SVG. */
 .sales-brand{display:inline-flex;align-items:center;line-height:0}
-.sales-brand .sales-brand-image{display:block;width:auto;height:48px;max-width:min(240px,42vw);object-fit:contain;border-radius:2px}
-.footer-brand .sales-brand-image{height:56px;max-width:min(250px,72vw)}
-@media(max-width:700px){.sales-brand .sales-brand-image{height:36px;max-width:160px}.footer-brand .sales-brand-image{height:48px;max-width:210px}}
+.sales-brand .sales-brand-image{display:block;width:auto;height:58px;max-width:min(290px,48vw);object-fit:contain;border-radius:2px}
+.footer-brand .sales-brand-image{height:66px;max-width:min(300px,76vw)}
+@media(max-width:700px){.sales-brand .sales-brand-image{height:44px;max-width:190px}.footer-brand .sales-brand-image{height:56px;max-width:240px}}
 
 /* Shared public footer. The homepage established this dark red treatment;
    keeping it on the component makes every public route visually consistent. */
